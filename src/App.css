@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+
+@theme {
+
+  --color-pri: #000000;   
+  --color-sec: rgb(102, 102, 102);  
+  --color-accent: #ec4899;    
+  --color-bg: #fff; 
+  --color-text: #111827;      
+  --color-border: #e5e7eb;   
+  --color-success: #10b981;  
+  --color-warning: #f59e0b;    
+  --color-error: #ef4444;     
+  --color-info: #3b82f6;      
+  --color-muted: #6b7280;      
+  --color-overlay: rgba(0, 0, 0, 0.5); 
+
+
+    /* 🔤 Fonts */
+    --font-sans: "Raleway", sans-serif;
+    --font-serif: "Lato", sans-serif;
+
+}
+
+
+
+/* Method 1: Using @layer components for reusable component classes */
+@layer components {
+  .btn-primary {
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded;
+  }
+  
+  .card {
+    @apply bg-white shadow-md rounded-lg p-6 border;
+  }
+  
+  .form-input {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500;
+  }
+}
+
+/* Method 2: Using @layer utilities for custom utility classes */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+}
+
+
+@layer base {
+
+  h1, h2, h3, h4, h5, h6, span, div {
+    @apply font-sans text-gray-800;
+  }
+  
+  p {
+    @apply text-gray-700 leading-relaxed mb-4 font-serif;
+  }
+  
+  a {
+    @apply text-blue-600 hover:text-blue-800 underline font-sans;
+  }
+}
+
+
+.animation-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
