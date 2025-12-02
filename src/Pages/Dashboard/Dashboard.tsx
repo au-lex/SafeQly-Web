@@ -7,7 +7,7 @@ import {
   Add,
   ArrowRight,
   Import,
-  SearchNormal
+
 } from 'iconsax-react';
 
 
@@ -180,9 +180,7 @@ const Dashboard: React.FC = () => {
             <div className="px-6 md:px-0 mt-4 md:mt-0">
               <div className="flex items-center justify-between mb-6">
                   <h3 className="font-bold text-xl text-gray-900">Transaction History</h3>
-                  <button className="bg-gray-100 p-2 rounded-lg text-gray-600 md:hidden">
-                    <SearchNormal size="16"/>
-                  </button>
+                  <button className="text-pri font-semibold text-sm hover:text-blue-700">View All</button>
               </div>
             </div>
 

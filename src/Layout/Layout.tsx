@@ -2,15 +2,17 @@ import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { 
   Home2,
-  People,
-  Profile,
-  Bag2,
+
+
+Trade,
   Send2,
-  AttachCircle,
+
   SearchNormal1,
   Notification,
   Headphone,
   ArrowDown2,
+  Setting2,
+  Receipt2
 
 } from 'iconsax-react';
 
@@ -33,25 +35,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       label: 'Home', 
       href: '/dashboard'
     },
+
+    { 
+      icon: Trade,
+      label: 'Escrows', 
+      href: '/escrows'
+    },
+
+
     { 
       icon: Send2,
       label: 'Messages', 
       href: '/chat'
     },
+
     { 
-      icon: Bag2,
-      label: 'Market', 
-      href: '/market'
+      icon: Receipt2,
+      label: 'Transactions', 
+      href: '/transactions' 
+  
     },
     { 
-      icon: People,
-      label: 'Connect', 
-      href: '/connect'
-    },
-    { 
-      icon: Profile,
-      label: 'Profile', 
-      href: '/profile'
+      icon: Setting2,
+      label: 'Settings', 
+      href: '/settings'
     }
   ];
 
@@ -92,7 +99,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {({ isActive }) => (
         <>
            <item.icon 
-             size="24" // Slightly larger on mobile touch targets
+             size="24" 
              color="currentColor" 
              variant={isActive ? "Bold" : "Outline"} 
            />
@@ -113,11 +120,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <NavLink to="/" className="flex items-center justify-between group cursor-pointer">
             <div className="flex items-center space-x-2">
               <div className="bg-emerald-50 p-2 rounded-full">
-                <AttachCircle size="24" color="currentColor" className="text-emerald-900" variant="Bold"/>
+                <Receipt2 size="24" color="currentColor" className="text-pri" variant="Bold"/>
               </div>
               <div>
-                 <span className="text-lg font-bold text-gray-900 block leading-tight">xnria</span>
-                 <span className="text-xs text-gray-400">workspace</span>
+                 <span className="text-lg font-bold text-pri block leading-tight">SafeQly.</span>
+                 <span className="text-xs text-gray-400">Secure. Simple. SafeQly.</span>
               </div>
             </div>
             <ArrowDown2 size="16" className="text-gray-400"/>
@@ -173,8 +180,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             
             {/* Left Side: Welcome & Profile */}
             <div className="flex items-center space-x-3 lg:space-x-4">
-               {/* Mobile View: Profile Pic + Short Welcome */}
-               <div className="flex items-center space-x-3 lg:hidden">
+
+               <div className="flex items-center space-x-3 ">
                     <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden border border-gray-100">
                         <img src="https://i.pravatar.cc/150?img=3" alt="User" className="w-full h-full object-cover"/> 
                     </div>
@@ -184,10 +191,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </div>
                </div>
 
-               {/* Desktop View: Full Welcome Text */}
-               <div className="hidden lg:block">
-                   <h1 className="text-xl font-bold text-gray-900">Welcome back, Olaoluwa 👋</h1>
-               </div>
             </div>
 
             {/* Right Side: Actions */}
