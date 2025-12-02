@@ -3,8 +3,10 @@ import AuthLayout from '../../../Layout/AuthLayout';
 import TextInput from '../../../Components/ui/TextInput';
 import PasswordInput from '../../../Components/ui/PasswordInput';
 import PrimaryButton from '../../../Components/ui/Button';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const navigate = useNavigate();
   return (
     <AuthLayout 
       marketingProps={{
@@ -34,9 +36,9 @@ export default function Login() {
         
         <PasswordInput 
           rightElement={
-            <a href="#" className="text-sm text-green-700 font-semibold hover:text-green-800 hover:underline">
+            <Link to="/forgot-psw" className="text-sm text-green-700 font-semibold hover:text-green-800 hover:underline">
               Forgot password?
-            </a>
+            </Link>
           }
         />
 
@@ -52,12 +54,12 @@ export default function Login() {
         </div>
 
         <div className="mt-8">
-          <PrimaryButton>Log in</PrimaryButton>
+          <PrimaryButton onClick={() => navigate('/dashboard')} >Log in</PrimaryButton>
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">
           Don't have an account?{' '}
-          <a href="#" className="text-[#053014] font-semibold hover:underline">Sign up</a>
+          <Link to="/signup" className="text-[#053014] font-semibold hover:underline">Sign up</Link>
         </div>
       </form>
     </AuthLayout>

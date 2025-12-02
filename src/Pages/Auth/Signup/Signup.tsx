@@ -5,6 +5,7 @@ import TextInput from '../../../Components/ui/TextInput';
 import PasswordInput from '../../../Components/ui/PasswordInput';
 import PrimaryButton from '../../../Components/ui/Button';
 import PhoneInput from '../../../Components/ui/PhoneInput';
+import { Link } from 'react-router-dom';
 
 
 
@@ -59,7 +60,7 @@ export default function Signup() {
 
         <div className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{' '}
-          <a href="#" className="text-[#053014] font-semibold hover:underline">Log in</a>
+          <Link to="/login" className="text-[#053014] font-semibold hover:underline">Log in</Link>
         </div>
       </form>
     </AuthLayout>
