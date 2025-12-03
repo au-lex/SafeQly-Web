@@ -8,6 +8,8 @@ import ForgotPassword from "./Pages/Auth/ForgotPsw/ForgotPsw";
 import ResetPassword from "./Pages/Auth/ResetPsw/ResetPsw";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 
+import EscrowFlow from "./Pages/Escrow/newEscrow/EscrowFlow";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,6 +41,15 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: <Dashboard />,
   },
+
+
+  {
+    path: "/new-escrow",
+    element: <EscrowFlow/>,
+  },
+
+
+
 
 
 

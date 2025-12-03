@@ -6,7 +6,7 @@ const PasswordInput = ({
   label = "Password",
   id = "password",
   placeholder = "Enter your password",
-  rightElement
+  rightElement,
 }: {
   label?: string;
   id?: string;

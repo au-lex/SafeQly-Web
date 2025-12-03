@@ -9,6 +9,7 @@ import {
   Import,
 
 } from 'iconsax-react';
+import { Link } from 'react-router-dom';
 
 
 interface Transaction {
@@ -153,9 +154,9 @@ const Dashboard: React.FC = () => {
 
             {/* 2. Quick Actions / New Escrow */}
             <div className="px-6 md:px-0">
-              <button className="w-full border bg-white border-pri text-pri hover:bg-blue-50 py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all">
+              <Link to="/new-escrow" className="w-full border bg-white border-pri text-pri hover:bg-blue-50 py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all">
                   New Escrow Transaction <ArrowRight size="16" color='currentColor' className='text-pri'/>
-              </button>
+              </Link>
             </div>
 
             {/* 3. Quick Transfer */}
