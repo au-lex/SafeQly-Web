@@ -11,6 +11,8 @@ import Dashboard from "./Pages/Dashboard/Dashboard";
 import EscrowFlow from "./Pages/Escrow/newEscrow/EscrowFlow";
 import EscrowHome from "./Pages/Escrow/escrowMgt/EscrowHome";
 import EscrowTrans from "./Pages/Escrow/escrowTransactions/EscrowTrans";
+import TransactionsScreen from "./Pages/Transactions/TransactionsScreen";
+import SettingsScreen from "./Pages/Settings/SettingsScreen";
 
 const router = createBrowserRouter([
   {
@@ -62,7 +64,17 @@ const router = createBrowserRouter([
   },
 
 
+  {
+    path: "/transactions",
+    element: <TransactionsScreen/>,
+  },
 
+
+
+  {
+    path: "/settings",
+    element: <SettingsScreen/>,
+  },
 
 
 

@@ -93,3 +93,46 @@ export interface ProgressStepItemProps {
   step: ProgressStep;
   isLast: boolean;
 }
+
+
+// types.ts
+export type TransactionType = 'wallet_funded' | 'money_withdrawn' | 'escrow_payment' | 'escrow_received';
+
+export interface Transaction {
+  id: string;
+  type: TransactionType;
+  title: string;
+  description: string;
+  amount: number;
+  timestamp: string;
+  category: 'escrow' | 'wallet';
+}
+
+export interface TransactionItemProps {
+  transaction: Transaction;
+  onClick: (id: string) => void;
+}
+
+export type TabType = 'escrow' | 'wallet';
+
+
+
+// types.ts
+export interface SettingsOption {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  iconBgColor: string;
+  action: () => void;
+  showArrow?: boolean;
+}
+
+export interface SettingsItemProps {
+  option: SettingsOption;
+}
+
+export interface UserProfile {
+  name: string;
+  avatar: string;
+}

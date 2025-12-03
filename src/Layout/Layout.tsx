@@ -3,7 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import {
   Home2,
   Trade,
-  Send2,
+  // Send2,
   SearchNormal1,
   Notification,
   Headphone,
@@ -36,11 +36,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       href: "/escrows",
     },
 
-    {
-      icon: Send2,
-      label: "Messages",
-      href: "/chat",
-    },
+    // {
+    //   icon: Send2,
+    //   label: "Messages",
+    //   href: "/chat",
+    // },
 
     {
       icon: Receipt2,
