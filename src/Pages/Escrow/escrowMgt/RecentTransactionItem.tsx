@@ -23,7 +23,7 @@ const RecentTransactionItem: React.FC<RecentTransactionItemProps> = ({
   return (
     <div
       onClick={() => onClick(transaction.id)}
-      className="flex items-center justify-between py-3 cursor-pointer  hover:bg-gray-50 transition-colors rounded-lg px-2 -mx-2"
+      className="flex items-center  justify-between py-3 cursor-pointer  hover:bg-gray-50 transition-colors rounded-lg px-2 -mx-2"
     >
       <div className="flex items-center flex-1">
         <img
