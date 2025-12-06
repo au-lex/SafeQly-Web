@@ -123,10 +123,10 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <h1 className="text-4xl font-extrabold text-gray-900 flex items-center gap-3">
+                  <h1 className="text-4xl font-bold font-mono text-gray-800 flex items-center gap-3">
                     {showBalance ? '$22,060.00' : '•••••••'}
                     <button onClick={() => setShowBalance(!showBalance)} className="text-gray-400 hover:text-gray-600">
-                      {showBalance ? <Eye size="24"/> : <EyeSlash size="24"/>}
+                      {showBalance ? <Eye size="24"/> : <EyeSlash color='currentColor' size="24"/>}
                     </button>
                   </h1>
                 </div>
