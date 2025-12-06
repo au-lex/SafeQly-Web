@@ -112,6 +112,7 @@ const TransactionsScreen: React.FC = () => {
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50">
+        
         <div className="max-w-7xl mx-auto bg-white min-h-screen">
           {/* Header */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-4 pt-4 z-10">

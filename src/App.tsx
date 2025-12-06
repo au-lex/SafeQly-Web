@@ -13,6 +13,8 @@ import EscrowHome from "./Pages/Escrow/escrowMgt/EscrowHome";
 import EscrowTrans from "./Pages/Escrow/escrowTransactions/EscrowTrans";
 import TransactionsScreen from "./Pages/Transactions/TransactionsScreen";
 import SettingsScreen from "./Pages/Settings/SettingsScreen";
+import NotificationPage from "./Pages/Notification/Notification";
+import DisputePage from "./Pages/Dispute/Dispute";
 
 const router = createBrowserRouter([
   {
@@ -76,7 +78,16 @@ const router = createBrowserRouter([
     element: <SettingsScreen/>,
   },
 
+  {
+    path: "/notifications",
+    element: <NotificationPage/>,
+  },
 
+
+  {
+    path: "/disputes",
+    element: <DisputePage/>,
+  },
 
 ]);
 

@@ -1,9 +1,9 @@
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import {
   Home2,
   Trade,
-  // Send2,
+  Send2,
   SearchNormal1,
   Notification,
   Headphone,
@@ -36,11 +36,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       href: "/escrows",
     },
 
-    // {
-    //   icon: Send2,
-    //   label: "Messages",
-    //   href: "/chat",
-    // },
+    {
+      icon: Send2,
+      label: "Disputes",
+      href: "/disputes",
+    },
 
     {
       icon: Receipt2,
@@ -223,10 +223,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
 
             {/* Notification - Visible on Mobile & Desktop */}
-            <button className="p-2 rounded-full hover:bg-gray-50 relative text-gray-500 transition-colors">
+            <Link to ="/notifications" className="p-2 rounded-full hover:bg-gray-50 relative text-gray-500 transition-colors">
               <Notification size="22" color="currentColor" variant="Outline" />
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-            </button>
+            </Link>
 
             {/* Move Money - Desktop Only */}
             <button className="hidden lg:flex bg-emerald-900 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors items-center">
