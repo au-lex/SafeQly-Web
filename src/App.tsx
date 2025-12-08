@@ -15,6 +15,11 @@ import TransactionsScreen from "./Pages/Transactions/TransactionsScreen";
 import SettingsScreen from "./Pages/Settings/SettingsScreen";
 import NotificationPage from "./Pages/Notification/Notification";
 import DisputePage from "./Pages/Dispute/Dispute";
+import AdminLogin from "./Pages/Admin/admin-auth/AdminLogin";
+import ResolveDispute from "./Pages/Admin/resolve-dispute/ResolveDispute";
+import UsersPage from "./Pages/Admin/users/User";
+import Finance from "./Pages/Admin/finance/Finace";
+import AdminDashboard from "./Pages/Admin/admin-dash/AdminDashboard";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +92,35 @@ const router = createBrowserRouter([
   {
     path: "/disputes",
     element: <DisputePage/>,
+  },
+
+
+  // admin
+
+  {
+    path: "/admin",
+    element: <AdminLogin/>,
+  },
+
+  {
+    path: "/admin-users",
+    element: <UsersPage/>,
+  },
+
+  {
+    path: "/resolve-disputes",
+    element: <ResolveDispute/>,
+  },
+
+
+  {
+    path: "/finance",
+    element: <Finance/>,
+  },
+
+  {
+    path: "/admin-dash",
+    element: <AdminDashboard/>,
   },
 
 ]);
