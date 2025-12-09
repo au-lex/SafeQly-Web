@@ -5,11 +5,12 @@ import TextInput from '../../../Components/ui/TextInput';
 import PasswordInput from '../../../Components/ui/PasswordInput';
 import PrimaryButton from '../../../Components/ui/Button';
 import PhoneInput from '../../../Components/ui/PhoneInput';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 
 export default function Signup() {
+  const navigate = useNavigate();
   return (
     <AuthLayout 
       marketingProps={{
@@ -55,7 +56,7 @@ export default function Signup() {
         </div>
 
         <div className="mt-8">
-          <PrimaryButton>Create Account</PrimaryButton>
+          <PrimaryButton onClick={() => navigate('/dashboard')}>Create Account</PrimaryButton>
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">

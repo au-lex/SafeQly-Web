@@ -23,7 +23,7 @@ import AdminDashboard from "./Pages/Admin/admin-dash/AdminDashboard";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "g/",
     element: <Landing />,
   },
 
@@ -33,10 +33,13 @@ const router = createBrowserRouter([
   },
 
   {
+    path: "/",
+    element: <Login />,
+  },
+  {
     path: "/login",
     element: <Login />,
   },
-
   {
     path: "/forgot-psw",
     element: <ForgotPassword />,
