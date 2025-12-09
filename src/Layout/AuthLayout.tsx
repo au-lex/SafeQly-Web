@@ -9,7 +9,7 @@ const AuthLayout = ({
 }) => {
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row font-sans">
-      <div className="w-full md:w-5/12 lg:w-1/2 relative overflow-hidden order-1 md:order-1">
+      <div className="w-full md:w-5/12 lg:w-1/2 hidden md:block relative overflow-hidden order-1 md:order-1">
         <OnboardingSide {...marketingProps} />
       </div>
 
