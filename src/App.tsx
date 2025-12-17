@@ -138,6 +138,7 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <React.StrictMode>
+      
       <RouterProvider router={router} />
     </React.StrictMode>
   );
