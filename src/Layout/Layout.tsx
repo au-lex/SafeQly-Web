@@ -10,38 +10,39 @@ import {
   ArrowDown2,
   Setting2,
   Receipt2,
+  Logout,
 } from "iconsax-react";
+import { useLogout } from "../Hooks/useAuth";
 
 interface LayoutProps {
   children?: React.ReactNode;
 }
 
 interface NavItem {
-  icon: any;
+  icon: React.ElementType;
   label: string;
   href: string;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { mutate: logout, isPending: isLoggingOut } = useLogout();
+
   const navItems: NavItem[] = [
     {
       icon: Home2,
       label: "Home",
       href: "/dashboard",
     },
-
     {
       icon: Trade,
       label: "Escrows",
       href: "/escrows",
     },
-
     {
       icon: Send2,
       label: "Disputes",
       href: "/disputes",
     },
-
     {
       icon: Receipt2,
       label: "Transactions",
@@ -54,13 +55,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     },
   ];
 
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to logout?")) {
+      logout();
+    }
+  };
+
   const NavItemComponent = ({ item }: { item: NavItem }) => (
     <NavLink
       to={item.href}
       className={({ isActive }) =>
         `flex items-center space-x-3 px-4 py-3 cursor-pointer transition-colors rounded-lg mb-1 ${
           isActive
-            ? "text-pri bg-emerald-50 border border-emerald-100 font-bold" // Added bg and border for better visibility
+            ? "text-pri bg-emerald-50 border border-emerald-100 font-bold"
             : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
         }`
       }
@@ -70,7 +77,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <item.icon
             size="20"
             color="currentColor"
-            variant={isActive ? "Bold" : "Outline"} // Switches to Filled icon when active
+            variant={isActive ? "Bold" : "Outline"}
           />
           <span className="font-medium text-sm">{item.label}</span>
         </>
@@ -138,6 +145,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {navItems.map((item) => (
               <NavItemComponent key={item.label} item={item} />
             ))}
+            
+            {/* Logout Button in Sidebar */}
+            <button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="w-full flex items-center space-x-3 px-4 py-3 cursor-pointer transition-colors rounded-lg mb-1 text-red-600 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+            >
+              <Logout size="20" color="currentColor" variant="Outline" />
+              <p className="font-medium text-sm">
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </p>
+            </button>
           </nav>
         </div>
 
@@ -193,7 +212,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <header className="bg-white h-16 lg:h-20 border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
           {/* Left Side: Welcome & Profile */}
           <div className="flex items-center space-x-3 lg:space-x-4">
-            <div className="flex items-center space-x-3 ">
+            <div className="flex items-center space-x-3">
               <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden border border-gray-100">
                 <img
                   src="https://i.pravatar.cc/150?img=3"
@@ -223,10 +242,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
 
             {/* Notification - Visible on Mobile & Desktop */}
-            <Link to ="/notifications" className="p-2 rounded-full hover:bg-gray-50 relative text-gray-500 transition-colors">
+            <Link
+              to="/notifications"
+              className="p-2 rounded-full hover:bg-gray-50 relative text-gray-500 transition-colors"
+            >
               <Notification size="22" color="currentColor" variant="Outline" />
               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
             </Link>
+
+     
 
             {/* Move Money - Desktop Only */}
             <button className="hidden lg:flex bg-emerald-900 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors items-center">
@@ -234,7 +258,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <ArrowDown2
                 size="16"
                 color="currentColor"
-                className="ml-2 rotate-[-90deg] text-white "
+                className="ml-2 rotate-[-90deg] text-white"
               />
             </button>
           </div>

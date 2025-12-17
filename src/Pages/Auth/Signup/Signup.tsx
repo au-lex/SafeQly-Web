@@ -1,16 +1,39 @@
-
-
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import AuthLayout from '../../../Layout/AuthLayout';
 import TextInput from '../../../Components/ui/TextInput';
 import PasswordInput from '../../../Components/ui/PasswordInput';
 import PrimaryButton from '../../../Components/ui/Button';
 import PhoneInput from '../../../Components/ui/PhoneInput';
-import { Link, useNavigate } from 'react-router-dom';
-
-
+import { useSignup } from '../../../Hooks/useAuth';
+import type { SignupData } from '../../../types';
 
 export default function Signup() {
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState<SignupData>({
+    full_name: '',
+    email: '',
+    phone: '',
+    password: '',
+  });
+
+  const { mutate: signup, isPending } = useSignup();
+
+  const handleInputChange = (field: keyof SignupData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!formData.full_name || !formData.email || !formData.phone || !formData.password) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    signup(formData);
+  };
+
   return (
     <AuthLayout 
       marketingProps={{
@@ -30,11 +53,13 @@ export default function Signup() {
         </p>
       </div>
 
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={handleSubmit}>
         <TextInput 
-          id="businessName" 
+          id="full_name" 
           label="Full Name / Business Name" 
-          placeholder="e.g. Hydro Logistics Ltd" 
+          placeholder="e.g. Hydro Logistics Ltd"
+          value={formData.full_name}
+          onChange={(e) => handleInputChange('full_name', e.target.value)}
         />
         
         <TextInput 
@@ -42,11 +67,19 @@ export default function Signup() {
           label="Email Address" 
           placeholder="name@company.com" 
           type="email"
+          value={formData.email}
+          onChange={(e) => handleInputChange('email', e.target.value)}
         />
         
-        <PhoneInput />
+        <PhoneInput 
+          value={formData.phone}
+          onChange={(value) => handleInputChange('phone', value)}
+        />
         
-        <PasswordInput />
+        <PasswordInput 
+          value={formData.password}
+          onChange={(e) => handleInputChange('password', e.target.value)}
+        />
 
         <div className="mt-6 text-sm text-gray-500 leading-relaxed">
           By creating an account, you agree to our{' '}
@@ -56,7 +89,9 @@ export default function Signup() {
         </div>
 
         <div className="mt-8">
-          <PrimaryButton onClick={() => navigate('/dashboard')}>Create Account</PrimaryButton>
+          <PrimaryButton type="submit" disabled={isPending}>
+            {isPending ? 'Creating Account...' : 'Create Account'}
+          </PrimaryButton>
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">

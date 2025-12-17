@@ -136,7 +136,7 @@ export function useForgotPassword() {
     },
     onSuccess: (data, email) => {
       showAlert('Success', data.message);
-      navigate(`/reset-password?email=${encodeURIComponent(email)}&type=password-reset`);
+      navigate(`/reset-psw?email=${encodeURIComponent(email)}&type=password-reset`);
     },
     onError: (error: Error) => {
       showAlert('Error', error.message);

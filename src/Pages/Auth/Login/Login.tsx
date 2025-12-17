@@ -1,12 +1,36 @@
-
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import AuthLayout from '../../../Layout/AuthLayout';
 import TextInput from '../../../Components/ui/TextInput';
 import PasswordInput from '../../../Components/ui/PasswordInput';
 import PrimaryButton from '../../../Components/ui/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLogin } from '../../../Hooks/useAuth';
+import type { LoginCredentials } from '../../../types';
 
 export default function Login() {
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState<LoginCredentials>({
+    email: '',
+    password: '',
+  });
+
+  const { mutate: login, isPending } = useLogin();
+
+  const handleInputChange = (field: keyof LoginCredentials, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!formData.email || !formData.password) {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    login(formData);
+  };
+
   return (
     <AuthLayout 
       marketingProps={{
@@ -26,15 +50,19 @@ export default function Login() {
         </p>
       </div>
 
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={handleSubmit}>
         <TextInput 
           id="email" 
           label="Email address" 
           placeholder="name@company.com" 
           type="email"
+          value={formData.email}
+          onChange={(e) => handleInputChange('email', e.target.value)}
         />
         
         <PasswordInput 
+          value={formData.password}
+          onChange={(e) => handleInputChange('password', e.target.value)}
           rightElement={
             <Link to="/forgot-psw" className="text-sm text-green-700 font-semibold hover:text-green-800 hover:underline">
               Forgot password?
@@ -54,7 +82,9 @@ export default function Login() {
         </div>
 
         <div className="mt-8">
-          <PrimaryButton onClick={() => navigate('/dashboard')} >Log in</PrimaryButton>
+          <PrimaryButton type="submit" disabled={isPending}>
+            {isPending ? 'Logging in...' : 'Log in'}
+          </PrimaryButton>
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">
