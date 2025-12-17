@@ -1,3 +1,5 @@
+
+// PasswordInput.tsx
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import InputLabel from "./InputLabel";
@@ -7,11 +9,15 @@ const PasswordInput = ({
   id = "password",
   placeholder = "Enter your password",
   rightElement,
+  value,
+  onChange
 }: {
   label?: string;
   id?: string;
   placeholder?: string;
   rightElement?: React.ReactNode;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const [show, setShow] = useState(false);
   return (
@@ -24,6 +30,8 @@ const PasswordInput = ({
           type={show ? "text" : "password"}
           id={id}
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-700 focus:ring-1 focus:ring-green-700 outline-none transition-all placeholder-gray-400 text-gray-800 pr-10"
         />
         <button

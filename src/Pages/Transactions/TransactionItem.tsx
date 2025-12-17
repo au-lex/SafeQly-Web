@@ -23,7 +23,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, onClick 
 
   return (
     <div
-      onClick={() => onClick(transaction.id)}
+      onClick={() => onClick(transaction.idd)}
       className="flex items-center justify-between py-4 cursor-pointer hover:bg-gray-50 transition-colors rounded-lg px-3 -mx-3"
     >
       <div className="flex items-center flex-1">

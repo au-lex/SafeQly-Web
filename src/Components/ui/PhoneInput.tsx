@@ -1,7 +1,15 @@
+
+// PhoneInput.tsx
 import { ChevronDown } from "lucide-react";
 import InputLabel from "./InputLabel";
 
-const PhoneInput = () => {
+const PhoneInput = ({
+  value,
+  onChange
+}: {
+  value?: string;
+  onChange?: (value: string) => void;
+}) => {
   return (
     <div className="mb-5">
       <InputLabel htmlFor="phone">Phone number</InputLabel>
@@ -20,6 +28,8 @@ const PhoneInput = () => {
           type="tel"
           id="phone"
           placeholder="800 000 0000"
+          value={value}
+          onChange={(e) => onChange?.(e.target.value)}
           className="flex-1 w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-green-700 focus:ring-1 focus:ring-green-700 outline-none transition-all placeholder-gray-400 text-gray-800"
         />
       </div>

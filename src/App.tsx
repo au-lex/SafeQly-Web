@@ -20,6 +20,7 @@ import ResolveDispute from "./Pages/Admin/resolve-dispute/ResolveDispute";
 import UsersPage from "./Pages/Admin/users/User";
 import Finance from "./Pages/Admin/finance/Finace";
 import AdminDashboard from "./Pages/Admin/admin-dash/AdminDashboard";
+import VerifyOTP from "./Pages/Auth/VerifyOtp/VerifyOtp";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,11 @@ const router = createBrowserRouter([
   },
 
   {
+    path: "/verify-otp",
+    element: <VerifyOTP />,
+  },
+
+  {
     path: "/",
     element: <Login />,
   },
@@ -40,6 +46,7 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+
   {
     path: "/forgot-psw",
     element: <ForgotPassword />,

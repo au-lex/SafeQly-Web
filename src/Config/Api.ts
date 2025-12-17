@@ -1,16 +1,16 @@
 // API Configuration
-export const API_BASE_URL = 'https://your-api-url.com/api';
+export const API_BASE_URL = 'http://localhost:8080/api';
 
 export const API_ENDPOINTS = {
   AUTH: {
     SIGNUP: '/auth/signup',
-    VERIFY_SIGNUP_OTP: '/auth/verify-signup-otp',
-    RESEND_SIGNUP_OTP: '/auth/resend-signup-otp',
+    VERIFY_SIGNUP_OTP: '/auth/verify-otp',
+    RESEND_SIGNUP_OTP: '/auth/resend-otp',
     LOGIN: '/auth/login',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
   },
-  
+
   WALLET: {
     BALANCE: '/wallet/balance',
     FUND: '/wallet/fund',
