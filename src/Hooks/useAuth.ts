@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast'; 
 import axiosInstance from '../Config/axios';
 import { API_ENDPOINTS } from '../Config/Api';
 import type {
@@ -16,12 +17,16 @@ const setStorageItem = (key: string, value: string): void => {
 };
 
 const removeStorageItems = (keys: string[]): void => {
-  keys.forEach(key => localStorage.removeItem(key));
+  keys.forEach((key) => localStorage.removeItem(key));
 };
 
-const showAlert = (title: string, message: string): void => {
-  alert(`${title}: ${message}`);
+
+const handleApiError = (error: any) => {
+  const message = error.response?.data?.message || error.message || 'Something went wrong';
+  toast.error(message);
 };
+
+// --- HOOKS ---
 
 // Signup Hook
 export function useSignup() {
@@ -36,11 +41,11 @@ export function useSignup() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Signup successful! Please verify your email.');
       navigate(`/verify-otp?email=${encodeURIComponent(data.email!)}&type=signup`);
     },
-    onError: (error: Error) => {
-      showAlert('Signup Failed', error.message);
+    onError: (error) => {
+      handleApiError(error);
     },
   });
 }
@@ -61,15 +66,12 @@ export function useVerifySignupOTP() {
       if (data.token && data.user) {
         setStorageItem('authToken', data.token);
         setStorageItem('userData', JSON.stringify(data.user));
-        console.log('User data:', data.user);
-        console.log('Token:', data.token);
       }
-
-      showAlert('Success', data.message);
+      toast.success('Email verified! Welcome aboard.');
       navigate('/dashboard');
     },
-    onError: (error: Error) => {
-      showAlert('Verification Failed', error.message);
+    onError: (error) => {
+      handleApiError(error);
     },
   });
 }
@@ -85,10 +87,10 @@ export function useResendSignupOTP() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'OTP resent successfully!');
     },
-    onError: (error: Error) => {
-      showAlert('Error', error.message);
+    onError: (error) => {
+      handleApiError(error);
     },
   });
 }
@@ -99,26 +101,29 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-      const response = await axiosInstance.post<AuthResponse>(
+     
+      const promise = axiosInstance.post<AuthResponse>(
         API_ENDPOINTS.AUTH.LOGIN,
         credentials
       );
+
+      toast.promise(promise, {
+        loading: 'Logging in...',
+        success: 'Welcome back!',
+        error: (err) => err.response?.data?.message || 'Login failed',
+      });
+
+      const response = await promise;
       return response.data;
     },
     onSuccess: (data) => {
       if (data.token && data.user) {
         setStorageItem('authToken', data.token);
         setStorageItem('userData', JSON.stringify(data.user));
-        console.log('User data:', data.user);
-        console.log('Token:', data.token);
       }
-
-      showAlert('Success', data.message);
       navigate('/dashboard');
     },
-    onError: (error: Error) => {
-      showAlert('Login Failed', error.message);
-    },
+
   });
 }
 
@@ -135,11 +140,11 @@ export function useForgotPassword() {
       return response.data;
     },
     onSuccess: (data, email) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Reset link sent!');
       navigate(`/reset-psw?email=${encodeURIComponent(email)}&type=password-reset`);
     },
-    onError: (error: Error) => {
-      showAlert('Error', error.message);
+    onError: (error) => {
+      handleApiError(error);
     },
   });
 }
@@ -156,12 +161,12 @@ export function useResetPassword() {
       );
       return response.data;
     },
-    onSuccess: (data) => {
-      showAlert('Success', data.message + ' Please login with your new password.');
+    onSuccess: () => {
+      toast.success('Password reset successfully! Please login.');
       navigate('/login');
     },
-    onError: (error: Error) => {
-      showAlert('Password Reset Failed', error.message);
+    onError: (error) => {
+      handleApiError(error);
     },
   });
 }
@@ -175,10 +180,11 @@ export function useLogout() {
       removeStorageItems(['authToken', 'userData']);
     },
     onSuccess: () => {
+      toast.success('Logged out successfully');
       navigate('/login');
     },
-    onError: (error: Error) => {
-      showAlert('Logout Error', error.message);
+    onError: (error) => {
+      handleApiError(error);
     },
   });
 }
