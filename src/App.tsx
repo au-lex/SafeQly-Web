@@ -90,7 +90,7 @@ const router = createBrowserRouter([
 
 
   {
-    path: "/settings",
+    path: "/settings/:section",
     element: <SettingsScreen/>,
   },
 
