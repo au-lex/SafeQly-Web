@@ -142,6 +142,57 @@ export interface UserProfile {
 
 
 
+
+
+
+
+
+
+
+
+// User Profile Types
+export interface UserProfileData {
+  id: number;
+  full_name: string;
+  email: string;
+  phone: string;
+  user_tag: string;
+  balance: number;
+  escrow_balance?: number;
+  avatar?: string;
+  avatar_public_id?: string;
+  is_email_verified: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpdateProfileData {
+  full_name?: string;
+  phone?: string;
+}
+
+export interface ChangePasswordData {
+  current_password: string;
+  new_password: string;
+}
+
+export interface ProfileResponse {
+  message?: string;
+  user: UserProfileData;
+}
+
+export interface AvatarResponse {
+  message: string;
+  avatar: string;
+  public_id: string;
+}
+
+export interface MessageResponse {
+  message: string;
+}
+
+
+
 // TypeScript Interfaces for Authentication
 export interface SignupData {
   full_name: string;
