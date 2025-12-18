@@ -110,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     {
       icon: Setting2,
       label: "Settings",
-      href: "/settings",
+      href: "/settings/profile",
     },
   ];
 

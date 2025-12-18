@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Building2, Lock, Key, HelpCircle, LogOut } from 'lucide-react';
+import React from 'react';
+import { useParams, Navigate } from 'react-router-dom';
+import { Building2, Lock, Key, HelpCircle, LogOut, Loader2 } from 'lucide-react';
 import Layout from '../../Layout/Layout';
 import SettingsSidebar from './SettingsSidebar';
 import ProfileDetail from './ProfileDetail';
@@ -8,25 +9,21 @@ import ChangePinDetail from './ChangePinDetail';
 import AccountSettingsDetail from './AccountSettingsDetail';
 import HelpSupportDetail from './HelpSupportDetail';
 import type { SettingsOption } from '../../types';
-
-interface UserProfile {
-  name: string;
-  avatar: string;
-  email: string;
-  phone: string;
-  address: string;
-}
-
+import { useGetUserProfile } from '../../Hooks/useProfile'; 
+import { useLogout } from '../../Hooks/useAuth'; 
 const SettingsScreen: React.FC = () => {
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    name: 'John Doe',
-    avatar: 'https://i.pravatar.cc/150?img=68',
-    email: 'john.doe@example.com',
-    phone: '+1 234 567 8900',
-    address: '123 Main Street, New York, NY 10001'
-  });
+  const { section = 'profile' } = useParams<{ section: string }>();
+  
 
-  const [selectedSection, setSelectedSection] = useState<string>('profile');
+  const { data: userProfile, isLoading } = useGetUserProfile();
+  const { mutate: logout } = useLogout();
+
+  const handleLogout = () => {
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (confirmed) {
+      logout();
+    }
+  };
 
   const settingsOptions: SettingsOption[] = [
     {
@@ -35,7 +32,7 @@ const SettingsScreen: React.FC = () => {
       description: 'Add/remove account details',
       icon: <Building2 size={20} className="text-pri" />,
       iconBgColor: 'bg-blue-100',
-      action: () => setSelectedSection('account-settings')
+      action: () => {}
     },
     {
       id: 'change-password',
@@ -43,7 +40,7 @@ const SettingsScreen: React.FC = () => {
       description: 'Change your password',
       icon: <Lock size={20} className="text-pri" />,
       iconBgColor: 'bg-blue-100',
-      action: () => setSelectedSection('change-password')
+      action: () => {}
     },
     {
       id: 'change-pin',
@@ -51,7 +48,7 @@ const SettingsScreen: React.FC = () => {
       description: 'Change your pin',
       icon: <Key size={20} className="text-pri" />,
       iconBgColor: 'bg-blue-100',
-      action: () => setSelectedSection('change-pin')
+      action: () => {}
     },
     {
       id: 'help-support',
@@ -59,7 +56,7 @@ const SettingsScreen: React.FC = () => {
       description: 'Contact help & support',
       icon: <HelpCircle size={20} className="text-pri" />,
       iconBgColor: 'bg-blue-100',
-      action: () => setSelectedSection('help-support')
+      action: () => {}
     },
     {
       id: 'logout',
@@ -67,42 +64,46 @@ const SettingsScreen: React.FC = () => {
       description: 'Log out of your account',
       icon: <LogOut size={20} className="text-red-500" />,
       iconBgColor: 'bg-red-100',
-      action: () => {
-        const confirmed = window.confirm('Are you sure you want to log out?');
-        if (confirmed) {
-          alert('Logging out...');
-        }
-      },
+      action: handleLogout,
       showArrow: false
     }
   ];
 
   const renderDetailSection = () => {
-    switch (selectedSection) {
+    switch (section) {
       case 'profile':
-        return <ProfileDetail profile={userProfile} onUpdate={setUserProfile} />;
-      case 'change-password':
+ 
+        return <ProfileDetail profile={userProfile} />;
+      case 'password':
         return <ChangePasswordDetail />;
-      case 'change-pin':
+      case 'pin':
         return <ChangePinDetail />;
-      case 'account-settings':
+      case 'account':
         return <AccountSettingsDetail />;
-      case 'help-support':
+      case 'help':
         return <HelpSupportDetail />;
       default:
-        return <ProfileDetail profile={userProfile} onUpdate={setUserProfile} />;
+        return <Navigate to="/settings/profile" replace />;
     }
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <Loader2 className="w-8 h-8 animate-spin text-pri" />
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row">
-        {/* Sidebar (Desktop) / Top Tabs (Mobile) */}
+        
         <SettingsSidebar
-          userProfile={userProfile}
-          selectedSection={selectedSection}
+          userProfile={userProfile} 
           settingsOptions={settingsOptions}
-          onSelectSection={setSelectedSection}
         />
 
         {/* Detail Panel */}

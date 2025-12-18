@@ -80,14 +80,18 @@ export function useVerifyPayment() {
 // BANKS
 // ============================================================================
 
+
 export function useGetBanks() {
   return useQuery({
     queryKey: ['banks'],
     queryFn: async (): Promise<Bank[]> => {
-      const response = await axiosInstance.get<Bank[]>(
+      // 1. We tell axios the response data has a 'banks' property containing the array
+      const response = await axiosInstance.get<{ banks: Bank[] }>(
         API_ENDPOINTS.WALLET.BANKS
       );
-      return response.data;
+      
+  
+      return response.data.banks;
     },
     staleTime: 3600000, 
   });
@@ -133,10 +137,20 @@ export function useGetBankAccounts() {
   return useQuery({
     queryKey: ['bankAccounts'],
     queryFn: async (): Promise<BankAccount[]> => {
-      const response = await axiosInstance.get<BankAccount[]>(
+      const response = await axiosInstance.get<{bank_accounts: BankAccount[]}>(
         API_ENDPOINTS.WALLET.BANK_ACCOUNTS
       );
-      return response.data;
+      console.log(response.data);
+      return response.data.bank_accounts;
+
+           // 1. We tell axios the response data has a 'banks' property containing the array
+          //  const response = await axiosInstance.get<{ banks: Bank[] }>(
+          //   API_ENDPOINTS.WALLET.BANKS
+          // );
+          
+      
+          // return response.data.banks;
+      
     },
     staleTime: 60000, // 1 minute
   });

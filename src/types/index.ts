@@ -174,6 +174,7 @@ export interface UpdateProfileData {
 export interface ChangePasswordData {
   current_password: string;
   new_password: string;
+  new_password_confirmation: string;
 }
 
 export interface ProfileResponse {
