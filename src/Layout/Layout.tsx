@@ -11,10 +11,9 @@ import {
   Setting2,
   Receipt2,
   Logout,
-
 } from "iconsax-react";
 import { useLogout } from "../Hooks/useAuth";
-
+import { useGetUserProfile } from "../Hooks/useProfile"; 
 interface LayoutProps {
   children?: React.ReactNode;
 }
@@ -80,7 +79,12 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
 // --- Main Layout Component ---
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
+  const { data: userProfile, isLoading: isProfileLoading } = useGetUserProfile(); // Fetch user profile
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // Helper to get initials or safe name
+  const getFirstName = () => userProfile?.full_name?.split(' ')[0] || 'User';
+  const getAvatar = () => userProfile?.avatar || "https://i.pravatar.cc/150?img=3"; // Fallback image
 
   const navItems: NavItem[] = [
     {
@@ -243,21 +247,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </div>
             </div>
 
-            {/* User Profile Mini */}
+            {/* User Profile Mini - Updated with dynamic data */}
             <div className="flex items-center justify-between border-t border-gray-100 pt-4">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-                  <img
-                    src="https://i.pravatar.cc/150?img=3"
-                    alt="User"
-                    className="w-full h-full object-cover"
-                  />
+                  {isProfileLoading ? (
+                    <div className="w-full h-full bg-gray-300 animate-pulse" />
+                  ) : (
+                    <img
+                      src={getAvatar()}
+                      alt="User"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">
-                    Olaoluwa
-                  </span>
-                  <span className="text-xs text-gray-400">ola@xnria.com</span>
+                <div className="flex flex-col max-w-[120px]">
+                  {isProfileLoading ? (
+                    <div className="h-4 w-20 bg-gray-200 rounded animate-pulse mb-1" />
+                  ) : (
+                    <>
+                      <span className="text-sm font-bold text-gray-900 truncate">
+                        {userProfile?.full_name || 'User'}
+                      </span>
+                      <span className="text-xs text-gray-400 truncate">
+                        {userProfile?.email || ''}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
               <ArrowDown2 size="14" className="text-gray-400 cursor-pointer" />
@@ -269,19 +285,23 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex-1 lg:ml-64 flex flex-col min-w-0">
           {/* Top Header */}
           <header className="bg-white h-16 lg:h-20 border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
-            {/* Left Side: Welcome & Profile */}
+            {/* Left Side: Welcome & Profile - Updated with dynamic data */}
             <div className="flex items-center space-x-3 lg:space-x-4">
               <div className="flex items-center space-x-3">
                 <div className="w-9 h-9 rounded-full bg-gray-200 overflow-hidden border border-gray-100">
-                  <img
-                    src="https://i.pravatar.cc/150?img=3"
-                    alt="User"
-                    className="w-full h-full object-cover"
-                  />
+                  {isProfileLoading ? (
+                     <div className="w-full h-full bg-gray-300 animate-pulse" />
+                  ) : (
+                    <img
+                      src={getAvatar()}
+                      alt="User"
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
                 <div>
                   <h1 className="text-sm font-bold text-gray-900">
-                    Hi, Olaoluwa 👋
+                    {isProfileLoading ? 'Loading...' : `Hi, ${getFirstName()} 👋`}
                   </h1>
                   <p className="text-[10px] text-gray-500">Welcome back</p>
                 </div>
@@ -338,7 +358,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <MobileNavItemComponent key={item.label} item={item} />
             ))}
             
-            {/* Added Logout for Mobile Nav as well for consistency, optional */}
             <button
               onClick={handleLogoutClick}
               className="flex flex-col items-center justify-center px-3 py-2 font-body hover:text-red-600 transition-colors text-gray-500"

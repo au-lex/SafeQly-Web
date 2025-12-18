@@ -1,4 +1,3 @@
-
 export const API_BASE_URL = 'http://localhost:8080/api';
 
 export const API_ENDPOINTS = {
@@ -9,6 +8,12 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
+  },
+
+  USER: {
+    PROFILE: '/user/profile',
+    CHANGE_PASSWORD: '/user/change-password',
+    AVATAR: '/user/avatar',
   },
 
   WALLET: {
