@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axiosInstance from '../Config/axios';
 import { API_ENDPOINTS } from '../Config/Api';
@@ -12,10 +13,6 @@ import type {
   Bank,
   ResolveAccountData,
 } from '../types';
-
-const showAlert = (title: string, message: string): void => {
-  alert(`${title}: ${message}`);
-};
 
 // ============================================================================
 // WALLET BALANCE
@@ -49,14 +46,15 @@ export function useFundAccount() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Funding initiated successfully');
+      
       // Redirect to Paystack payment page
       if (data.payment_info?.authorization_url) {
         window.location.href = data.payment_info.authorization_url;
       }
     },
     onError: (error: Error) => {
-      showAlert('Funding Failed', error.message);
+      toast.error(error.message || 'Funding failed');
     },
   });
 }
@@ -70,10 +68,10 @@ export function useVerifyPayment() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Payment verified successfully');
     },
     onError: (error: Error) => {
-      showAlert('Verification Failed', error.message);
+      toast.error(error.message || 'Verification failed');
     },
   });
 }
@@ -91,7 +89,7 @@ export function useGetBanks() {
       );
       return response.data;
     },
-    staleTime: 3600000, // 1 hour (banks don't change often)
+    staleTime: 3600000, 
   });
 }
 
@@ -104,7 +102,7 @@ export function useResolveAccountNumber() {
       return response.data;
     },
     onError: (error: Error) => {
-      showAlert('Account Resolution Failed', error.message);
+      toast.error(error.message || 'Account resolution failed');
     },
   });
 }
@@ -123,10 +121,10 @@ export function useAddBankAccount() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Bank account added successfully');
     },
     onError: (error: Error) => {
-      showAlert('Add Bank Account Failed', error.message);
+      toast.error(error.message || 'Failed to add bank account');
     },
   });
 }
@@ -153,10 +151,10 @@ export function useSetDefaultBankAccount() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Default bank updated successfully');
     },
     onError: (error: Error) => {
-      showAlert('Update Failed', error.message);
+      toast.error(error.message || 'Failed to update default bank');
     },
   });
 }
@@ -170,10 +168,10 @@ export function useDeleteBankAccount() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Bank account deleted successfully');
     },
     onError: (error: Error) => {
-      showAlert('Delete Failed', error.message);
+      toast.error(error.message || 'Failed to delete bank account');
     },
   });
 }
@@ -192,10 +190,10 @@ export function useWithdrawFunds() {
       return response.data;
     },
     onSuccess: (data) => {
-      showAlert('Success', data.message);
+      toast.success(data.message || 'Withdrawal successful');
     },
     onError: (error: Error) => {
-      showAlert('Withdrawal Failed', error.message);
+      toast.error(error.message || 'Withdrawal failed');
     },
   });
 }
@@ -203,22 +201,26 @@ export function useWithdrawFunds() {
 // ============================================================================
 // TRANSACTIONS
 // ============================================================================
-
 export function useGetTransactionHistory(type?: string) {
   return useQuery({
     queryKey: ['transactions', type],
-    queryFn: async (): Promise<Transaction[]> => {
-      const url = type 
-        ? `${API_ENDPOINTS.WALLET.TRANSACTIONS}?type=${type}`
-        : API_ENDPOINTS.WALLET.TRANSACTIONS;
+    queryFn: async (): Promise<{ count: number; transactions: Transaction[] }> => {
+ 
+      let url = API_ENDPOINTS.WALLET.TRANSACTIONS;
       
-      const response = await axiosInstance.get<Transaction[]>(url);
+
+      if (type) {
+        url += `?type=${type}`;
+      }
+      
+      const response = await axiosInstance.get<{ count: number; transactions: Transaction[] }>(url);
+      console.log('Transaction API Response:', response.data);
+      
       return response.data;
     },
-    staleTime: 30000, // 30 seconds
+    staleTime: 30000,
   });
 }
-
 export function useGetTransactionByID() {
   return useMutation({
     mutationFn: async (transactionId: number): Promise<Transaction> => {
@@ -228,7 +230,7 @@ export function useGetTransactionByID() {
       return response.data;
     },
     onError: (error: Error) => {
-      showAlert('Error', error.message);
+      toast.error(error.message || 'Error fetching transaction');
     },
   });
 }
@@ -242,7 +244,7 @@ export function useGetTransactionByReference() {
       return response.data;
     },
     onError: (error: Error) => {
-      showAlert('Error', error.message);
+      toast.error(error.message || 'Error fetching transaction');
     },
   });
 }

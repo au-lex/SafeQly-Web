@@ -106,6 +106,7 @@ export interface Transaction {
   amount: number;
   timestamp: string;
   category: 'escrow' | 'wallet';
+  
 }
 
 export interface TransactionItemProps {
@@ -136,6 +137,8 @@ export interface UserProfile {
   name: string;
   avatar: string;
 }
+
+
 
 
 
@@ -262,6 +265,11 @@ export interface Transaction {
   completed_at?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface TransactionHistoryResponse {
+  count: number;
+  transactions: Transaction[];
 }
 
 export interface Bank {

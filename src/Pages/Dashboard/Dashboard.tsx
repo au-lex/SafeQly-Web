@@ -7,21 +7,13 @@ import {
   Add,
   ArrowRight,
   Import,
-
 } from 'iconsax-react';
 import { Link } from 'react-router-dom';
+import { useGetWalletBalance, useFundAccount, useGetTransactionHistory } from '../../Hooks/useWallet';
+import type { Transaction as ApiTransaction } from '../../types';
+import toast from 'react-hot-toast';
+import FundWalletModal from '../Wallet/FundWalletModal';
 
-
-interface Transaction {
-  id: string;
-  fullName: string;       
-  phoneNumber: string;   
-  amount: number;
-  dateTime: string;      
-  status: 'completed' | 'pending' | 'failed' | 'active'; 
-  direction: 'in' | 'out';
-  image?: string;
-}
 
 interface RecentUser {
   id: string;
@@ -31,61 +23,79 @@ interface RecentUser {
 
 const Dashboard: React.FC = () => {
   const [showBalance, setShowBalance] = useState(true);
+  const [showFundModal, setShowFundModal] = useState(false);
 
+  // API Hooks
+  const { data: walletData, isLoading: balanceLoading } = useGetWalletBalance();
+  const { data: transactionsData, isLoading: transactionsLoading } = useGetTransactionHistory();
+  const fundAccountMutation = useFundAccount();
 
-  const transactions: Transaction[] = [
-    { 
-      id: '1', 
-      fullName: 'Michael Johnson', 
-      phoneNumber: '+234 801 234 5678', 
-      amount: 25.00, 
-      dateTime: 'Oct 24, 2025 • 07:15 AM', 
-      status: 'pending', 
-      direction: 'out', 
-      image: 'https://i.pravatar.cc/150?img=11' 
-    },
-    { 
-      id: '2', 
-      fullName: 'Sarah Connor', 
-      phoneNumber: '+234 812 999 8888', 
-      amount: 89.00, 
-      dateTime: 'Oct 23, 2025 • 02:30 PM', 
-      status: 'completed', 
-      direction: 'in', 
-      image: 'https://i.pravatar.cc/150?img=12' 
-    },
-    { 
-      id: '3', 
-      fullName: 'David Smith', 
-      phoneNumber: '+234 703 555 1212', 
-      amount: 2000.00, 
-      dateTime: 'Oct 22, 2025 • 10:00 AM', 
-      status: 'completed', 
-      direction: 'in', 
-      image: 'https://i.pravatar.cc/150?img=3' 
-    },
-    { 
-      id: '4', 
-      fullName: 'Jessica Williams', 
-      phoneNumber: '+234 909 000 1111', 
-      amount: 49.00, 
-      dateTime: 'Oct 21, 2025 • 09:15 AM', 
-      status: 'failed', 
-      direction: 'out', 
-      image: 'https://i.pravatar.cc/150?img=4' 
-    },
-    { 
-      id: '5', 
-      fullName: 'Daniel Brown', 
-      phoneNumber: '+234 802 333 4444', 
-      amount: 49.00, 
-      dateTime: 'Oct 20, 2025 • 06:45 PM', 
-      status: 'active', 
-      direction: 'out', 
-      image: 'https://i.pravatar.cc/150?img=5' 
-    },
-  ];
+  // Extract transactions array from the response
+  const transactions = transactionsData?.transactions || [];
 
+  console.log('Transactions Data:', transactionsData);
+  console.log('Transactions Array:', transactions);
+
+  const handleFundWallet = () => {
+    setShowFundModal(true);
+  };
+
+  const handleFundSubmit = (amount: number) => {
+    fundAccountMutation.mutate({
+      amount,
+      payment_method: 'card',
+      payment_provider: 'paystack'
+    });
+  };
+
+  const handleCopyTag = () => {
+    if (walletData?.user?.user_tag) {
+      navigator.clipboard.writeText(walletData.user.user_tag);
+      toast.success('Tag copied to clipboard!');
+    }
+  };
+
+  const formatAmount = (amount: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch(status.toLowerCase()) {
+      case 'completed': return 'bg-green-100 text-green-700';
+      case 'pending': return 'bg-yellow-100 text-yellow-700';
+      case 'failed': return 'bg-red-100 text-red-700';
+      case 'active': return 'bg-blue-100 text-blue-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const getTransactionDirection = (type: string): 'in' | 'out' => {
+    const incomingTypes = ['wallet_funded', 'escrow_received', 'deposit'];
+    return incomingTypes.includes(type.toLowerCase()) ? 'in' : 'out';
+  };
 
   const recentUsers: RecentUser[] = [
     { id: 'u1', name: 'Michael', image: 'https://i.pravatar.cc/150?img=60' },
@@ -95,20 +105,17 @@ const Dashboard: React.FC = () => {
     { id: 'u5', name: 'Daniel', image: 'https://i.pravatar.cc/150?img=33' },
   ];
 
-
-  const getStatusColor = (status: string) => {
-    switch(status) {
-      case 'completed': return 'bg-green-100 text-green-700';
-      case 'pending': return 'bg-yellow-100 text-yellow-700';
-      case 'failed': return 'bg-red-100 text-red-700';
-      case 'active': return 'bg-blue-100 text-blue-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
-  };
-
   return (
     <Layout>
-      <div className=" min-h-screen md:bg-gray-50 ">
+      <div className="min-h-screen md:bg-gray-50">
+        
+        {/* Fund Wallet Modal */}
+        <FundWalletModal
+          isOpen={showFundModal}
+          onClose={() => setShowFundModal(false)}
+          onSubmit={handleFundSubmit}
+          isLoading={fundAccountMutation.isPending}
+        />
         
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
@@ -124,7 +131,9 @@ const Dashboard: React.FC = () => {
 
                 <div className="flex items-center justify-between">
                   <h1 className="text-4xl font-bold font-mono text-gray-800 flex items-center gap-3">
-                    {showBalance ? '$22,060.00' : '•••••••'}
+                    {showBalance 
+                      ? (balanceLoading ? 'Loading...' : formatAmount(walletData?.total_balance || 0))
+                      : '•••••••'}
                     <button onClick={() => setShowBalance(!showBalance)} className="text-gray-400 hover:text-gray-600">
                       {showBalance ? <Eye size="24"/> : <EyeSlash color='currentColor' size="24"/>}
                     </button>
@@ -133,19 +142,27 @@ const Dashboard: React.FC = () => {
 
                 {/* Actions */}
                 <div className="flex gap-3">
-                    <button className="flex-1 bg-pri hover:bg-blue-700 text-white py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                    <button 
+                      onClick={handleFundWallet}
+                      className="flex-1 bg-pri hover:bg-blue-700 text-white py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
+                    >
                       <Add size="20" color='#fff'/>
                       Fund Wallet
                     </button>
                     <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
-                      <Import size="20" color='currentColor' className="rotate-9j0 text-pri"/>
+                      <Import size="20" color='currentColor' className="rotate-90 text-pri"/>
                       Withdraw
                     </button>
                 </div>
 
                 <div className="flex justify-between items-center pt-2">
-                  <span className="text-pri font-bold text-sm">Tag32Gb6</span>
-                  <button className="flex items-center gap-1 text-pri font-semibold text-xs hover:text-blue-700">
+                  <span className="text-pri font-bold text-sm">
+                    {walletData?.user?.user_tag || 'Loading...'}
+                  </span>
+                  <button 
+                    onClick={handleCopyTag}
+                    className="flex items-center gap-1 text-pri font-semibold text-xs hover:text-blue-700"
+                  >
                       Copy Tag <Copy size="14"/>
                   </button>
                 </div>
@@ -187,53 +204,72 @@ const Dashboard: React.FC = () => {
 
             {/* List Header (Desktop Only) */}
             <div className="hidden md:grid grid-cols-12 gap-4 px-3 pb-3 border-b border-gray-100 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                <div className="col-span-4">User Details</div>
+                <div className="col-span-5">Transaction Type</div>
                 <div className="col-span-3">Date & Time</div>
                 <div className="col-span-2 text-center">Status</div>
-                <div className="col-span-3 text-right">Amount</div>
+                <div className="col-span-2 text-right">Amount</div>
             </div>
 
             {/* Transaction List */}
             <div className="px-6 md:px-0 py-2 space-y-4 pb-20 md:pb-0">
-              {transactions.map((tx) => (
-                <div key={tx.id} className="group cursor-pointer hover:bg-gray-50 md:p-3 md:-mx-3 md:rounded-xl transition-colors border-b md:border-b-0 border-gray-50 last:border-0 pb-4 md:pb-0">
-                    
-                    <div className="grid grid-cols-12 gap-2 md:gap-4 items-center">
-                        
-                        {/* 1. Image & Name & Phone */}
-                        <div className="col-span-8 md:col-span-4 flex items-center gap-3">
-                            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden border border-gray-100 flex-shrink-0">
-                                <img src={tx.image} alt="User" className="w-full h-full object-cover"/>
-                            </div>
-                            <div className="overflow-hidden">
-                                <h4 className="font-bold text-gray-900 text-sm truncate">{tx.fullName}</h4>
-                                <p className="text-xs text-gray-400 truncate">{tx.phoneNumber}</p>
-                            </div>
-                        </div>
+              {transactionsLoading ? (
+                <div className="text-center py-8 text-gray-500">Loading transactions...</div>
+              ) : transactions && transactions.length > 0 ? (
+                transactions.slice(0, 5).map((tx: ApiTransaction) => {
+                  const direction = getTransactionDirection(tx.type);
+                  const isDeposit = direction === 'in';
+                  
+                  return (
+                    <div key={tx.id} className="group cursor-pointer hover:bg-gray-50 md:p-3 md:-mx-3 md:rounded-xl transition-colors border-b md:border-b-0 border-gray-50 last:border-0 pb-4 md:pb-0">
+                      <div className="grid grid-cols-12 gap-2 md:gap-4 items-center">
+                          
+                          {/* 1. Transaction Type with Arrow */}
+                          <div className="col-span-7 md:col-span-5 flex items-center gap-3">
+                              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center flex-shrink-0 ${isDeposit ? 'bg-green-100' : 'bg-red-100'}`}>
+                                  <svg 
+                                    className={`w-5 h-5 md:w-6 md:h-6 ${isDeposit ? 'text-pri rotate-[45deg]' : 'text-red-600 rotate-[-45deg]'}`} 
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                  </svg>
+                              </div>
+                              <div className="overflow-hidden">
+                                  <h4 className="font-bold text-gray-900 text-sm truncate">
+                                    {tx.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                  </h4>
+                                  <p className="text-xs text-gray-400 truncate">{tx.description || 'Transaction'}</p>
+                              </div>
+                          </div>
 
-                        {/* 2. Date & Time */}
-                        <div className="col-span-4 md:col-span-3 text-right md:text-left">
-                            <p className="text-xs font-medium text-gray-600">{tx.dateTime.split('•')[0]}</p>
-                            <p className="text-[10px] text-gray-400">{tx.dateTime.split('•')[1]}</p>
-                        </div>
+                          {/* 2. Date & Time */}
+                          <div className="col-span-5 md:col-span-3 text-right md:text-left">
+                              <p className="text-xs font-medium text-gray-600">{formatDate(tx.created_at)}</p>
+                              <p className="text-[10px] text-gray-400">{formatTime(tx.created_at)}</p>
+                          </div>
 
-                        {/* 3. Status (Moved to next row on mobile or kept inline) */}
-                        <div className="col-span-6 md:col-span-2 mt-2 md:mt-0 flex md:justify-center">
-                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${getStatusColor(tx.status)}`}>
-                                {tx.status}
-                            </span>
-                        </div>
+                          {/* 3. Status */}
+                          <div className="col-span-6 md:col-span-2 mt-2 md:mt-0 flex md:justify-center">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${getStatusColor(tx.status)}`}>
+                                  {tx.status}
+                              </span>
+                          </div>
 
-                        {/* 4. Amount */}
-                        <div className="col-span-6 md:col-span-3 mt-2 md:mt-0 text-right">
-                            <span className={`block font-bold text-sm ${tx.direction === 'in' ? 'text-green-600' : 'text-gray-900'}`}>
-                                {tx.direction === 'in' ? '+' : '-'}${tx.amount.toFixed(2)}
-                            </span>
-                        </div>
+                          {/* 4. Amount */}
+                          <div className="col-span-6 md:col-span-2 mt-2 md:mt-0 text-right">
+                              <span className={`block font-bold text-sm ${isDeposit ? 'text-pri' : 'text-red-600'}`}>
+                                  {isDeposit ? '+' : '-'}{formatAmount(tx.amount)}
+                              </span>
+                          </div>
 
+                      </div>
                     </div>
-                </div>
-              ))}
+                  );
+                })
+              ) : (
+                <div className="text-center py-8 text-gray-500">No transactions yet</div>
+              )}
             </div>
           </div>
           
