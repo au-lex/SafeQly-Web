@@ -21,6 +21,7 @@ import UsersPage from "./Pages/Admin/users/User";
 import Finance from "./Pages/Admin/finance/Finace";
 import AdminDashboard from "./Pages/Admin/admin-dash/AdminDashboard";
 import VerifyOTP from "./Pages/Auth/VerifyOtp/VerifyOtp";
+import PaymentCallback from "./Pages/Wallet/VerifyPayment";
 
 const router = createBrowserRouter([
   {
@@ -129,6 +130,11 @@ const router = createBrowserRouter([
   },
 
   {
+    path: "/payment-callback",
+    element: <PaymentCallback/>,
+  },
+
+  {
     path: "/admin-dash",
     element: <AdminDashboard/>,
   },
@@ -138,7 +144,7 @@ const router = createBrowserRouter([
 export default function App() {
   return (
     <React.StrictMode>
-      
+
       <RouterProvider router={router} />
     </React.StrictMode>
   );
