@@ -360,7 +360,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             
             <button
               onClick={handleLogoutClick}
-              className="flex flex-col items-center justify-center px-3 py-2 font-body hover:text-red-600 transition-colors text-gray-500"
+              className="flex flex-col items-center hidden justify-center px-3 py-2 font-body hover:text-red-600 transition-colors text-gray-500"
             >
               <Logout size="24" color="currentColor" variant="Outline" />
               <span className="text-[10px] font-bold mt-1">Logout</span>

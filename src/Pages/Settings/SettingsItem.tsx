@@ -1,4 +1,3 @@
-// SettingsItem.tsx
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import type { SettingsItemProps } from '../../types';
