@@ -163,7 +163,7 @@ const AddBankModal: React.FC<AddBankModalProps> = ({ onClose }) => {
   const { mutate: resolveAccount, isPending: isResolving } = useResolveAccountNumber();
   const { mutate: addBankAccount, isPending: isAdding } = useAddBankAccount();
 
-  // Effect: Trigger resolution when inputs are valid
+
   useEffect(() => {
     if (bankCode && accountNumber.length === 10) {
       resolveAccount(
