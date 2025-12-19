@@ -1,23 +1,19 @@
 import Layout from "../../Layout/Layout";
 import React, { useState } from "react";
 import { Eye, EyeSlash, Copy, Add, ArrowRight, Import } from "iconsax-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   useGetWalletBalance,
   useFundAccount,
   useGetTransactionHistory,
 } from "../../Hooks/useWallet";
+import { useGetRecentEscrowUsers } from "../../Hooks/useEscrow";
 import type { Transaction as ApiTransaction } from "../../types";
 import toast from "react-hot-toast";
 import FundWalletModal from "../Wallet/FundWalletModal";
 
-interface RecentUser {
-  id: string;
-  name: string;
-  image: string;
-}
-
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [showBalance, setShowBalance] = useState(true);
   const [showFundModal, setShowFundModal] = useState(false);
 
@@ -25,13 +21,17 @@ const Dashboard: React.FC = () => {
   const { data: walletData, isLoading: balanceLoading } = useGetWalletBalance();
   const { data: transactionsData, isLoading: transactionsLoading } =
     useGetTransactionHistory();
+  const { data: recentUsersData, isLoading: recentUsersLoading } = 
+    useGetRecentEscrowUsers();
   const fundAccountMutation = useFundAccount();
 
-  // Extract transactions array from the response
+  // Extract data from responses
   const transactions = transactionsData?.transactions || [];
+  const recentUsers = recentUsersData?.recent_users || [];
 
   console.log("Transactions Data:", transactionsData);
   console.log("Transactions Array:", transactions);
+  console.log("Recent Users:", recentUsers);
 
   const handleFundWallet = () => {
     setShowFundModal(true);
@@ -50,6 +50,11 @@ const Dashboard: React.FC = () => {
       navigator.clipboard.writeText(walletData.user.user_tag);
       toast.success("Tag copied to clipboard!");
     }
+  };
+
+  const handleQuickTransfer = (userTag: string) => {
+
+    navigate('/new-escrow', { state: { sellerTag: userTag } });
   };
 
   const formatAmount = (amount: number) => {
@@ -99,13 +104,10 @@ const Dashboard: React.FC = () => {
     return incomingTypes.includes(type.toLowerCase()) ? "in" : "out";
   };
 
-  const recentUsers: RecentUser[] = [
-    { id: "u1", name: "Michael", image: "https://i.pravatar.cc/150?img=60" },
-    { id: "u2", name: "Sarah", image: "https://i.pravatar.cc/150?img=44" },
-    { id: "u3", name: "David", image: "https://i.pravatar.cc/150?img=12" },
-    { id: "u4", name: "Jessica", image: "https://i.pravatar.cc/150?img=5" },
-    { id: "u5", name: "Daniel", image: "https://i.pravatar.cc/150?img=33" },
-  ];
+  // Get first name from full name
+  const getFirstName = (fullName: string) => {
+    return fullName.split(' ')[0];
+  };
 
   return (
     <Layout>
@@ -135,14 +137,14 @@ const Dashboard: React.FC = () => {
                     {showBalance
                       ? balanceLoading
                         ? "Loading..."
-                        : formatAmount(walletData?.total_balance || 0)
+                        : formatAmount(walletData?.available_balance || 0)
                       : "•••••••"}
                     <button
                       onClick={() => setShowBalance(!showBalance)}
                       className="text-gray-400 hover:text-gray-600"
                     >
                       {showBalance ? (
-                        <Eye size="24" />
+                        <Eye size="24"  color="currentColor"/>
                       ) : (
                         <EyeSlash color="currentColor" size="24" />
                       )}
@@ -203,25 +205,43 @@ const Dashboard: React.FC = () => {
               <h3 className="font-bold text-lg text-gray-900 mb-4">
                 Quick Transfer
               </h3>
-              <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                {recentUsers.map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex flex-col items-center gap-2 min-w-[60px] cursor-pointer group"
-                  >
-                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-pri group-hover:border-blue-500 transition-all">
-                      <img
-                        src={user.image}
-                        alt={user.name}
-                        className="w-full h-full object-cover"
-                      />
+              
+              {recentUsersLoading ? (
+                <div className="text-center py-4 text-gray-500 text-sm">
+                  Loading...
+                </div>
+              ) : recentUsers.length > 0 ? (
+                <div className="flex items-center gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                  {recentUsers.slice(0, 5).map((user) => (
+                    <div
+                      key={user.id}
+                      onClick={() => handleQuickTransfer(user.user_tag)}
+                      className="flex flex-col items-center gap-2 min-w-[60px] cursor-pointer group"
+                    >
+                      <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-pri group-hover:border-blue-500 transition-all">
+                        <img
+                          src={user.avatar || 'https://i.pravatar.cc/150'}
+                          alt={user.full_name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <span className="text-xs font-medium text-gray-900 truncate max-w-[60px]">
+                        {getFirstName(user.full_name)}
+                      </span>
                     </div>
-                    <span className="text-xs font-medium text-gray-900">
-                      {user.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-gray-500 text-sm mb-2">No recent users yet</p>
+                  <Link
+                    to="/new-escrow"
+                    className="text-pri text-xs font-semibold hover:underline"
+                  >
+                    Create your first escrow
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 

@@ -1,20 +1,24 @@
-// EscrowFlow.tsx
-import React, { useState } from 'react';
+// NewEscrow.tsx
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from '../../../Layout/Layout';
 import ConfirmUserModal from './ConfirmUserModal';
 import TransactionSummaryModal from './TransactionSummaryModal';
 import EnterTagScreen from './EnterTagScreen';
 import CreateEscrowScreen from './CreateEscrowScreen';
+import { useSearchUser, useCreateEscrow } from '../../../Hooks/useEscrow';
 import type { UserInfo, EscrowStep } from '../../../types';
 
-const EscrowFlow: React.FC = () => {
+const NewEscrow: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   // Step management
   const [currentStep, setCurrentStep] = useState<EscrowStep>('enterTag');
   
   // Enter Tag Screen state
   const [userTag, setUserTag] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
@@ -22,21 +26,46 @@ const EscrowFlow: React.FC = () => {
   const [items, setItems] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [deliveryDate, setDeliveryDate] = useState<string>('');
-  const [attachedFile, setAttachedFile] = useState<string | null>(null);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
   const [showSummaryModal, setShowSummaryModal] = useState<boolean>(false);
+
+  // Hooks
+  const { mutate: searchUser, isPending: isSearching } = useSearchUser();
+  const { mutate: createEscrow, isPending: isCreating } = useCreateEscrow();
+
+  // Handle pre-filled tag from Quick Transfer
+  useEffect(() => {
+    const state = location.state as { sellerTag?: string } | null;
+    if (state?.sellerTag) {
+      setUserTag(state.sellerTag);
+      // Auto-search the user
+      searchUser(state.sellerTag, {
+        onSuccess: (data) => {
+          setUserInfo({
+            name: data.user.name,
+            tag: data.user.tag,
+            avatar: data.user.avatar,
+          });
+          setShowConfirmModal(true);
+        },
+      });
+      // Clear the state to prevent re-triggering on component re-render
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, searchUser]);
 
   const handleSearchUser = (): void => {
     if (userTag.trim()) {
-      setIsLoading(true);
-      setTimeout(() => {
-        setUserInfo({
-          name: 'Abimbola David',
-          tag: 'Tag320b56',
-          avatar: 'https://i.pravatar.cc/150?img=33',
-        });
-        setIsLoading(false);
-        setShowConfirmModal(true);
-      }, 1000);
+      searchUser(userTag, {
+        onSuccess: (data) => {
+          setUserInfo({
+            name: data.user.name,
+            tag: data.user.tag,
+            avatar: data.user.avatar,
+          });
+          setShowConfirmModal(true);
+        },
+      });
     }
   };
 
@@ -59,44 +88,78 @@ const EscrowFlow: React.FC = () => {
         return;
       }
       
-      if (file.size > 5 * 1024 * 1024) {
-        alert('File size must be less than 5MB');
+      if (file.size > 10 * 1024 * 1024) { // 10MB as per backend
+        alert('File size must be less than 10MB');
         return;
       }
       
-      setAttachedFile(file.name);
+      setAttachedFile(file);
     }
   };
 
   const handleConfirmTransaction = (): void => {
+    // Validate inputs before showing summary
+    if (!items.trim()) {
+      alert('Please enter the items');
+      return;
+    }
+    if (!amount || parseFloat(amount) <= 0) {
+      alert('Please enter a valid amount');
+      return;
+    }
+    if (!deliveryDate.trim()) {
+      alert('Please enter the delivery date');
+      return;
+    }
     setShowSummaryModal(true);
   };
 
   const handleFinalConfirm = (): void => {
-    setShowSummaryModal(false);
-    console.log('Transaction confirmed!');
-    alert('Transaction confirmed successfully!');
-    // Reset to initial state
-    setCurrentStep('enterTag');
-    setUserTag('');
-    setUserInfo(null);
-    setItems('');
-    setAmount('');
-    setDeliveryDate('');
-    setAttachedFile(null);
+    if (!userInfo) return;
+
+    createEscrow(
+      {
+        seller_tag: userInfo.tag,
+        items: items.trim(),
+        amount: parseFloat(amount),
+        delivery_date: deliveryDate.trim(),
+        file: attachedFile || undefined,
+      },
+      {
+        onSuccess: () => {
+          setShowSummaryModal(false);
+          
+          // Reset all state
+          setCurrentStep('enterTag');
+          setUserTag('');
+          setUserInfo(null);
+          setItems('');
+          setAmount('');
+          setDeliveryDate('');
+          setAttachedFile(null);
+  
+          navigate('/escrow');
+        },
+      }
+    );
   };
 
   const handleBack = (): void => {
     if (currentStep === 'createEscrow') {
       setCurrentStep('enterTag');
+      setUserInfo(null);
+      setItems('');
+      setAmount('');
+      setDeliveryDate('');
+      setAttachedFile(null);
     } else {
-      console.log('Navigate back');
+      navigate(-1);
     }
   };
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 flex itemsg-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="w-full max-w-6xl bg-white rounded-2xl overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
@@ -115,7 +178,7 @@ const EscrowFlow: React.FC = () => {
             {currentStep === 'enterTag' ? (
               <EnterTagScreen
                 userTag={userTag}
-                isLoading={isLoading}
+                isLoading={isSearching}
                 onUserTagChange={setUserTag}
                 onSearchUser={handleSearchUser}
               />
@@ -125,7 +188,7 @@ const EscrowFlow: React.FC = () => {
                 items={items}
                 amount={amount}
                 deliveryDate={deliveryDate}
-                attachedFile={attachedFile}
+                attachedFile={attachedFile?.name || null}
                 onItemsChange={setItems}
                 onAmountChange={setAmount}
                 onDeliveryDateChange={setDeliveryDate}
@@ -151,6 +214,7 @@ const EscrowFlow: React.FC = () => {
             deliveryDate={deliveryDate}
             onConfirm={handleFinalConfirm}
             onCancel={() => setShowSummaryModal(false)}
+            isLoading={isCreating}
           />
         </div>
 
@@ -174,4 +238,4 @@ const EscrowFlow: React.FC = () => {
   );
 };
 
-export default EscrowFlow;
+export default NewEscrow;

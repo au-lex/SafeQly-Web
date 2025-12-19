@@ -1,15 +1,38 @@
-// TransactionRequestCard.tsx
+
 import React from 'react';
-import {type  TransactionRequestCardProps } from '../../../types';
+import { Loader2 } from 'lucide-react';
+
+interface TransactionRequest {
+  id: string;
+  tag: string;
+  name: string;
+  avatar: string;
+  amount: number;
+  items: string;
+  timestamp: string;
+}
+
+interface TransactionRequestCardProps {
+  request: TransactionRequest;
+  onAccept: (id: string) => void;
+  onDecline: (id: string) => void;
+  onViewInfo: (id: string) => void;
+  isAccepting?: boolean;
+  isRejecting?: boolean;
+}
 
 const TransactionRequestCard: React.FC<TransactionRequestCardProps> = ({
   request,
   onAccept,
   onDecline,
-  onViewInfo
+  onViewInfo,
+  isAccepting = false,
+  isRejecting = false
 }) => {
+  const isLoading = isAccepting || isRejecting;
+
   return (
-    <div className="bg-white rounded-xl p-4  border border-gray-100 mb-4">
+    <div className="bg-white rounded-xl p-4 border border-gray-100 mb-4">
       {/* Tag Header */}
       <div className="flex items-center mb-4">
         <div className="w-10 h-10 rounded-full bg-pri flex items-center justify-center">
@@ -45,9 +68,9 @@ const TransactionRequestCard: React.FC<TransactionRequestCardProps> = ({
             {request.name}
           </p>
           <p className="text-sm font-semibold text-gray-900 mb-1">
-            Amount: ${request.amount}
+            Amount: ₦{request.amount.toLocaleString('en-NG', { minimumFractionDigits: 2 })}
           </p>
-          <p className="text-xs text-gray-500 line-clamp-1">
+          <p className="text-xs text-gray-500 line-clamp-2">
             Items: {request.items}
           </p>
         </div>
@@ -57,19 +80,36 @@ const TransactionRequestCard: React.FC<TransactionRequestCardProps> = ({
       <div className="flex gap-2">
         <button
           onClick={() => onAccept(request.id)}
-          className="flex-1 bg-pri text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-600 transition-colors"
+          disabled={isLoading}
+          className="flex-1 bg-pri text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
-          Accept
+          {isAccepting ? (
+            <>
+              <Loader2 size={16} className="animate-spin mr-1" />
+              Accepting...
+            </>
+          ) : (
+            'Accept'
+          )}
         </button>
         <button
           onClick={() => onDecline(request.id)}
-          className="flex-1 bg-red-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors"
+          disabled={isLoading}
+          className="flex-1 bg-red-500 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         >
-          Decline
+          {isRejecting ? (
+            <>
+              <Loader2 size={16} className="animate-spin mr-1" />
+              Declining...
+            </>
+          ) : (
+            'Decline'
+          )}
         </button>
         <button
           onClick={() => onViewInfo(request.id)}
-          className="px-4 bg-gray-100 text-gray-700 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors whitespace-nowrap"
+          disabled={isLoading}
+          className="px-4 bg-gray-100 text-gray-700 py-2.5 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-colors whitespace-nowrap disabled:opacity-50"
         >
           View Info
         </button>
