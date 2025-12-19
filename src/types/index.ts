@@ -343,3 +343,115 @@ export interface ResolveAccountData {
   account_number: string;
   bank_code: string;
 }
+
+
+
+// / ============= ESCROW TYPES =============
+
+export interface EscrowUser {
+  id: number;
+  name: string;
+  tag: string;
+  avatar: string;
+  email: string;
+  last_escrow_date: string;
+  
+}
+
+export interface SearchUserRequest {
+  user_tag: string;
+}
+
+export interface SearchUserResponse {
+  user: EscrowUser;
+}
+
+export interface CreateEscrowRequest {
+  seller_tag: string;
+  items: string;
+  amount: number;
+  delivery_date: string;
+  file?: File;
+}
+
+export interface AttachedFile {
+  url: string;
+  filename: string;
+  public_id: string;
+}
+
+export interface EscrowDetails {
+  id: number;
+  buyer_id: number;
+  seller_id: number;
+  items: string;
+  amount: number;
+  delivery_date: string;
+  attached_file_url?: string;
+  attached_file_public_id?: string;
+  attached_file_name?: string;
+  status: 'pending' | 'accepted' | 'rejected' | 'completed' | 'released' | 'disputed' | 'cancelled';
+  rejection_reason?: string;
+  created_at: string;
+  updated_at: string;
+  accepted_at?: string;
+  completed_at?: string;
+  released_at?: string;
+  buyer?: EscrowUser;
+  seller?: EscrowUser;
+}
+
+export interface CreateEscrowResponse {
+  message: string;
+  escrow: {
+    id: number;
+    items: string;
+    amount: number;
+    delivery_date: string;
+    status: string;
+    seller: EscrowUser;
+    attached_file?: AttachedFile;
+  };
+  available_balance: number;
+  escrow_balance: number;
+}
+
+export interface EscrowActionResponse {
+  message: string;
+  escrow: {
+    id: number;
+    status: string;
+    accepted_at?: string;
+    completed_at?: string;
+    released_at?: string;
+    amount?: number;
+    reason?: string;
+  };
+}
+
+export interface MyEscrowsResponse {
+  escrows: EscrowDetails[];
+  count: number;
+}
+
+export interface EscrowResponse {
+  escrow: EscrowDetails;
+}
+
+export interface RecentUser {
+  id: number;
+  full_name: string;
+  user_tag: string;
+  avatar: string;
+  email: string;
+  last_escrow_date: string;
+}
+
+export interface RecentUsersResponse {
+  recent_users: RecentUser[];
+  count: number;
+}
+
+export interface RejectEscrowRequest {
+  reason: string;
+}

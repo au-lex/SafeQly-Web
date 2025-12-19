@@ -1,7 +1,8 @@
 // CreateEscrowScreen.tsx
 import React from 'react';
 import { PlusCircle } from 'lucide-react';
-import { type  UserInfo } from '../../../types';
+import { useGetWalletBalance } from '../../../Hooks/useWallet';
+import type { UserInfo } from '../../../types';
 
 interface CreateEscrowScreenProps {
   userInfo: UserInfo | null;
@@ -28,6 +29,9 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
   onFileSelect,
   onConfirmTransaction
 }) => {
+  const { data: walletData } = useGetWalletBalance();
+  const availableBalance = walletData?.available_balance || 0;
+
   return (
     <>
       <div className="p-6">
@@ -66,21 +70,32 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
         <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
             <label className="text-sm font-medium text-gray-500">Amount</label>
-            <span className="text-sm font-semibold text-pri">Bal: $23,898.00</span>
+            <span className="text-sm font-semibold text-pri">
+              Bal: ₦{availableBalance.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </span>
           </div>
           <div className="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-4">
-            <span className="text-base font-medium text-gray-900 mr-1">$</span>
+            <span className="text-base font-medium text-gray-900 mr-1">₦</span>
             <input
               type="text"
               value={amount}
               onChange={(e) => {
                 const value = e.target.value.replace(/[^0-9.]/g, '');
-                onAmountChange(value);
+                // Prevent multiple decimal points
+                if ((value.match(/\./g) || []).length <= 1) {
+                  onAmountChange(value);
+                }
               }}
-              placeholder="590.00"
+              placeholder="0.00"
               className="flex-1 text-base text-gray-900 outline-none placeholder-gray-400"
             />
           </div>
+          {/* Balance warning */}
+          {amount && parseFloat(amount) > availableBalance && (
+            <p className="text-xs text-red-500 mt-2">
+              Insufficient balance. You have ₦{availableBalance.toFixed(2)}
+            </p>
+          )}
         </div>
 
         {/* Delivery Date Input */}
@@ -89,10 +104,10 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
             Delivery date
           </label>
           <input
-            type="text"
+            type="date"
             value={deliveryDate}
             onChange={(e) => onDeliveryDateChange(e.target.value)}
-            placeholder="21st jan 2024"
+            min={new Date().toISOString().split('T')[0]}
             className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-base text-gray-900 placeholder-gray-400 outline-none focus:border-pri focus:ring-2 focus:ring-pri transition-all"
           />
         </div>
@@ -117,7 +132,7 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
               <p className="text-xs text-gray-500 text-center mb-0.5">
                 Accepted file type: JPEG, PNG, and PDF
               </p>
-              <p className="text-xs text-gray-400 text-center">Size limit: 5MB</p>
+              <p className="text-xs text-gray-400 text-center">Size limit: 10MB</p>
               {attachedFile && (
                 <p className="text-xs text-green-600 font-medium mt-2">
                   📎 {attachedFile}
@@ -131,7 +146,8 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
       <div className="p-6 md:p-8 border-t border-gray-100">
         <button
           onClick={onConfirmTransaction}
-          className="w-full bg-pri text-white py-4 rounded-xl font-bold hover:bg-blue-600 transition-colors"
+          disabled={!items.trim() || !amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance || !deliveryDate}
+          className="w-full bg-pri text-white py-4 rounded-xl font-bold hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Confirm transaction
         </button>

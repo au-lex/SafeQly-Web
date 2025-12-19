@@ -22,6 +22,7 @@ import Finance from "./Pages/Admin/finance/Finace";
 import AdminDashboard from "./Pages/Admin/admin-dash/AdminDashboard";
 import VerifyOTP from "./Pages/Auth/VerifyOtp/VerifyOtp";
 import PaymentCallback from "./Pages/Wallet/VerifyPayment";
+import EscrowDetails from "./Pages/Escrow/escrowTransactions/EscrowDetails";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +80,11 @@ const router = createBrowserRouter([
   {
     path: "/escrow-transactions",
     element: <EscrowTrans/>,
+  },
+
+  {
+    path: "/escrow/:id",
+    element: <EscrowDetails/>,
   },
 
 

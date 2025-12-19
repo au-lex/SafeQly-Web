@@ -5,7 +5,7 @@ import Layout from '../../../Layout/Layout';
 import TransactionInfoItem from './EscrowInfoItem';
 import ProgressStepItem from './ProgressStepItem';
 import type { TransactionDetails, ProgressStep } from '../../../types';
-const EscrowTrans: React.FC = () => {
+const EscrowDetails: React.FC = () => {
   const [transaction] = useState<TransactionDetails>({
     id: '1',
     amount: 590.00,
@@ -172,4 +172,4 @@ const EscrowTrans: React.FC = () => {
   );
 };
 
-export default EscrowTrans;
+export default EscrowDetails;
