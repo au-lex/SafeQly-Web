@@ -138,7 +138,7 @@ const NewEscrow: React.FC = () => {
           setDeliveryDate('');
           setAttachedFile(null);
   
-          navigate('/escrow');
+          navigate('/escrows');
         },
       }
     );
@@ -159,7 +159,7 @@ const NewEscrow: React.FC = () => {
 
   return (
     <Layout>
-      <section className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <section className="min-h-screen bg-gray-50 flex items-dcenter justify-center">
         <section className="w-full max-w-6xl bg-white rounded-2xl overflow-hidden">
           {/* Header */}
           <section className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">

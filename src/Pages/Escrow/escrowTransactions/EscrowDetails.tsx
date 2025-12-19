@@ -159,7 +159,7 @@ const EscrowDetails: React.FC = () => {
   };
 
   const handleBack = (): void => {
-    navigate("/escrow");
+    navigate("/escrows");
   };
 
   const handleDownloadFile = (): void => {
