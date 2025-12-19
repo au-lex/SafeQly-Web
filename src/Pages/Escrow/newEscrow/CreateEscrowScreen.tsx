@@ -34,26 +34,26 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
 
   return (
     <>
-      <div className="p-6">
+      <section className="p-6">
         {/* User Info Card */}
         {userInfo && (
-          <div className="flex items-center bg-white p-4 rounded-xl mb-6 border border-gray-200">
+          <section className="flex items-center bg-white p-4 rounded-xl mb-6 border border-gray-200">
             <img
               src={userInfo.avatar}
               alt={userInfo.name}
               className="w-12 h-12 rounded-full mr-3 border-2 border-amber-500"
             />
-            <div>
+            <section>
               <p className="text-base font-semibold text-gray-900">
                 {userInfo.name}
               </p>
               <p className="text-sm text-gray-500">{userInfo.tag}</p>
-            </div>
-          </div>
+            </section>
+          </section>
         )}
 
         {/* Item(s) Input */}
-        <div className="mb-6">
+        <section className="mb-6">
           <label className="block text-sm font-medium text-gray-500 mb-2">
             Item(s)
           </label>
@@ -64,17 +64,17 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
             className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-base text-gray-900 placeholder-gray-400 outline-none focus:border-pri focus:ring-2 focus:ring-pri transition-all resize-none"
             rows={3}
           />
-        </div>
+        </section>
 
         {/* Amount Input */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
+        <section className="mb-6">
+          <section className="flex justify-between items-center mb-2">
             <label className="text-sm font-medium text-gray-500">Amount</label>
             <span className="text-sm font-semibold text-pri">
               Bal: ₦{availableBalance.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
-          </div>
-          <div className="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-4">
+          </section>
+          <section className="flex items-center bg-white border border-gray-200 rounded-xl px-4 py-4">
             <span className="text-base font-medium text-gray-900 mr-1">₦</span>
             <input
               type="text"
@@ -89,17 +89,17 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
               placeholder="0.00"
               className="flex-1 text-base text-gray-900 outline-none placeholder-gray-400"
             />
-          </div>
+          </section>
           {/* Balance warning */}
           {amount && parseFloat(amount) > availableBalance && (
             <p className="text-xs text-red-500 mt-2">
               Insufficient balance. You have ₦{availableBalance.toFixed(2)}
             </p>
           )}
-        </div>
+        </section>
 
         {/* Delivery Date Input */}
-        <div className="mb-6">
+        <section className="mb-6">
           <label className="block text-sm font-medium text-gray-500 mb-2">
             Delivery date
           </label>
@@ -110,10 +110,10 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
             min={new Date().toISOString().split('T')[0]}
             className="w-full bg-white border border-gray-200 rounded-xl px-4 py-4 text-base text-gray-900 placeholder-gray-400 outline-none focus:border-pri focus:ring-2 focus:ring-pri transition-all"
           />
-        </div>
+        </section>
 
         {/* File Upload Section */}
-        <div className="mb-6">
+        <section className="mb-6">
           <label className="block text-sm font-medium text-gray-500 mb-2">
             Attach signed doc (optional)
           </label>
@@ -124,7 +124,7 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
               onChange={onFileSelect}
               className="hidden"
             />
-            <div className="flex flex-col items-center">
+            <section className="flex flex-col items-center">
               <PlusCircle size={32} className="text-pri mb-3" />
               <p className="text-sm font-semibold text-gray-900 text-center mb-1">
                 Attach a file or image for evidence
@@ -138,12 +138,12 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
                   📎 {attachedFile}
                 </p>
               )}
-            </div>
+            </section>
           </label>
-        </div>
-      </div>
+        </section>
+      </section>
 
-      <div className="p-6 md:p-8 border-t border-gray-100">
+      <section className="p-6 md:p-8 border-t border-gray-100">
         <button
           onClick={onConfirmTransaction}
           disabled={!items.trim() || !amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance || !deliveryDate}
@@ -151,7 +151,7 @@ const CreateEscrowScreen: React.FC<CreateEscrowScreenProps> = ({
         >
           Confirm transaction
         </button>
-      </div>
+      </section>
     </>
   );
 };

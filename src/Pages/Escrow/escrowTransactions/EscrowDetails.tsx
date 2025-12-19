@@ -1,37 +1,51 @@
 // EscrowDetails.tsx
-import React, { useMemo } from 'react';
-import { ChevronLeft, DollarSign, Clock, Package, Loader2, FileText, AlertTriangle } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Layout from '../../../Layout/Layout';
-import TransactionInfoItem from './EscrowInfoItem';
-import ProgressStepItem from './ProgressStepItem';
-import { useGetEscrowById, useCompleteEscrow, useReleaseEscrow } from '../../../Hooks/useEscrow';
-import { useGetUserProfile } from '../../../Hooks/useProfile';
-import type { ProgressStep } from '../../../types';
+import React, { useMemo } from "react";
+import {
+  ChevronLeft,
+  DollarSign,
+  Clock,
+  Package,
+  Loader2,
+  FileText,
+  AlertTriangle,
+  Check,
+} from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import Layout from "../../../Layout/Layout";
+import TransactionInfoItem from "./EscrowInfoItem";
+import ProgressStepItem from "./ProgressStepItem";
+import {
+  useGetEscrowById,
+  useCompleteEscrow,
+  useReleaseEscrow,
+} from "../../../Hooks/useEscrow";
+import { useGetUserProfile } from "../../../Hooks/useProfile";
+import type { ProgressStep } from "../../../types";
 
 const EscrowDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  
+
   // Get current user data
   const { data: currentUser } = useGetUserProfile();
   const currentUserId = currentUser?.id;
-  
+
   // Fetch escrow data
-  const { data: escrowData, isLoading } = useGetEscrowById(id || '');
-  const { mutate: completeEscrow, isPending: isCompleting } = useCompleteEscrow();
+  const { data: escrowData, isLoading } = useGetEscrowById(id || "");
+  const { mutate: completeEscrow, isPending: isCompleting } =
+    useCompleteEscrow();
   const { mutate: releaseEscrow, isPending: isReleasing } = useReleaseEscrow();
 
   const escrow = escrowData?.escrow;
 
   // Correctly determine if current user is buyer or seller using IDs
-  const isBuyer = useMemo(() => 
-    escrow?.buyer_id === currentUserId, 
+  const isBuyer = useMemo(
+    () => escrow?.buyer_id === currentUserId,
     [escrow?.buyer_id, currentUserId]
   );
-  
-  const isSeller = useMemo(() => 
-    escrow?.seller_id === currentUserId, 
+
+  const isSeller = useMemo(
+    () => escrow?.seller_id === currentUserId,
     [escrow?.seller_id, currentUserId]
   );
 
@@ -43,86 +57,86 @@ const EscrowDetails: React.FC = () => {
     // Step 1: Transaction Accepted
     if (escrow.accepted_at) {
       steps.push({
-        id: '1',
-        title: 'Transaction Accepted',
-        description: new Date(escrow.accepted_at).toLocaleString('en-US', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
+        id: "1",
+        title: "Transaction Accepted",
+        description: new Date(escrow.accepted_at).toLocaleString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
         }),
-        status: 'completed'
+        status: "completed",
       });
     } else {
       steps.push({
-        id: '1',
-        title: 'Transaction Accepted',
-        description: 'Waiting for seller to accept',
-        status: escrow.status === 'pending' ? 'current' : 'pending'
+        id: "1",
+        title: "Transaction Accepted",
+        description: "Waiting for seller to accept",
+        status: escrow.status === "pending" ? "current" : "pending",
       });
     }
 
     // Step 2: Processing Transaction (Delivery)
     if (escrow.completed_at) {
       steps.push({
-        id: '2',
-        title: 'Delivery Completed',
-        description: new Date(escrow.completed_at).toLocaleString('en-US', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
+        id: "2",
+        title: "Delivery Completed",
+        description: new Date(escrow.completed_at).toLocaleString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
         }),
-        status: 'completed'
+        status: "completed",
       });
-    } else if (escrow.status === 'accepted') {
+    } else if (escrow.status === "accepted") {
       steps.push({
-        id: '2',
-        title: 'Processing Delivery',
-        description: 'Seller is preparing delivery',
-        status: 'current'
+        id: "2",
+        title: "Processing Delivery",
+        description: "Seller is preparing delivery",
+        status: "current",
       });
     } else {
       steps.push({
-        id: '2',
-        title: 'Processing Delivery',
-        description: 'Not started',
-        status: 'pending'
+        id: "2",
+        title: "Processing Delivery",
+        description: "Not started",
+        status: "pending",
       });
     }
 
     // Step 3: Transaction Completed (Funds Released)
     if (escrow.released_at) {
       steps.push({
-        id: '3',
-        title: 'Funds Released',
-        description: new Date(escrow.released_at).toLocaleString('en-US', {
-          day: 'numeric',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
+        id: "3",
+        title: "Funds Released",
+        description: new Date(escrow.released_at).toLocaleString("en-US", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
         }),
-        status: 'completed'
+        status: "completed",
       });
-    } else if (escrow.status === 'completed') {
+    } else if (escrow.status === "completed") {
       steps.push({
-        id: '3',
-        title: 'Awaiting Fund Release',
-        description: 'Buyer needs to confirm receipt',
-        status: 'current'
+        id: "3",
+        title: "Awaiting Fund Release",
+        description: "Buyer needs to confirm receipt",
+        status: "current",
       });
     } else {
       steps.push({
-        id: '3',
-        title: 'Funds Released',
-        description: 'Not started',
-        status: 'pending'
+        id: "3",
+        title: "Funds Released",
+        description: "Not started",
+        status: "pending",
       });
     }
 
@@ -140,70 +154,69 @@ const EscrowDetails: React.FC = () => {
   };
 
   const handleRaiseDispute = (): void => {
-    
-    console.log('Raise dispute for escrow:', id);
+    console.log("Raise dispute for escrow:", id);
     // navigate(`/escrow/${id}/dispute`);
   };
 
   const handleBack = (): void => {
-    navigate('/escrow');
+    navigate("/escrow");
   };
 
   const handleDownloadFile = (): void => {
     if (escrow?.attached_file_url) {
-      window.open(escrow.attached_file_url, '_blank');
+      window.open(escrow.attached_file_url, "_blank");
     }
   };
 
   const formatDeliveryDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
     });
   };
 
   const getStatusColor = (status: string): string => {
     switch (status) {
-      case 'pending':
-        return 'text-amber-500 bg-amber-500';
-      case 'accepted':
-        return 'text-blue-500 bg-blue-500';
-      case 'completed':
-        return 'text-green-500 bg-green-500';
-      case 'released':
-        return 'text-green-600 bg-green-600';
-      case 'rejected':
-        return 'text-red-500 bg-red-500';
-      case 'disputed':
-        return 'text-orange-500 bg-orange-500';
+      case "pending":
+        return "text-amber-500 bg-amber-500";
+      case "accepted":
+        return "text-blue-500 bg-blue-500";
+      case "completed":
+        return "text-green-500 bg-green-500";
+      case "released":
+        return "text-green-600 bg-green-600";
+      case "rejected":
+        return "text-red-500 bg-red-500";
+      case "disputed":
+        return "text-orange-500 bg-orange-500";
       default:
-        return 'text-gray-500 bg-gray-500';
+        return "text-gray-500 bg-gray-500";
     }
   };
 
   const getStatusText = (status: string): string => {
     const statusMap: Record<string, string> = {
-      'pending': 'Pending',
-      'accepted': 'Accepted',
-      'rejected': 'Rejected',
-      'completed': 'Completed',
-      'released': 'Released',
-      'disputed': 'Disputed',
-      'cancelled': 'Cancelled'
+      pending: "Pending",
+      accepted: "Accepted",
+      rejected: "Rejected",
+      completed: "Completed",
+      released: "Released",
+      disputed: "Disputed",
+      cancelled: "Cancelled",
     };
     return statusMap[status] || status;
   };
 
   // Calculate transaction fee
-  const transactionFee = escrow ? (escrow.amount * 0.02).toFixed(2) : '0.00';
+  const transactionFee = escrow ? (escrow.amount * 0.02).toFixed(2) : "0.00";
 
   if (isLoading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <section className="min-h-screen bg-gray-50 flex items-center justify-center">
           <Loader2 size={32} className="animate-spin text-pri" />
-        </div>
+        </section>
       </Layout>
     );
   }
@@ -211,8 +224,8 @@ const EscrowDetails: React.FC = () => {
   if (!escrow) {
     return (
       <Layout>
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
+        <section className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <section className="text-center">
             <p className="text-gray-500 mb-4">Escrow not found</p>
             <button
               onClick={handleBack}
@@ -220,8 +233,8 @@ const EscrowDetails: React.FC = () => {
             >
               Go back
             </button>
-          </div>
-        </div>
+          </section>
+        </section>
       </Layout>
     );
   }
@@ -231,11 +244,11 @@ const EscrowDetails: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-2xl mx-auto bg-white min-h-screen">
+      <section className="min-h-screen bg-gray-50">
+        <section className="max-w-2xl mx-auto bg-white min-h-screen">
           {/* Header */}
-          <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 z-10">
-            <div className="flex items-center">
+          <section className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 z-10">
+            <section className="flex items-center">
               <button
                 onClick={handleBack}
                 className="p-1 hover:bg-gray-100 rounded-full transition-colors mr-3"
@@ -245,79 +258,97 @@ const EscrowDetails: React.FC = () => {
               <h1 className="text-lg font-semibold text-gray-900">
                 Transaction Summary
               </h1>
-            </div>
-          </div>
+            </section>
+          </section>
 
           {/* Content */}
-          <div className="px-4 py-6">
+          <section className="px-4 py-6">
             {/* Amount Section */}
-            <div className="text-center mb-6">
+            <section className="text-center mb-6">
               <p className="text-sm text-gray-400 mb-2">Amount</p>
               <p className="text-4xl font-bold text-gray-900">
-                ₦{escrow.amount.toLocaleString('en-NG', { minimumFractionDigits: 2 })}
+                ₦
+                {escrow.amount.toLocaleString("en-NG", {
+                  minimumFractionDigits: 2,
+                })}
               </p>
-            </div>
+            </section>
 
             {/* Both Parties Info Card */}
-            <div className="bg-gray-50 p-4 rounded-xl mb-6">
+            <section className="bg-gray-50 p-4 rounded-xl mb-6">
               {/* Buyer Info */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center flex-1">
+              <section className="flex items-center justify-between mb-4">
+                <section className="flex items-center flex-1">
                   <img
-                    src={escrow.buyer.avatar || 'https://i.pravatar.cc/150'}
-                    alt={escrow.buyer.full_name}
+                    src={escrow.buyer?.avatar || "https://i.pravatar.cc/150"}
+                    alt={escrow.buyer?.full_name}
                     className="w-10 h-10 rounded-full border-2 border-white object-cover"
                   />
-                  <div className="ml-3">
+                  <section className="ml-3">
                     <p className="text-sm font-semibold text-gray-900">
-                      {escrow.buyer.full_name}
+                      {escrow.buyer?.full_name}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {escrow.buyer.user_tag}
+                      {escrow.buyer?.user_tag}
                     </p>
-                  </div>
-                </div>
-                <div className="text-xs text-gray-400 font-medium">BUYER</div>
-              </div>
+                  </section>
+                </section>
+                <section className="text-xs text-gray-400 font-medium">BUYER</section>
+              </section>
 
-              <div className="border-t border-gray-200 my-3"></div>
+              <section className="border-t border-gray-200 my-3"></section>
 
               {/* Seller Info */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center flex-1">
+              <section className="flex items-center justify-between">
+                <section className="flex items-center flex-1">
                   <img
-                    src={escrow.seller.avatar || 'https://i.pravatar.cc/150'}
-                    alt={escrow.seller.full_name}
+                    // Add ?. before avatar
+                    src={escrow.seller?.avatar || "https://i.pravatar.cc/150"}
+                    // Add ?. before full_name and provide a fallback string
+                    alt={escrow.seller?.full_name || "Seller"}
                     className="w-10 h-10 rounded-full border-2 border-white object-cover"
                   />
-                  <div className="ml-3">
+                  <section className="ml-3">
                     <p className="text-sm font-semibold text-gray-900">
-                      {escrow.seller.full_name}
+                      {/* Add ?. and fallback */}
+                      {escrow.seller?.full_name || "Unknown Seller"}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {escrow.seller.user_tag}
+                      {/* Add ?. and fallback */}
+                      {escrow.seller?.user_tag || ""}
                     </p>
-                  </div>
-                </div>
-                <div className="text-xs text-gray-400 font-medium">SELLER</div>
-              </div>
+                  </section>
+                </section>
+                <section className="text-xs text-gray-400 font-medium">SELLER</section>
+              </section>
 
               {/* Status and Amount */}
-              <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
-                <div className="flex items-center gap-1">
-                  <span className={`text-xs font-medium ${statusColorClass.split(' ')[0]}`}>
+              <section className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                <section className="flex items-center gap-1">
+                  <span
+                    className={`text-xs font-medium ${
+                      statusColorClass.split(" ")[0]
+                    }`}
+                  >
                     {getStatusText(escrow.status)}
                   </span>
-                  <div className={`w-1.5 h-1.5 rounded-full ${statusColorClass.split(' ')[1]}`}></div>
-                </div>
+                  <section
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      statusColorClass.split(" ")[1]
+                    }`}
+                  ></section>
+                </section>
                 <p className="text-sm font-bold text-gray-900">
-                  ₦{escrow.amount.toLocaleString('en-NG', { minimumFractionDigits: 2 })}
+                  ₦
+                  {escrow.amount.toLocaleString("en-NG", {
+                    minimumFractionDigits: 2,
+                  })}
                 </p>
-              </div>
-            </div>
+              </section>
+            </section>
 
             {/* Transaction Details */}
-            <div className="space-y-1 mb-8">
+            <section className="space-y-1 mb-8">
               <TransactionInfoItem
                 icon={<DollarSign size={18} className="text-blue-500" />}
                 label="Transaction fee:"
@@ -337,31 +368,34 @@ const EscrowDetails: React.FC = () => {
                 iconBgColor="bg-blue-100"
               />
               {escrow.attached_file_url && (
-                <div 
+                <section
                   onClick={handleDownloadFile}
                   className="flex items-center py-3 cursor-pointer hover:bg-gray-50 rounded-lg -mx-2 px-2"
                 >
-                  <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                  <section className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
                     <FileText size={18} className="text-blue-500" />
-                  </div>
-                  <span className="flex-1 text-sm text-gray-500">Attached file:</span>
-                  <span className="text-sm font-semibold text-pri hover:underline">
-                    {escrow.attached_file_name || 'Download'}
+                  </section>
+                  <span className="flex-1 text-sm text-gray-500">
+                    Attached file:
                   </span>
-                </div>
+                  <span className="text-sm font-semibold text-pri hover:underline">
+                    {escrow.attached_file_name || "Download"}
+                  </span>
+                </section>
               )}
-            </div>
+            </section>
 
             {/* Transaction Progress */}
-            <div className="mb-6">
+            <section className="mb-6">
               <h2 className="text-base font-bold text-gray-900 mb-2">
                 Transaction Progress
               </h2>
               <p className="text-sm text-gray-500 mb-6">
-                Track the progress of this transaction and see updates from both parties.
+                Track the progress of this transaction and see updates from both
+                parties.
               </p>
 
-              <div>
+              <section>
                 {progressSteps.map((step, index) => (
                   <ProgressStepItem
                     key={step.id}
@@ -369,15 +403,15 @@ const EscrowDetails: React.FC = () => {
                     isLast={index === progressSteps.length - 1}
                   />
                 ))}
-              </div>
-            </div>
-          </div>
+              </section>
+            </section>
+          </section>
 
           {/* Bottom Buttons */}
-          
+
           {/* Seller: Can complete transaction when status is 'accepted' */}
-          {escrow.status === 'accepted' && isSeller && (
-            <div className="sticky bottom-0 bg-white border-t border-gray-100 px-4 py-4 space-y-3">
+          {escrow.status === "accepted" && isSeller && (
+            <section className="sticky bottom-0 bg-white border-t border-gray-100 px-4 py-4 space-y-3">
               <button
                 onClick={handleMarkComplete}
                 disabled={isCompleting}
@@ -389,7 +423,7 @@ const EscrowDetails: React.FC = () => {
                     Marking Complete...
                   </>
                 ) : (
-                  'Mark Delivery as Complete'
+                  "Mark Delivery as Complete"
                 )}
               </button>
               <button
@@ -399,12 +433,12 @@ const EscrowDetails: React.FC = () => {
                 <AlertTriangle size={20} className="mr-2" />
                 Raise Dispute
               </button>
-            </div>
+            </section>
           )}
 
           {/* Buyer: Can release funds when status is 'completed' */}
-          {escrow.status === 'completed' && isBuyer && (
-            <div className="sticky bottom-0 bg-white border-t border-gray-100 px-4 py-4 space-y-3">
+          {escrow.status === "completed" && isBuyer && (
+            <section className="sticky bottom-0 bg-white border-t border-gray-100 px-4 py-4 space-y-3">
               <button
                 onClick={handleReleaseFunds}
                 disabled={isReleasing}
@@ -416,7 +450,7 @@ const EscrowDetails: React.FC = () => {
                     Releasing Funds...
                   </>
                 ) : (
-                  'Confirm Receipt & Release Funds'
+                  "Confirm Receipt & Release Funds"
                 )}
               </button>
               <button
@@ -426,24 +460,24 @@ const EscrowDetails: React.FC = () => {
                 <AlertTriangle size={20} className="mr-2" />
                 Raise Dispute
               </button>
-            </div>
+            </section>
           )}
 
           {/* Transaction completed - no dispute button after funds are released */}
-          {escrow.status === 'released' && (
-            <div className="sticky bottom-0 bg-white border-t border-gray-100 px-4 py-4">
-              <div className="text-center py-4">
-                <p className="text-green-600 font-semibold text-lg">
-                  ✓ Transaction Completed Successfully
+          {escrow.status === "released" && (
+            <section className="sticky bottom-0 bg-white border border-gray-100 px-4 py-4">
+              <section className="text-center py-2 bg-pri rounded">
+                <p className="text-white font-semibold text-sm">
+                   Escrow  Completed <Check size={20} className="inline-block" /> 
                 </p>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-gray-100 mt-1">
                   Funds have been released to the seller
                 </p>
-              </div>
-            </div>
+              </section>
+            </section>
           )}
-        </div>
-      </div>
+        </section>
+      </section>
     </Layout>
   );
 };

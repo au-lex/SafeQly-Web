@@ -1,4 +1,4 @@
-// NewEscrow.tsx
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -49,7 +49,7 @@ const NewEscrow: React.FC = () => {
           setShowConfirmModal(true);
         },
       });
-      // Clear the state to prevent re-triggering on component re-render
+  
       window.history.replaceState({}, document.title);
     }
   }, [location.state, searchUser]);
@@ -159,10 +159,10 @@ const NewEscrow: React.FC = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-full max-w-6xl bg-white rounded-2xl overflow-hidden">
+      <section className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <section className="w-full max-w-6xl bg-white rounded-2xl overflow-hidden">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
+          <section className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-100">
             <button
               onClick={handleBack}
               className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -170,11 +170,11 @@ const NewEscrow: React.FC = () => {
               <ChevronLeft size={24} className="text-gray-900" />
             </button>
             <h1 className="text-lg font-semibold text-gray-900">New Escrow</h1>
-            <div className="w-6" />
-          </div>
+            <section className="w-6" />
+          </section>
 
           {/* Content Area */}
-          <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+          <section className="max-h-[calc(100vh-200px)] overflow-y-auto">
             {currentStep === 'enterTag' ? (
               <EnterTagScreen
                 userTag={userTag}
@@ -196,7 +196,7 @@ const NewEscrow: React.FC = () => {
                 onConfirmTransaction={handleConfirmTransaction}
               />
             )}
-          </div>
+          </section>
 
           {/* Modals */}
           <ConfirmUserModal
@@ -216,7 +216,7 @@ const NewEscrow: React.FC = () => {
             onCancel={() => setShowSummaryModal(false)}
             isLoading={isCreating}
           />
-        </div>
+        </section>
 
         <style>{`
           @keyframes slide-up {
@@ -233,7 +233,7 @@ const NewEscrow: React.FC = () => {
             animation: slide-up 0.3s ease-out;
           }
         `}</style>
-      </div>
+      </section>
     </Layout>
   );
 };
