@@ -12,9 +12,9 @@ const ConfirmUserModal: React.FC<ConfirmUserModalProps> = ({
   if (!visible || !userInfo) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[2px] p-4">
-      <div className="w-full max-w-md bg-white rounded-xl md:rounded-2xl p-6 animate-slide-up">
-        <div className="flex justify-between items-center mb-6">
+    <section className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[2px] p-4">
+      <section className="w-full max-w-md bg-white rounded-xl md:rounded-2xl p-6 animate-slide-up">
+        <section className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold text-gray-900">
             Confirm User Info
           </h2>
@@ -24,23 +24,23 @@ const ConfirmUserModal: React.FC<ConfirmUserModalProps> = ({
           >
             <X size={24} className="text-gray-900" />
           </button>
-        </div>
+        </section>
 
-        <div className="flex items-center mb-6">
+        <section className="flex items-center mb-6">
           <img
             src={userInfo.avatar}
             alt={userInfo.name}
             className="w-14 h-14 rounded-full mr-3 border-2 border-amber-500"
           />
-          <div>
+          <section>
             <p className="text-base font-semibold text-gray-900">
               {userInfo.name}
             </p>
             <p className="text-sm text-gray-500 mt-0.5">{userInfo.tag}</p>
-          </div>
-        </div>
+          </section>
+        </section>
 
-        <div className="flex gap-3">
+        <section className="flex gap-3">
           <button
             onClick={onCancel}
             className="flex-1 bg-gray-100 text-gray-700 py-3.5 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
@@ -53,9 +53,9 @@ const ConfirmUserModal: React.FC<ConfirmUserModalProps> = ({
           >
             Confirm
           </button>
-        </div>
-      </div>
-    </div>
+        </section>
+      </section>
+    </section>
   );
 };
 
