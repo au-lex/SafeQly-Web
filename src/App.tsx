@@ -26,7 +26,7 @@ import EscrowDetails from "./Pages/Escrow/escrowTransactions/EscrowDetails";
 
 const router = createBrowserRouter([
   {
-    path: "g/",
+    path: "/",
     element: <Landing />,
   },
 
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
   },
 
   {
-    path: "/",
+    path: "/login",
     element: <Login />,
   },
   {

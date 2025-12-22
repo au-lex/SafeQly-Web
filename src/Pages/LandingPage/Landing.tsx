@@ -1,12 +1,29 @@
 import React from 'react'
+import HowItWorks from './HowItwork';
+
+import Hero from './Hero';
+import Navbar from './Navbar';
+import Footer from './Footer';
+import Features from './Features';
+import FAQ from './Faq';
+import FeeCalculator from './FeeCalculator';
 
 const Landing: React.FC = () => {
   return (
-    <>
-
-   hello
-    </>
-  )
+    <div className="min-h-screen bg-white font-sans text-slate-900">
+      <Navbar />
+      <main>
+        <Hero />
+  
+        <HowItWorks />
+        <FeeCalculator />
+        <Features />
+        <FAQ />
+     
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export default Landing
