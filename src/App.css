@@ -4,7 +4,8 @@
 @theme {
 
   /* 🎨 Primary Colors */
-  --color-pri:#053014;   
+  --color-pri:#053b2f;   
+  /* --color-pri:#053014;    */
   --color-sec: rgb(102, 102, 102);  
 
         /* Darkest - Hero cards */
@@ -67,5 +68,25 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Add this to your CSS file */
+
+.animate-scroll-right {
+  animation: scroll-right 15s linear infinite;
+  /* Ensures the container is wide enough to hold both sets */
+  width: max-content; 
+  display: flex;
+}
+
+@keyframes scroll-right {
+  0% {
+    /* Start shifted left by half the width (showing the 2nd set) */
+    transform: translateX(-50%);
+  }
+  100% {
+    /* Move right to the start position (showing the 1st set) */
+    transform: translateX(0);
   }
 }

@@ -17,7 +17,7 @@ const AdminDashboard: React.FC = () => {
   // Fetch recent transactions (first page, limit 5)
   const { data: transactionsData, isLoading: transactionsLoading } = useGetAllTransactions(1, 5);
 
-  // Mock revenue data for chart (you can replace with real data if available)
+
   const revenueData = [
     { name: 'Jan', revenue: 65000 },
     { name: 'Feb', revenue: 45000 },
@@ -245,7 +245,7 @@ const AdminDashboard: React.FC = () => {
                     />
                     <Tooltip 
                       cursor={{ fill: '#F3F4F6' }}
-                      contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', boxf: 'none' }}
+                      contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', }}
                       itemStyle={{ color: '#111827', fontWeight: 600 }}
                       formatter={(value: number) => [value.toLocaleString(), 'Activity']}
                     />

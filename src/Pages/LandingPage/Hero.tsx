@@ -1,72 +1,107 @@
 import React from 'react';
-import {  ArrowRight, PlayCircle, } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
-const Hero: React.FC = () => {
+const HeroSection: React.FC = () => {
   return (
-    <section className="relative pt-20 pb-32 overflow-hidden bg-white">
-      
-      {/* 1. Technical Background Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-      
-      {/* 2. Radial Gradient Spotlight */}
-      <div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-blue-500 opacity-20 blur-[100px]"></div>
-
-      <div className="max-w-7xl pt-[2rem] lg:pt-[6rem] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <>
+      <div className="relative lg:min-h-cscreen w-full overflow-hidden flex pt-[4rem] lg:pt-[8rem] justify-center bg-white">
         
-        <div className="text-center max-w-4xl mx-auto">
+        {/* --- Main Content Container --- */}
+        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
           
-   
-          
-          {/* Main Headline with Gradient */}
-          <h1 className="text-4xl   md:text-7xl font-extrabold text-slate-900 tracking-tight mb-4 leading-[1.1]">
-            Secure Payments for <br className="hidden md:block" />
-            <span className="">
-              The Trust Economy
-            </span>
+          {/* Headline */}
+          <h1 className="text-4xl md:text-7xl font-bold text-pri leading-[1.1] mb-6">
+            Buy And Sell With <br className="hidden md:block" />
+            Total Confidence
           </h1>
-          
-          {/* Subheadline */}
-          <p className="lg:text-xl text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto">
-            We hold the funds in a secure vault until the work is approved. 
-            Protecting <strong>Freelancers</strong> and <strong>Clients</strong> from fraud, one transaction at a time.
+
+          {/* Subhead */}
+          <p className="text-gray-500 text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
+            Stop worrying about scams. We hold the money securely until the product is delivered and verified. Simple, fair, and safe.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-            <button className="flex items-center justify-center bg-pri text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 hover:-translate-y-1 transition-all duration-200 shadow-xl shadow-slate-900/20">
-              Start a Transaction
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </button>
-            <button className="flex items-center justify-center bg-white text-pri border  px-8 py-4 rounded-xl font-bold text-lg hover:bg-slate-50 border-pri transition-all duration-200 group">
-              <PlayCircle className="mr-2 h-5 w-5 text-pri group-hover:text-blue-600 transition-colors" />
-              How it Works
+          {/* CTA Button */}
+          <div className="flex justify-center mb-12">
+            <button className="group bg-pri hover:bg-[#093528] text-white text-lg font-medium pl-8 pr-2 py-2 rounded-full flex items-center transition-all duration-300 shadow-xl shadow-green-900/10">
+              <span className='text-white'>Start A Transaction</span>
+              <div className="ml-4 bg-white text-[#0f4c3a] p-2 rounded-full group-hover:scale-110 transition-transform duration-300">
+                <ArrowUpRight className="w-5 h-5" />
+              </div>
             </button>
           </div>
 
-          {/* Social Proof / Trust Indicators */}
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 overflow-hidden">
-                  <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-full h-full object-cover" />
-                </div>
-              ))}
-              <div className="w-10 h-10 rounded-full border-2 border-white bg-blue-50 flex items-center justify-center text-xs font-bold text-pri">
-                +2k
-              </div>
+          {/* --- MOBILE ONLY: Organized Icon Row --- */}
+          {/* Instead of floating randomly, they sit in a neat row below the button on mobile */}
+          <div className="grid grid-cols-4 gap-4 md:hidden max-w-xs mx-auto mt-8">
+            
+            {/* Mobile Icon 1 */}
+            <div className="flex flex-col items-center animate-pulse">
+               <div className="bg-white border border-pri/30 w-14 h-14 flex justify-center items-center overflow-hidden rounded-full shadow-lg">
+                  <img src="https://i.pinimg.com/736x/f2/d5/34/f2d53404d89392ecc4d8ec685a12cdbb.jpg" className='w-full h-full object-cover' alt="Notification" />
+               </div>
             </div>
-            <p className="text-sm text-slate-500 font-medium">
-              Trusted by 2,000+ freelancers and agencies
-            </p>
+
+            {/* Mobile Icon 2 */}
+            <div className="flex flex-col items-center">
+               <div className="bg-white border border-pri/30 w-14 h-14 flex justify-center items-center overflow-hidden rounded-full shadow-lg">
+                  <img src="https://i.pinimg.com/1200x/39/ce/c9/39cec92e33d321d314551d4b396c4af0.jpg" className='w-full h-full object-cover' alt="Money" />
+               </div>
+            </div>
+
+            {/* Mobile Icon 3 */}
+            <div className="flex flex-col items-center">
+               <div className="bg-white border border-pri/30 w-14 h-14 flex justify-center items-center overflow-hidden rounded-full shadow-lg">
+                  <img src="https://i.pinimg.com/1200x/3e/f3/50/3ef350dc86cc82a092463e5d795654b5.jpg" className='w-full h-full object-cover' alt="Chart" />
+               </div>
+            </div>
+
+            {/* Mobile Icon 4 */}
+            <div className="flex flex-col items-center animate-pulse">
+               <div className="bg-white border border-pri/30 w-14 h-14 flex justify-center items-center overflow-hidden rounded-full shadow-lg">
+                  <img src="https://i.pinimg.com/736x/65/49/b1/6549b1659381e98dfa588e52bebbb937.jpg" className='w-full h-full object-cover' alt="Sync" />
+               </div>
+            </div>
+            
           </div>
+          {/* Optional Label for Mobile Icons */}
+          <p className="md:hidden text-xs text-gray-400 mt-4 font-medium uppercase tracking-wider">Trusted Security</p>
 
         </div>
 
+        {/* --- DESKTOP ONLY: Floating Icons Elements --- */}
+        {/* These only appear on md screens and larger */}
 
+        {/* Top Right: Bell */}
+        <div className="absolute top-[15%] right-[10%] animate-float-slow hidden md:block">
+          <div className="bg-white border border-pri w-16 h-16 flex justify-center items-center overflow-hidden rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
+            <img src="https://i.pinimg.com/736x/f2/d5/34/f2d53404d89392ecc4d8ec685a12cdbb.jpg" className='w-full h-full object-cover' alt="" />
+          </div>
+        </div>
+
+        {/* Left Center: Money */}
+        <div className="absolute top-[40%] left-[5%] lg:left-[10%] animate-float-medium hidden md:block">
+          <div className="bg-white border border-pri w-16 h-16 flex justify-center items-center overflow-hidden rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
+            <img src="https://i.pinimg.com/1200x/39/ce/c9/39cec92e33d321d314551d4b396c4af0.jpg" className='w-full h-full object-cover' alt="" />
+          </div>
+        </div>
+
+        {/* Bottom Left: Chart */}
+        <div className="absolute bottom-[20%] left-[15%] animate-float-fast hidden md:block">
+          <div className="bg-white border border-pri w-16 h-16 flex justify-center items-center overflow-hidden rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
+            <img src="https://i.pinimg.com/1200x/3e/f3/50/3ef350dc86cc82a092463e5d795654b5.jpg" className='w-full h-full object-cover' alt="" />
+          </div>
+        </div>
+
+        {/* Bottom Right: Sync/Refresh */}
+        <div className="absolute bottom-[25%] right-[8%] animate-float-slow hidden md:block">
+          <div className="bg-white border border-pri w-16 h-16 flex justify-center items-center overflow-hidden rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
+            <img src="https://i.pinimg.com/736x/65/49/b1/6549b1659381e98dfa588e52bebbb937.jpg" className='w-full h-full object-cover' alt="" />
+          </div>
+        </div>
 
       </div>
-    </section>
+    </>
   );
 };
 
-export default Hero;
+export default HeroSection;

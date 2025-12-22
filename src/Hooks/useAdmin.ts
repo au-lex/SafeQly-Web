@@ -363,6 +363,8 @@ export function useUpdateUser() {
       return response.data;
     },
     onSuccess: (data, { userId }) => {
+      console.log(data);
+      
       queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.users() });
       queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.userDetail(userId) });
       toast.success('User updated successfully!');
@@ -531,6 +533,8 @@ export function useResolveDispute() {
       return response.data;
     },
     onSuccess: (data, { disputeId }) => {
+      console.log(data);
+      
       queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.disputes() });
       queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.disputeDetail(disputeId) });
       queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.dashboard() });

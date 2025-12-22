@@ -1,77 +1,78 @@
 import React from 'react';
-import { ShieldCheck, Zap, Scale, Lock, Globe, Headset } from 'lucide-react';
+import { ShieldCheck, Zap, Globe2, Wallet } from 'lucide-react';
 
-const features = [
-  {
-    icon: <ShieldCheck className="h-6 w-6 text-blue-600" />,
-    title: "Bank-Grade Security",
-    desc: "Your funds are held in a regulated vault. We use 256-bit encryption to protect every transaction."
-  },
-  {
-    icon: <Scale className="h-6 w-6 text-blue-600" />,
-    title: "Fair Dispute Resolution",
-    desc: "Something went wrong? Our neutral dispute center acts as a fair judge to resolve conflicts quickly."
-  },
-  {
-    icon: <Zap className="h-6 w-6 text-blue-600" />,
-    title: "Instant Releases",
-    desc: "No waiting days for payouts. Once the job is approved, funds are moved to your wallet instantly."
-  },
-  {
-    icon: <Lock className="h-6 w-6 text-blue-600" />,
-    title: "Milestone Payments",
-    desc: "Break large projects into smaller steps. Release funds only as each phase is completed."
-  },
-  {
-    icon: <Globe className="h-6 w-6 text-blue-600" />,
-    title: "Global Payments",
-    desc: "Pay or get paid in multiple currencies. We handle the conversion so you don't have to."
-  },
-  {
-    icon: <Headset className="h-6 w-6 text-blue-600" />,
-    title: "24/7 Support",
-    desc: "Real humans, not bots. Our support team is always on standby to help with your transactions."
-  }
-];
+const WhyChooseUs: React.FC = () => {
+  const features = [
+    {
+      icon: <ShieldCheck className="w-8 h-8 text-[#053b2f]" />,
+      title: "Bank-Grade Security",
+      description: "Your assets are protected by industry-leading encryption and cold storage protocols. We prioritize your safety above all else.",
+    },
+    {
+      icon: <Zap className="w-8 h-8 text-[#053b2f]" />,
+      title: "Instant Transactions",
+      description: "Experience lightning-fast transfers. Send and receive funds globally in seconds, not days, with our optimized network.",
+    },
+    {
+      icon: <Globe2 className="w-8 h-8 text-[#053b2f]" />,
+      title: "Global Access",
+      description: "Manage your finances from anywhere in the world. Our platform supports 50+ currencies and operates in over 100 countries.",
+    },
+    {
+      icon: <Wallet className="w-8 h-8 text-[#053b2f]" />,
+      title: "Low Transaction Fees",
+      description: "Keep more of your money. We offer some of the most competitive rates in the market with zero hidden charges.",
+    },
+  ];
 
-const Features: React.FC = () => {
   return (
-    <section className="py-24 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 px-4 bg-[#f8fafc]">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">
-            Why Trust SafeEscrow?
+        {/* --- Section Header --- */}
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-[#bef264]" />
+            <span className="text-xs font-bold tracking-widest text-gray-500 uppercase">
+              Why Choose Banki
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#053b2f] mb-6">
+            Smart Banking for the <br /> Modern Generation
           </h2>
-          <p className="text-slate-600 text-lg">
-            We bridge the gap of trust so you can focus on the work, not the risk.
+          <p className="text-gray-500 text-lg leading-relaxed">
+            We simplify your financial life with robust tools, intuitive design, and transparent pricing. See why thousands trust us daily.
           </p>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+        {/* --- Features Grid --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <div key={index} className="flex flex-col items-start">
-              
-              {/* Icon */}
-              <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl border border-slate-200 flex items-center justify-center shadow-sm mb-4">
+            <div 
+              key={index} 
+              className="group bg-white p-8 rounded-[2rem] hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col items-start"
+            >
+              {/* Icon Container */}
+              <div className="w-16 h-16 rounded-2xl bg-[#f2f8f3] group-hover:bg-[#bef264] flex items-center justify-center mb-6 transition-colors duration-300">
                 {feature.icon}
               </div>
-
-              {/* Text */}
-              <h3 className="text-xl font-bold text-slate-900 mb-2">
+              
+              {/* Content */}
+              <h3 className="text-xl font-bold text-[#053b2f] mb-3">
                 {feature.title}
               </h3>
-              <p className="text-slate-600 leading-relaxed">
-                {feature.desc}
+              <p className="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">
+                {feature.description}
               </p>
+
+      
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );
 };
 
-export default Features;
+export default WhyChooseUs;

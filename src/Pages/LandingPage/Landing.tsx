@@ -7,6 +7,7 @@ import Footer from './Footer';
 import Features from './Features';
 import FAQ from './Faq';
 import FeeCalculator from './FeeCalculator';
+import CustomerReviewsSection from './Review';
 
 const Landing: React.FC = () => {
   return (
@@ -17,7 +18,10 @@ const Landing: React.FC = () => {
   
         <HowItWorks />
         <FeeCalculator />
+
         <Features />
+
+        <CustomerReviewsSection />
         <FAQ />
      
       </main>
