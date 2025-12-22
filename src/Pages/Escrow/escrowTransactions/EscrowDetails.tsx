@@ -1,5 +1,5 @@
 // EscrowDetails.tsx
-import React, { useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   ChevronLeft,
   DollarSign,
@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../../../Layout/Layout";
 import TransactionInfoItem from "./EscrowInfoItem";
 import ProgressStepItem from "./ProgressStepItem";
+import RaiseDisputeModal from "../../Dispute/RaiseDispute"; 
 import {
   useGetEscrowById,
   useCompleteEscrow,
@@ -26,14 +27,16 @@ const EscrowDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
+  // State for the Dispute Modal
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+
   // Get current user data
   const { data: currentUser } = useGetUserProfile();
   const currentUserId = currentUser?.id;
 
   // Fetch escrow data
   const { data: escrowData, isLoading } = useGetEscrowById(id || "");
-  const { mutate: completeEscrow, isPending: isCompleting } =
-    useCompleteEscrow();
+  const { mutate: completeEscrow, isPending: isCompleting } = useCompleteEscrow();
   const { mutate: releaseEscrow, isPending: isReleasing } = useReleaseEscrow();
 
   const escrow = escrowData?.escrow;
@@ -153,9 +156,9 @@ const EscrowDetails: React.FC = () => {
     releaseEscrow(id);
   };
 
+  // Trigger the Modal
   const handleRaiseDispute = (): void => {
-    console.log("Raise dispute for escrow:", id);
-    // navigate(`/escrow/${id}/dispute`);
+    setIsDisputeModalOpen(true);
   };
 
   const handleBack = (): void => {
@@ -302,19 +305,15 @@ const EscrowDetails: React.FC = () => {
               <section className="flex items-center justify-between">
                 <section className="flex items-center flex-1">
                   <img
-                    // Add ?. before avatar
                     src={escrow.seller?.avatar || "https://i.pravatar.cc/150"}
-                    // Add ?. before full_name and provide a fallback string
                     alt={escrow.seller?.full_name || "Seller"}
                     className="w-10 h-10 rounded-full border-2 border-white object-cover"
                   />
                   <section className="ml-3">
                     <p className="text-sm font-semibold text-gray-900">
-                      {/* Add ?. and fallback */}
                       {escrow.seller?.full_name || "Unknown Seller"}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {/* Add ?. and fallback */}
                       {escrow.seller?.user_tag || ""}
                     </p>
                   </section>
@@ -408,7 +407,6 @@ const EscrowDetails: React.FC = () => {
           </section>
 
           {/* Bottom Buttons */}
-
           {/* Seller: Can complete transaction when status is 'accepted' */}
           {escrow.status === "accepted" && isSeller && (
             <section className="sticky bottom-0 bg-white border-t border-gray-100 px-4 py-4 space-y-3">
@@ -468,7 +466,7 @@ const EscrowDetails: React.FC = () => {
             <section className="sticky bottom-0 bg-white border border-gray-100 px-4 py-4">
               <section className="text-center py-2 bg-pri rounded">
                 <p className="text-white font-semibold text-sm">
-                   Escrow  Completed <Check size={20} className="inline-block" /> 
+                   Escrow Completed <Check size={20} className="inline-block" /> 
                 </p>
                 <p className="text-sm text-gray-100 mt-1">
                   Funds have been released to the seller
@@ -476,6 +474,13 @@ const EscrowDetails: React.FC = () => {
               </section>
             </section>
           )}
+
+          {/* --- DISPUTE MODAL INTEGRATION --- */}
+          <RaiseDisputeModal 
+            isOpen={isDisputeModalOpen}
+            onClose={() => setIsDisputeModalOpen(false)}
+            escrowId={escrow.id} // Passing the current escrow ID
+          />
         </section>
       </section>
     </Layout>

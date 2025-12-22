@@ -1,40 +1,46 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAdminLogin } from '../../../Hooks/useAdmin'; 
 
 const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  // Use the admin login hook
+  const { mutate: login, isPending, isError, error } = useAdminLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      if (email === 'admin@gmail.com' && password === '123456') {
-navigate("/admin-dash")
-      } else {
-        setError('Invalid admin credentials. Please try again.');
+    // Call the login mutation
+    login(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          // Store token and user data (already handled in the hook)
+          // Navigate to admin dashboard
+          navigate('/admin-dash');
+        },
       }
-      setIsLoading(false);
-    }, 1500);
+    );
   };
+
+  // Extract error message
+  const errorMessage = isError && error 
+    ? (error as any).response?.data?.error || error.message || 'Invalid admin credentials. Please try again.'
+    : '';
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-xl  overflow-hidden">
+      <div className="max-w-md w-full bg-white rounded-xl overflow-hidden">
         
         {/* Header Section */}
         <div className="text-center pt-8">
-     
           <h2 className="text-2xl font-bold text-pri">Admin Portal</h2>
-          <p className="text-pri  text-sm">Sign in to manage your dashboard</p>
+          <p className="text-pri text-sm">Sign in to manage your dashboard</p>
         </div>
 
         {/* Form Section */}
@@ -42,9 +48,9 @@ navigate("/admin-dash")
           <form onSubmit={handleSubmit} className="space-y-6">
             
             {/* Error Message */}
-            {error && (
+            {isError && errorMessage && (
               <div className="bg-red-50 text-red-500 text-sm p-3 rounded-lg border border-red-100 flex items-center gap-2">
-                 <span>•</span> {error}
+                <span>•</span> {errorMessage}
               </div>
             )}
 
@@ -65,6 +71,7 @@ navigate("/admin-dash")
                   placeholder="admin@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isPending}
                 />
               </div>
             </div>
@@ -75,7 +82,6 @@ navigate("/admin-dash")
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Password
                 </label>
-         
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -89,28 +95,28 @@ navigate("/admin-dash")
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isPending}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isPending}
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                 </button>
               </div>
             </div>
 
-    
-
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isPending}
               className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-pri hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${
-                isLoading ? 'opacity-70 cursor-not-allowed' : ''
+                isPending ? 'opacity-70 cursor-not-allowed' : ''
               }`}
             >
-              {isLoading ? (
+              {isPending ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -125,8 +131,6 @@ navigate("/admin-dash")
           </form>
         </div>
       </div>
-      
-   
     </div>
   );
 };

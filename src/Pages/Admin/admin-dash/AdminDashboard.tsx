@@ -1,40 +1,110 @@
 import React from 'react';
 import { 
-  Users, DollarSign, AlertCircle, TrendingUp, 
-  ArrowUpRight, ArrowDownRight, Calendar 
+  Users,  AlertCircle, TrendingUp, 
+  ArrowUpRight, ArrowDownRight, Calendar, Loader2,
+  ShieldCheck, FileText
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
 import AdminLayout from '../../../Layout/adminLayout';
-
-
-const revenueData = [
-  { name: 'Jan', revenue: 65000, expense: 45000 },
-  { name: 'Feb', revenue: 45000, expense: 38000 },
-  { name: 'Mar', revenue: 75000, expense: 48000 },
-  { name: 'Apr', revenue: 55000, expense: 40000 },
-  { name: 'May', revenue: 85000, expense: 55000 },
-  { name: 'Jun', revenue: 95000, expense: 60000 },
-  { name: 'Jul', revenue: 70000, expense: 50000 },
-  { name: 'Aug', revenue: 60000, expense: 45000 },
-  { name: 'Sep', revenue: 50000, expense: 35000 },
-  { name: 'Oct', revenue: 65000, expense: 42000 },
-  { name: 'Nov', revenue: 80000, expense: 58000 },
-  { name: 'Dec', revenue: 75000, expense: 52000 },
-];
-
-const transactions = [
-  { id: 'TRX-9821', user: 'Sarah Jenkins', amount: '$1,240.00', status: 'Completed', date: 'Oct 24, 2023' },
-  { id: 'TRX-9822', user: 'Marcus Thorne', amount: '$85.50', status: 'Pending', date: 'Oct 24, 2023' },
-  { id: 'TRX-9823', user: 'Elena Rodriguez', amount: '$350.00', status: 'Completed', date: 'Oct 23, 2023' },
-  { id: 'TRX-9824', user: 'David Kim', amount: '$120.00', status: 'Failed', date: 'Oct 23, 2023' },
-];
+import { useGetDashboardStats, useGetAllTransactions } from '../../../Hooks/useAdmin'; 
 
 const AdminDashboard: React.FC = () => {
+  // Fetch dashboard stats
+  const { data: statsData, isLoading: statsLoading, isError: statsError } = useGetDashboardStats();
+  
+  // Fetch recent transactions (first page, limit 5)
+  const { data: transactionsData, isLoading: transactionsLoading } = useGetAllTransactions(1, 5);
+
+  // Mock revenue data for chart (you can replace with real data if available)
+  const revenueData = [
+    { name: 'Jan', revenue: 65000 },
+    { name: 'Feb', revenue: 45000 },
+    { name: 'Mar', revenue: 75000 },
+    { name: 'Apr', revenue: 55000 },
+    { name: 'May', revenue: 85000 },
+    { name: 'Jun', revenue: 95000 },
+    { name: 'Jul', revenue: 70000 },
+    { name: 'Aug', revenue: 60000 },
+    { name: 'Sep', revenue: 50000 },
+    { name: 'Oct', revenue: 65000 },
+    { name: 'Nov', revenue: 80000 },
+    { name: 'Dec', revenue: 75000 },
+  ];
+
+  // Calculate growth rates
+  const calculateGrowth = (current: number, total: number) => {
+    if (total === 0) return '0%';
+    return `${((current / total) * 100).toFixed(1)}%`;
+  };
+
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  // Format date
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  // Get transaction status color
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+      case 'success':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'failed':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Loading state
+  if (statsLoading) {
+    return (
+      <AdminLayout>
+        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
+            <p className="text-gray-600">Loading dashboard...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  // Error state
+  if (statsError) {
+    return (
+      <AdminLayout>
+        <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md">
+            <h3 className="text-red-800 font-semibold mb-2">Error Loading Dashboard</h3>
+            <p className="text-red-600 text-sm">Failed to load dashboard statistics</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  const stats = statsData?.stats;
+
   return (
     <AdminLayout>   
-      <div className=" space-y-6 bg-gray-50 min-h-screen">
+      <div className="space-y-6 bg-gray-50 min-h-screen">
         
         {/* Page Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -51,38 +121,92 @@ const AdminDashboard: React.FC = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard 
-            title="Total Revenue" 
-            value="$128,430" 
-            trend="+12.5%" 
+            title="Total Users" 
+            value={stats?.total_users.toLocaleString() || '0'} 
+            trend={`${stats?.active_users || 0} Active`}
             trendUp={true} 
-            icon={<DollarSign size={24} className="text-white" />} 
+            icon={<Users size={24} className="text-white" />} 
             color="bg-indigo-600"
           />
           <StatCard 
-            title="Active Users" 
-            value="24,592" 
-            trend="+5.2%" 
+            title="Active Escrows" 
+            value={stats?.active_escrows.toLocaleString() || '0'} 
+            trend={`${calculateGrowth(stats?.active_escrows || 0, stats?.total_escrows || 1)} of Total`}
             trendUp={true} 
-            icon={<Users size={24} className="text-white" />} 
+            icon={<ShieldCheck size={24} className="text-white" />} 
             color="bg-blue-500"
           />
           <StatCard 
             title="Pending Disputes" 
-            value="14" 
-            trend="Requires Action" 
+            value={stats?.pending_disputes.toString() || '0'} 
+            trend={stats?.pending_disputes ? "Requires Action" : "All Clear"}
             trendUp={false}
-            isWarning={true}
+            isWarning={!!stats?.pending_disputes}
             icon={<AlertCircle size={24} className="text-white" />} 
             color="bg-orange-500"
           />
           <StatCard 
-            title="Growth Rate" 
-            value="8.4%" 
-            trend="-2.1%" 
-            trendUp={false} 
-            icon={<TrendingUp size={24} className="text-white" />} 
+            title="Total Transactions" 
+            value={stats?.total_transactions.toLocaleString() || '0'} 
+            trend={`${stats?.completed_escrows || 0} Completed`}
+            trendUp={true} 
+            icon={<FileText size={24} className="text-white" />} 
             color="bg-emerald-500"
           />
+        </div>
+
+        {/* Secondary Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Completed Escrows</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-2">
+                  {stats?.completed_escrows.toLocaleString() || '0'}
+                </h3>
+              </div>
+              <div className="p-3 bg-green-100 rounded-lg">
+                <TrendingUp className="text-green-600" size={24} />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">
+              {calculateGrowth(stats?.completed_escrows || 0, stats?.total_escrows || 1)} success rate
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Suspended Users</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-2">
+                  {stats?.suspended_users.toLocaleString() || '0'}
+                </h3>
+              </div>
+              <div className="p-3 bg-red-100 rounded-lg">
+                <AlertCircle className="text-red-600" size={24} />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">
+              {calculateGrowth(stats?.suspended_users || 0, stats?.total_users || 1)} of total users
+            </p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500 font-medium">Resolved Disputes</p>
+                <h3 className="text-2xl font-bold text-gray-900 mt-2">
+                  {stats?.resolved_disputes.toLocaleString() || '0'}
+                </h3>
+              </div>
+              <div className="p-3 bg-blue-100 rounded-lg">
+                <ShieldCheck className="text-blue-600" size={24} />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-3">
+              {stats?.total_disputes || 0} total disputes filed
+            </p>
+          </div>
         </div>
 
         {/* Main Content Split */}
@@ -91,14 +215,14 @@ const AdminDashboard: React.FC = () => {
           {/* Left Column: Chart & Transactions */}
           <div className="lg:col-span-2 space-y-6">
             
-            {/* Revenue Chart (Real Recharts Implementation) */}
+            {/* Revenue Chart */}
             <div className="bg-white p-6 rounded-xl border border-gray-200">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-gray-900">Revenue Analytics</h3>
+                <h3 className="font-bold text-gray-900">Platform Activity</h3>
                 <div className="flex gap-4">
-                   <div className="flex items-center gap-2 text-xs text-gray-500">
-                     <div className="w-2 h-2 rounded-full bg-indigo-600"></div>Income
-                   </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="w-2 h-2 rounded-full bg-indigo-600"></div>Activity
+                  </div>
                 </div>
               </div>
               
@@ -117,17 +241,17 @@ const AdminDashboard: React.FC = () => {
                       axisLine={false} 
                       tickLine={false} 
                       tick={{ fill: '#9CA3AF', fontSize: 12 }}
-                      tickFormatter={(value) => `$${value/1000}k`} 
+                      tickFormatter={(value) => `${value/1000}k`} 
                     />
                     <Tooltip 
                       cursor={{ fill: '#F3F4F6' }}
-                      contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', boxShadow: 'none' }}
+                      contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', boxf: 'none' }}
                       itemStyle={{ color: '#111827', fontWeight: 600 }}
-                      formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                      formatter={(value: number) => [value.toLocaleString(), 'Activity']}
                     />
                     <Bar 
                       dataKey="revenue" 
-                      fill=" #053014" 
+                      fill="#053014" 
                       radius={[4, 4, 0, 0]} 
                       barSize={40}
                     />
@@ -136,104 +260,136 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Recent Orders Table */}
+            {/* Recent Transactions Table */}
             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
               <div className="p-6 border-b border-gray-200 flex justify-between items-center">
                 <h3 className="font-bold text-gray-900">Recent Transactions</h3>
-                <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">View All</button>
+                <button className="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                  View All
+                </button>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-gray-50 text-gray-500 border-b border-gray-100">
-                    <tr>
-                      <th className="px-6 py-3 font-medium">Transaction ID</th>
-                      <th className="px-6 py-3 font-medium">User</th>
-                      <th className="px-6 py-3 font-medium">Date</th>
-                      <th className="px-6 py-3 font-medium">Amount</th>
-                      <th className="px-6 py-3 font-medium text-right">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    {transactions.map((trx) => (
-                      <tr key={trx.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 text-gray-500 font-mono text-xs">{trx.id}</td>
-                        <td className="px-6 py-4 font-medium text-gray-900">{trx.user}</td>
-                        <td className="px-6 py-4 text-gray-500">{trx.date}</td>
-                        <td className="px-6 py-4 text-gray-900 font-medium">{trx.amount}</td>
-                        <td className="px-6 py-4 text-right">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                            ${trx.status === 'Completed' ? 'bg-green-100 text-green-800' : 
-                              trx.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 
-                              'bg-red-100 text-red-800'}`}>
-                            {trx.status}
-                          </span>
-                        </td>
+              
+              {transactionsLoading ? (
+                <div className="p-8 flex justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-gray-50 text-gray-500 border-b border-gray-100">
+                      <tr>
+                        <th className="px-6 py-3 font-medium">Reference</th>
+                        <th className="px-6 py-3 font-medium">Type</th>
+                        <th className="px-6 py-3 font-medium">Date</th>
+                        <th className="px-6 py-3 font-medium">Amount</th>
+                        <th className="px-6 py-3 font-medium text-right">Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {transactionsData?.transactions && transactionsData.transactions.length > 0 ? (
+                        transactionsData.transactions.map((trx) => (
+                          <tr key={trx.id} className="hover:bg-gray-50">
+                            <td className="px-6 py-4 text-gray-500 font-mono text-xs">
+                              {trx.reference.slice(0, 16)}...
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">
+                                {trx.type}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-gray-500">
+                              {formatDate(trx.created_at)}
+                            </td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">
+                              {formatCurrency(trx.amount)}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(trx.status)}`}>
+                                {trx.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                            No transactions yet
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Right Column: Activity Feed */}
+          {/* Right Column: Quick Actions & Stats */}
           <div className="lg:col-span-1 space-y-6">
             
-            {/* Quick Actions - Flat Design */}
-            <div className="bg-white rounded-xl p-6 text border  border-gray-200">
-               <h3 className="font-bold text-lg mb-1">Quick Actions</h3>
-               <p className=" text-sm mb-6">Shortcuts to manage your platform.</p>
-               <div className="space-y-3">
-                 <button className="w-full bg-pri hover:bg-white/20 border border-white/20 py-2.5 text-white rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
-                   Resolve Disputes
-                 </button>
-                 <button className="w-full bg-white border-pri  border text-pri py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-50 transition flex items-center justify-center gap-2">
-                   Create Invoice
-                 </button>
-               </div>
+            {/* Quick Actions */}
+            <div className="bg-white rounded-xl p-6 border border-gray-200">
+              <h3 className="font-bold text-lg mb-1">Quick Actions</h3>
+              <p className="text-sm text-gray-500 mb-6">Shortcuts to manage your platform.</p>
+              <div className="space-y-3">
+                <button className="w-full bg-pri hover:bg-indigo-700 py-2.5 text-white rounded-lg text-sm font-medium transition flex items-center justify-center gap-2">
+                  <AlertCircle size={16} />
+                  Resolve Disputes
+                </button>
+                <button className="w-full bg-white border-pri border text-pri py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-50 transition flex items-center justify-center gap-2">
+                  <Users size={16} />
+                  Manage Users
+                </button>
+              </div>
             </div>
 
-            {/* Activity Feed */}
-            <div className="bg-white p-6 rounded-xl border border-gray-200 h-fit">
-              <h3 className="font-bold text-gray-900 mb-6">Real-time Activity</h3>
-              <div className="space-y-6 relative">
-                {/* Vertical Line */}
-                <div className="absolute left-2.5 top-2 bottom-2 w-0.5 bg-gray-100"></div>
-
-                {/* Item 1 */}
-                <div className="flex gap-4 relative">
-                  <div className="w-5 h-5 rounded-full bg-blue-100 border-2 border-white flex items-center justify-center z-10 shrink-0">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">New Registration</p>
-                    <p className="text-xs text-gray-500 mt-0.5"><span className="font-medium text-gray-700">Priya Patel</span> joined the platform.</p>
-                    <p className="text-xs text-gray-400 mt-1">2 mins ago</p>
-                  </div>
+            {/* System Stats */}
+            <div className="bg-white p-6 rounded-xl border border-gray-200">
+              <h3 className="font-bold text-gray-900 mb-6">System Overview</h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Total Escrows</span>
+                  <span className="text-sm font-bold text-gray-900">
+                    {stats?.total_escrows.toLocaleString() || '0'}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-2">
+                  <div 
+                    className="bg-indigo-600 h-2 rounded-full" 
+                    style={{ 
+                      width: `${((stats?.completed_escrows || 0) / (stats?.total_escrows || 1)) * 100}%` 
+                    }}
+                  ></div>
+                </div>
+                
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-sm text-gray-600">Active Users</span>
+                  <span className="text-sm font-bold text-gray-900">
+                    {stats?.active_users.toLocaleString() || '0'}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-100 rounded-full h-2">
+                  <div 
+                    className="bg-green-600 h-2 rounded-full" 
+                    style={{ 
+                      width: `${((stats?.active_users || 0) / (stats?.total_users || 1)) * 100}%` 
+                    }}
+                  ></div>
                 </div>
 
-                {/* Item 2 */}
-                <div className="flex gap-4 relative">
-                  <div className="w-5 h-5 rounded-full bg-green-100 border-2 border-white flex items-center justify-center z-10 shrink-0">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Payment Received</p>
-                    <p className="text-xs text-gray-500 mt-0.5"><span className="font-medium text-gray-700">Michael Okpara</span> paid invoice #992.</p>
-                    <p className="text-xs text-gray-400 mt-1">1 hour ago</p>
-                  </div>
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-sm text-gray-600">Dispute Resolution Rate</span>
+                  <span className="text-sm font-bold text-gray-900">
+                    {calculateGrowth(stats?.resolved_disputes || 0, stats?.total_disputes || 1)}
+                  </span>
                 </div>
-
-                 {/* Item 3 */}
-                 <div className="flex gap-4 relative">
-                  <div className="w-5 h-5 rounded-full bg-red-100 border-2 border-white flex items-center justify-center z-10 shrink-0">
-                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">System Alert</p>
-                    <p className="text-xs text-gray-500 mt-0.5">High server load detected on US-East.</p>
-                    <p className="text-xs text-gray-400 mt-1">3 hours ago</p>
-                  </div>
+                <div className="w-full bg-gray-100 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full" 
+                    style={{ 
+                      width: `${((stats?.resolved_disputes || 0) / (stats?.total_disputes || 1)) * 100}%` 
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -257,18 +413,17 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, trend, trendUp, isWarning, icon, color }) => {
   return (
-    // Removed shadow-sm and hover:shadow-md
     <div className="bg-white p-6 rounded-xl border border-gray-200 flex items-start justify-between">
       <div>
         <p className="text-sm font-medium text-gray-500">{title}</p>
         <h3 className="text-2xl font-bold text-gray-900 mt-2">{value}</h3>
         <div className={`flex items-center gap-1 mt-2 text-sm font-medium ${isWarning ? 'text-orange-600' : trendUp ? 'text-green-600' : 'text-red-600'}`}>
           {isWarning ? (
-             <AlertCircle size={14} /> 
+            <AlertCircle size={14} /> 
           ) : trendUp ? (
-             <ArrowUpRight size={14} />
+            <ArrowUpRight size={14} />
           ) : (
-             <ArrowDownRight size={14} />
+            <ArrowDownRight size={14} />
           )}
           <span>{trend}</span>
         </div>
