@@ -22,7 +22,7 @@ const CustomerReviewsSection: React.FC = () => {
           <span>Testimonials</span>
         </div>
         <h2 className="text-4xl md:text-5xl font-bold text-[#053b2f] mt-3">
-          Customer Reviews
+          Trusted by Traders
         </h2>
       </div>
 
@@ -47,7 +47,7 @@ const CustomerReviewsSection: React.FC = () => {
         {/* Rating & Count */}
         <div className="flex items-center gap-2">
           {renderStars(5)}
-          <span className="text-gray-600 font-medium">35,000+ reviews</span>
+          <span className="text-gray-600 font-medium">10,000+ Secured Trades</span>
         </div>
       </div>
 
@@ -57,13 +57,13 @@ const CustomerReviewsSection: React.FC = () => {
         {/* --- Left Card: Stats --- */}
         <div className="lg:col-span-2 bg-[#bef264] p-8 md:p-12 rounded-[2rem] flex flex-col justify-between">
           <div>
-            <h3 className="text-6xl md:text-7xl font-bold text-[#053b2f]">70k</h3>
+            <h3 className="text-6xl md:text-7xl font-bold text-[#053b2f]">99.9%</h3>
             <p className="text-xl md:text-2xl font-medium text-[#053b2f] mt-4 leading-snug">
-              Making more transactions per second and getting better at it!
+              Dispute resolution success rate. We ensure fairness for both sides.
             </p>
           </div>
           <p className="text-sm font-medium text-[#053b2f] mt-12">
-            The number of impacts
+            Safety Metrics
           </p>
         </div>
 
@@ -71,10 +71,10 @@ const CustomerReviewsSection: React.FC = () => {
         <div className="lg:col-span-3 bg-[#f3f4f6] p-8 md:p-12 rounded-[2rem]">
           {renderStars(5)}
           <h3 className="text-2xl md:text-3xl font-bold text-[#053b2f] mt-4 leading-tight">
-            Banki is a one-stop shop for everything financial in your life.
+            SafeQly eliminated my fear of online scams completely.
           </h3>
           <p className="text-gray-600 mt-4 text-lg leading-relaxed">
-            Banki's calendar tools are super handy for keeping track of key market events. The earnings and economic calendars keep me in the loop and help me map out my investment game plan just right.
+            As a freelance designer, I used to chase clients for payments. With SafeQly, the client deposits the funds before I start working. I see the money is there, do the work, and get paid instantly upon approval. It's a game changer.
           </p>
 
           {/* User Profile & Date */}
@@ -87,10 +87,10 @@ const CustomerReviewsSection: React.FC = () => {
               />
               <div>
                 <h4 className="font-bold text-[#053b2f] text-lg">Esther Howard</h4>
-                <p className="text-gray-500">Passion</p>
+                <p className="text-gray-500">Freelance Designer</p>
               </div>
             </div>
-            <span className="text-gray-500 text-sm">10 Sep, 2023</span>
+            <span className="text-gray-500 text-sm">12 Dec, 2024</span>
           </div>
         </div>
 

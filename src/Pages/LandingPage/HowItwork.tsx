@@ -73,7 +73,7 @@ const HowItWorks: React.FC = () => {
                   <div className={`w-full md:w-1/2 pl-20 md:pl-0 ${isEven ? 'md:pr-20 md:text-right' : 'md:pl-20 md:text-left'}`}>
                     
                     {/* Step Number Tag */}
-                    <span className={`inline-block mb-2 text-xs font-bold tracking-widest uppercase py-1 px-3 rounded-full bg-[#dcfce7] text-[#166534] ${isEven ? 'md:ml-auto' : 'md:mr-auto'}`}>
+                    <span className={`inline-block mb-2 text-xs font-bold tracking-widest uppercase py-1 px-3 rounded-full border text-[#166534] ${isEven ? 'md:ml-auto' : 'md:mr-auto'}`}>
                       Step {item.step}
                     </span>
                     

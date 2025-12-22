@@ -11,45 +11,32 @@ const Footer: React.FC = () => {
           {/* Column 1: Logo */}
           <div className="flex flex-col items-start">
             <div className="flex items-center gap-2 mb-4">
-              {/* Custom SVG Logo (White Text variant) */}
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="20" width="6" height="12" rx="1" fill="#bef264" />
-                <rect x="12" y="14" width="6" height="18" rx="1" fill="#a3e635" />
-                <rect x="20" y="8" width="6" height="24" rx="1" fill="#84cc16" />
-                {/* Arrow is white in footer for contrast */}
-                <path 
-                  d="M2 28 C 5 28, 15 28, 28 15 M 28 15 L 22 15 M 28 15 L 28 21" 
-                  stroke="white" 
-                  strokeWidth="2.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                />
-              </svg>
               <span className="font-serif text-3xl font-bold tracking-tight text-white">
                SafeQly
               </span>
             </div>
+            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
+              Secure escrow payments for the digital age. Buy and sell with total confidence.
+            </p>
           </div>
 
-          {/* Column 2: Navigation */}
+          {/* Column 2: Main Menu */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white">Navigation</h4>
+            <h4 className="text-lg font-bold mb-6 text-white">Menu</h4>
             <ul className="space-y-4 text-gray-300">
               <li><a href="#" className="hover:text-[#bef264] transition-colors">Home</a></li>
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">About</a></li>
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">Pricing</a></li>
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">Blog</a></li>
+              <li><a href="#" className="hover:text-[#bef264] transition-colors">How It Works</a></li>
+              <li><a href="#" className="hover:text-[#bef264] transition-colors">Features</a></li>
             </ul>
           </div>
 
-          {/* Column 3: Other Pages */}
+          {/* Column 3: Resources */}
           <div>
-            <h4 className="text-lg font-bold mb-6 text-white">Other pages</h4>
+            <h4 className="text-lg font-bold mb-6 text-white">Resources</h4>
             <ul className="space-y-4 text-gray-300">
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">Features</a></li>
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">Careers</a></li>
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">Contact</a></li>
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">404</a></li>
+              <li><a href="#" className="hover:text-[#bef264] transition-colors">FAQ</a></li>
+              <li><a href="#" className="hover:text-[#bef264] transition-colors">Fee Calculator</a></li>
+              <li><a href="#" className="hover:text-[#bef264] transition-colors">Contact Us</a></li>
             </ul>
           </div>
 
@@ -59,7 +46,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-4 text-gray-300">
               <li><a href="#" className="hover:text-[#bef264] transition-colors">Facebook</a></li>
               <li><a href="#" className="hover:text-[#bef264] transition-colors">Instagram</a></li>
-              <li><a href="#" className="hover:text-[#bef264] transition-colors">X</a></li>
+              <li><a href="#" className="hover:text-[#bef264] transition-colors">X (Twitter)</a></li>
             </ul>
           </div>
         </div>
@@ -71,7 +58,7 @@ const Footer: React.FC = () => {
             {/* Text */}
             <div className="max-w-md">
               <h3 className="text-3xl font-bold mb-2 text-white">Join our newsletter</h3>
-              <p className="text-gray-400">Keep up to date with everything Banki</p>
+              <p className="text-gray-400">Keep up to date with everything SafeQly</p>
             </div>
 
             {/* Form */}
@@ -89,7 +76,10 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-   
+        {/* --- Copyright --- */}
+        <div className="border-t border-white/10 pt-8 text-center md:text-left">
+           <p className="text-gray-500 text-sm">© {new Date().getFullYear()} SafeQly. All rights reserved.</p>
+        </div>
 
       </div>
     </footer>

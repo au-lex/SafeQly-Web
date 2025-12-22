@@ -4,7 +4,7 @@ import { ArrowUpRight } from 'lucide-react';
 const HeroSection: React.FC = () => {
   return (
     <>
-      <div className="relative lg:min-h-cscreen w-full overflow-hidden flex pt-[4rem] lg:pt-[8rem] justify-center bg-white">
+      <div className="relative lg:min-h-cscreen w-full overflow-hidden flex pt-[4rem]  lg:pt-[12rem] justify-center bg-white">
         
         {/* --- Main Content Container --- */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
@@ -86,7 +86,7 @@ const HeroSection: React.FC = () => {
         </div>
 
         {/* Bottom Left: Chart */}
-        <div className="absolute bottom-[20%] left-[15%] animate-float-fast hidden md:block">
+        <div className="absolute bottom-[10%] left-[15%] animate-float-fast hidden md:block">
           <div className="bg-white border border-pri w-16 h-16 flex justify-center items-center overflow-hidden rounded-full shadow-[0_20px_40px_-10px_rgba(0,0,0,0.1)]">
             <img src="https://i.pinimg.com/1200x/3e/f3/50/3ef350dc86cc82a092463e5d795654b5.jpg" className='w-full h-full object-cover' alt="" />
           </div>
