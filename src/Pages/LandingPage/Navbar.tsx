@@ -1,107 +1,175 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Link, NavLink,  } from 'react-router-dom';
+import { Menu, X, ChevronDown, ArrowRight, Home } from 'lucide-react';
+import Logo from './Logo';
 
-const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+const Header: React.FC = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Handle scroll effect
+
+  const navLinks = [
+    { name: 'Home', path: '/', isHome: true }, 
+    { name: 'Features', path: '/features' },
+    { name: 'About', path: '/about' },
+    { name: 'Pricing', path: '/pricing' },
+    { name: 'Blog', path: '/blog' },
+
+    { name: 'Pages', path: '/pages', hasDropdown: true }, 
+  ];
+
+  // Prevent scrolling on the body when menu is open
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isMobileMenuOpen]);
 
   return (
-    <nav 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out ${
-        isScrolled 
-          ? 'bg-white/80 backdrop-blur-md border-b border-slate-200/50 shadow-sm py-2' 
-          : 'bg-white border-b border-transparent py-4'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-12">
-          
-          {/* Logo */}
-          <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo(0, 0)}>
-            <div className="bg-pri p-1.5 rounded-lg mr-2">
-          
-            </div>
-            <span className="text-xl font-bold text-slate-900 tracking-tight">
-              SafeQly
-            </span>
-          </div>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {['How it Works', 'Features', 'Pricing'].map((item) => (
-              <a 
-                key={item} 
-                href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} 
-                className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors duration-200"
-              >
-                {item}
-              </a>
-            ))}
+    <>
+      <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
             
-            <div className="h-6 w-px bg-slate-200 mx-2"></div> {/* Vertical Divider */}
+            {/* --- Logo Section (Linked to Home) --- */}
+            <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+               <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+                 <Logo />
+               </Link>
+            </div>
 
-            <button className="text-sm font-semibold text-slate-700 hover:text-blue-600 transition-colors duration-200">
-              Log In
-            </button>
-            <button className="bg-pri text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-blue-700 active:transform active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg">
-              Get Started
-            </button>
-          </div>
+            {/* --- Desktop Navigation --- */}
+            <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.name}
+                  to={link.path}
+               
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex items-center gap-2 bg-[#f2f4f3] text-[#053b2f] px-4 py-2 rounded-full font-medium transition-colors" // Active styles
+                      : "group flex items-center gap-1 text-gray-600 hover:text-[#053b2f] hover:bg-gray-50 font-medium px-4 py-2 rounded-full transition-all" // Inactive styles
+                  }
+                >
+            
+                  {({ isActive }) => (
+                    <>
+                      {isActive && link.isHome && (
+                        <div className="w-6 h-6 bg-[#84cc16] rounded-full flex items-center justify-center text-white">
+                          <Home className="w-3 h-3 fill-current" />
+                        </div>
+                      )}
+                      <span>{link.name}</span>
+                      {link.hasDropdown && (
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isActive ? 'text-[#053b2f] rotate-180' : 'text-gray-400 group-hover:text-[#053b2f]'}`} />
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex items-center md:hidden">
-            <button 
-              onClick={() => setIsOpen(!isOpen)} 
-              className="p-2 rounded-md text-slate-600 hover:bg-slate-100 transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            {/* --- CTA Button (Desktop Link) --- */}
+            <div className="hidden md:flex items-center">
+               <Link 
+                  to="/login"
+                  className="group bg-[#0f4c3a] hover:bg-[#093528] text-white text-sm font-medium pl-6 pr-1 py-1.5 rounded-full flex items-center transition-all duration-300"
+               >
+                  <span className="mr-3 text-white">Log In</span>
+                  <div className="bg-white text-[#0f4c3a] p-1.5 rounded-full group-hover:rotate-45 transition-transform duration-300">
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+               </Link>
+            </div>
+
+            {/* --- Mobile Menu Button --- */}
+            <div className="md:hidden flex items-center z-50">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-gray-600 hover:text-[#053b2f] focus:outline-none p-2"
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile Menu Dropdown (Animated) */}
+      {/* ================= MOBILE MENU OVERLAY & DRAWER ================= */}
+      
+      {/* 1. Backdrop Overlay */}
       <div 
-        className={`md:hidden absolute top-full left-0 w-full bg-white border-b border-slate-100 shadow-lg transform transition-all duration-300 ease-in-out origin-top ${
-          isOpen ? 'opacity-100 scale-y-100 visible' : 'opacity-0 scale-y-95 invisible'
+          className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity duration-300 ${
+            isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
+          }`}
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+      />
+
+      {/* 2. Sliding Drawer Menu */}
+      <div 
+        className={`md:hidden fixed top-0 left-0 h-screen w-[280px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex flex-col p-4 space-y-4">
-          <a 
-            href="#how-it-works" 
-            className="block px-4 py-3 rounded-lg text-slate-600 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            How it Works
-          </a>
-          <a 
-            href="#features" 
-            className="block px-4 py-3 rounded-lg text-slate-600 hover:bg-blue-50 hover:text-blue-600 font-medium transition-colors"
-            onClick={() => setIsOpen(false)}
-          >
-            Features
-          </a>
-          <div className="h-px bg-slate-100 my-2"></div>
-          <button className="w-full text-left px-4 py-3 text-slate-700 font-semibold hover:text-blue-600">
-            Log In
-          </button>
-          <button className="w-full bg-pri text-white px-4 py-3 rounded-xl font-medium shadow-md active:scale-95 transition-transform">
-            Get Started
-          </button>
+        {/* Header inside drawer */}
+        <div className="flex items-center justify-between px-4 h-16 border-b border-gray-100">
+           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+              <Logo />
+           </Link>
+    
+        </div>
+
+        {/* Menu Links Container */}
+        <div className="px-4 py-6 space-y-2 flex flex-col h-[calc(100vh-64px)] overflow-y-auto bg-white pb-20">
+          {navLinks.map((link) => (
+            <NavLink
+              key={link.name}
+              to={link.path}
+              onClick={() => setIsMobileMenuOpen(false)} 
+              className={({ isActive }) =>
+                `block px-3 py-2.5 rounded-lg text-base font-medium transition-colors ${
+                  isActive 
+                    ? "bg-[#f2f4f3] text-[#053b2f]" 
+                    : "text-gray-600 hover:bg-gray-50 hover:text-[#053b2f]"
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-3">
+                    {/* Only show Home icon if active AND it's the home link */}
+                     {isActive && link.isHome && <Home className="w-5 h-5 text-[#84cc16]" />}
+                     {link.name}
+                  </span>
+                  {link.hasDropdown && <ChevronDown className={`w-4 h-4 transition-transform ${isActive ? 'rotate-180' : ''} text-gray-400`} />}
+                </div>
+              )}
+            </NavLink>
+          ))}
+          
+          {/* Mobile CTA Links */}
+          <div className="pt-6 mt-auto mb-8">
+             <Link 
+               to="/login" 
+               onClick={() => setIsMobileMenuOpen(false)}
+               className="w-full block text-center mb-3 border-2 border-[#0f4c3a] text-[#0f4c3a] font-medium py-3 rounded-full transition-colors hover:bg-[#f2f4f3]"
+             >
+              Log In
+            </Link>
+
+         
+          </div>
         </div>
       </div>
-    </nav>
+    </>
   );
 };
 
-export default Navbar;
+export default Header;

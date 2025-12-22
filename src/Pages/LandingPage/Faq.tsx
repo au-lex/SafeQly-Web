@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Minus } from 'lucide-react';
+import { Plus, Minus, HelpCircle, MessageCircle } from 'lucide-react';
 
 const faqs = [
   {
@@ -33,20 +33,28 @@ const FAQ: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-white font-sans">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
+        {/* --- Header --- */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">
+          {/* Pill Tag */}
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-gray-50 border border-gray-100 shadow-sm">
+            <HelpCircle className="w-4 h-4 text-[#bef264] fill-[#053b2f]" />
+            <span className="text-xs font-bold tracking-widest text-gray-500 uppercase">
+              Support
+            </span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#053b2f] mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-slate-600">
+          <p className="text-gray-500 text-lg">
             Everything you need to know about the platform.
           </p>
         </div>
 
-        {/* Accordion Container */}
+        {/* --- Accordion Container --- */}
         <div className="space-y-4">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
@@ -54,43 +62,64 @@ const FAQ: React.FC = () => {
             return (
               <div 
                 key={index} 
-                className={`border rounded-xl transition-all duration-200 ${
-                  isOpen ? 'border-blue-200 bg-blue-50/30' : 'border-slate-200 bg-white hover:border-slate-300'
+                className={`border rounded-2xl transition-all duration-300 overflow-hidden ${
+                  isOpen 
+                    ? 'border-[#053b2f] bg-[#f2f8f3] shadow-md' 
+                    : 'border-gray-100 bg-white hover:border-[#bef264] hover:shadow-sm'
                 }`}
               >
                 <button
                   onClick={() => toggleFAQ(index)}
-                  className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
+                  className="w-full flex items-center justify-between p-6 text-left focus:outline-none group"
                 >
-                  <span className={`font-semibold text-lg ${isOpen ? 'text-blue-700' : 'text-slate-900'}`}>
+                  <span className={`font-bold text-lg transition-colors duration-300 ${
+                    isOpen ? 'text-[#053b2f]' : 'text-gray-700 group-hover:text-[#053b2f]'
+                  }`}>
                     {faq.question}
                   </span>
-                  <span className={`ml-6 flex-shrink-0 text-blue-600`}>
-                    {isOpen ? <Minus className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
+                  
+                  {/* Icon Bubble */}
+                  <span className={`ml-6 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${
+                    isOpen ? 'bg-[#053b2f] text-white rotate-180' : 'bg-gray-100 text-gray-500 group-hover:bg-[#bef264] group-hover:text-[#053b2f]'
+                  }`}>
+                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                   </span>
                 </button>
 
                 {/* Answer Dropdown */}
-                {isOpen && (
-                  <div className="px-6 pb-6 pt-0">
-                    <p className="text-slate-600 leading-relaxed">
-                      {faq.answer}
-                    </p>
+                <div 
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-6 pb-6 pt-0">
+                      <p className="text-gray-600 leading-relaxed border-t border-[#053b2f]/10 pt-4">
+                        {faq.answer}
+                      </p>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
         </div>
 
-        {/* Contact Support Link */}
-        <div className="mt-12 text-center">
-          <p className="text-slate-600">
-            Still have questions?{' '}
-            <a href="#" className="text-blue-600 font-semibold hover:underline">
-              Chat with our support team
-            </a>
-          </p>
+        {/* --- Contact Support Link --- */}
+        <div className="mt-16 text-center">
+          <div className="inline-block p-1 rounded-full bg-gray-50 border border-gray-100 pr-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-[#053b2f] text-white p-2 rounded-full">
+                <MessageCircle className="w-4 h-4" />
+              </div>
+              <p className="text-gray-500 text-sm font-medium">
+                Still have questions?{' '}
+                <a href="#" className="text-[#053b2f] font-bold hover:underline decoration-[#bef264] underline-offset-4 decoration-2 transition-all">
+                  Chat with our support team
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
 
       </div>

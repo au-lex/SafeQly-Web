@@ -17,7 +17,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     processing: 'bg-blue-100 text-blue-800',
   };
   
-  const icons: Record<string, JSX.Element> = {
+  const icons: Record<string, React.ReactElement> = {
     success: <CheckCircle size={14} />,
     completed: <CheckCircle size={14} />,
     pending: <Clock size={14} />,
@@ -100,10 +100,10 @@ const TransactionModal = ({ txn, onClose }: { txn: Transaction | null, onClose: 
                 <CreditCard size={14} /> {txn.type}
               </span>
             </div>
-            {txn.User && (
+            {txn.user && (
               <div className="flex justify-between">
                 <span className="text-sm text-gray-500">User</span>
-                <span className="text-sm font-medium text-gray-900">{txn.User.full_name}</span>
+                <span className="text-sm font-medium text-gray-900">{txn.user.full_name}</span>
               </div>
             )}
             {txn.description && (
@@ -362,13 +362,6 @@ const Finance: React.FC = () => {
                         <td className="px-6 py-4 text-sm font-mono text-gray-600">#{txn.id}</td>
                         <td className="px-6 py-4 text-sm font-medium text-gray-900">
                           <div className="flex items-center gap-2">
-                            {txn.user?.avatar && (
-                              <img 
-                                src={txn.user.avatar} 
-                                alt={txn.user.full_name} 
-                                className="w-8 h-8 rounded-full object-cover"
-                              />
-                            )}
                             <div>
                               <div>{txn.user?.full_name || 'N/A'}</div>
                               <div className="text-xs text-gray-500">@{txn.user?.user_tag}</div>

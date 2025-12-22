@@ -19,9 +19,8 @@ const AdminLogin: React.FC = () => {
     login(
       { email, password },
       {
-        onSuccess: (data) => {
-          // Store token and user data (already handled in the hook)
-          // Navigate to admin dashboard
+        onSuccess: () => {
+  
           navigate('/admin-dash');
         },
       }
