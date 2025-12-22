@@ -1,102 +1,209 @@
-import React from 'react';
-import { UserCheck, Wallet, PackageCheck, Handshake } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShieldTick,  Wallet, DocumentText, Box, Coin } from 'iconsax-react';
 
-const steps = [
+interface StepItem {
+  id: number;
+  phase: string;
+  action: string;
+  tech: string;
+  logoLetter: string;
+  stepNumber: string;
+  title: string;
+  description: string;
+  icon?: React.ReactNode; 
+}
+
+const escrowData: StepItem[] = [
   {
-    icon: <UserCheck className="h-6 w-6 text-[#fff]" />, // Lime icon
-    step: "01",
+    id: 1,
+    phase: "Initiation",
+    action: "contract.build",
+    tech: "Smart Agreement",
+    logoLetter: "01",
+    stepNumber: "Step 01",
     title: "Agree Terms",
-    desc: "Buyer and Seller agree on price and scope using the contract builder."
+    description: "Buyer and Seller agree on price and scope using the contract builder. Terms are locked into the system pending approval.",
+    icon: <DocumentText size="20" color="#fff" variant="Bold" />
   },
   {
-    icon: <Wallet className="h-6 w-6 text-[#fff]" />,
-    step: "02",
+    id: 2,
+    phase: "Securing Funds",
+    action: "vault.deposit",
+    tech: "Escrow Vault",
+    logoLetter: "02",
+    stepNumber: "Step 02",
     title: "Buyer Deposits",
-    desc: "Buyer secures funds in the Vault. Seller is notified to start working."
+    description: "Buyer secures funds in the Vault. The system verifies the transaction and instantly notifies the Seller to start working.",
+    icon: <Wallet size="20" color="#fff" variant="Bold" />
   },
   {
-    icon: <PackageCheck className="h-6 w-6 text-[#fff]" />,
-    step: "03",
+    id: 3,
+    phase: "Fulfillment",
+    action: "seller.ship",
+    tech: "Tracking API",
+    logoLetter: "03",
+    stepNumber: "Step 03",
     title: "Work & Deliver",
-    desc: "Seller completes the work or ships the item for Buyer's review."
+    description: "Seller completes the work or ships the physical item. The Buyer reviews the delivery against the original agreed terms.",
+    icon: <Box size="20" color="#fff" variant="Bold" />
   },
   {
-    icon: <Handshake className="h-6 w-6 text-[#fff]" />,
-    step: "04",
+    id: 4,
+    phase: "Settlement",
+    action: "funds.release",
+    tech: "Auto-Payout",
+    logoLetter: "04",
+    stepNumber: "Step 04",
     title: "Money Released",
-    desc: "Once approved, the secure funds are instantly released to the Seller."
+    description: "Once approved by the Buyer, the secure funds are instantly released to the Seller's wallet. The transaction loop is closed.",
+    icon: <Coin size="20" color="#fff" variant="Bold" />
   }
 ];
 
-const HowItWorks: React.FC = () => {
+export const EscrowProcess: React.FC = () => {
+  const [activeStep, setActiveStep] = useState(0);
+
+  // Auto-rotate logic (Cycles every 3 seconds)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % escrowData.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section className="py-24 overflow-hidden t">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="bg-white py-12 md:py-24">
+      <div className="mx-auto max-w-5xl px-4">
         
-        {/* --- Header Section --- */}
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#fff]" />
-            <span className="text-xs font-bold tracking-widest text-gray-500 uppercase">
-              How It Works
-            </span>
+        {/* --- SHARP HEADER --- */}
+        <div className="mb-16 border-l-4 border-[#053b2f] pl-6 py-2">
+          <div className="flex items-center gap-3 mb-2">
+            <ShieldTick size={28} color='currentColor' variant="Bold" className="text-[#053b2f]" />
+            <h2 className="text-3xl font-black uppercase tracking-tighter text-[#053b2f]">
+               Escrow Process
+            </h2>
           </div>
-          <h2 className="text-2xl md:text-5xl font-serif font-bold text-[#053b2f] mb-4">
-            How SafeQly Works
-          </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-            A secure path from agreement to payment in four simple steps.
+          <p className="text-gray-500 font-mono text-xs uppercase tracking-widest">
+              Escrow Transaction Protocol
           </p>
         </div>
 
-        {/* --- Vertical Timeline Container --- */}
+        {/* --- HYBRID LAYOUT CONTAINER --- */}
         <div className="relative">
-          
-          {/* The Central Vertical Line */}
-          <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 bg-[#053b2f]/10 -translate-x-1/2 md:translate-x-0"></div>
 
-          <div className="space-y-12 md:space-y-20">
-            {steps.map((item, index) => {
-              const isEven = index % 2 === 0;
+          {/* MOBILE RAIL LINE 
+              Visible only on mobile (md:hidden). 
+              Positioned absolute to the left.
+          */}
+          <div className="absolute left-[19px] top-4 bottom-10 w-[1px] bg-gray-200 md:hidden" />
+
+          {/* GRID WRAPPER: 1 Col (Mobile) -> 2 Cols (Desktop) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6">
+            
+            {escrowData.map((item, index) => {
+              const isActive = index === activeStep;
+
               return (
-                <div key={index} className={`relative flex items-start md:items-center ${isEven ? 'md:flex-row-reverse' : ''}`}>
+                <div key={item.id} className="relative group flex flex-col h-full">
                   
-                  {/* Empty Spacer for Desktop Alignment */}
-                  <div className="hidden md:block w-1/2" />
-
-                  {/* Center Icon Bubble */}
-                  <div className="absolute left-6 md:left-1/2 -translate-x-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-[#053b2f] border-4 border-[#f2f8f3] shadow-xl z-10">
-                    {item.icon}
+                  {/* --- MOBILE ONLY: The Node on the Rail --- */}
+                  <div className={`
+                      absolute left-0 top-0 w-10 h-10 flex items-center justify-center md:hidden z-10 bg-white
+                  `}>
+                       {/* The Square Node */}
+                       <div className={`
+                          w-4 h-4 border-2 transition-all duration-300 flex items-center justify-center
+                          ${isActive 
+                              ? 'border-[#053b2f] shadow-[0_0_0_4px_rgba(5,59,47,0.1)] scale-110' 
+                              : 'border-gray-300 bg-white'}
+                       `}>
+                          <div className={`w-1.5 h-1.5 ${isActive ? 'bg-[#053b2f]' : 'bg-gray-300'} transition-colors`} />
+                       </div>
                   </div>
 
-                  {/* Content Box */}
-                  <div className={`w-full md:w-1/2 pl-20 md:pl-0 ${isEven ? 'md:pr-20 md:text-right' : 'md:pl-20 md:text-left'}`}>
-                    
-                    {/* Step Number Tag */}
-                    <span className={`inline-block mb-2 text-xs font-bold tracking-widest uppercase py-1 px-3 rounded-full border text-[#166534] ${isEven ? 'md:ml-auto' : 'md:mr-auto'}`}>
-                      Step {item.step}
-                    </span>
-                    
-                    {/* Title */}
-                    <h3 className="text-2xl font-serif font-bold text-[#053b2f] mb-3">
-                      {item.title}
-                    </h3>
-                    
-                    {/* Description */}
-                    <p className="text-gray-500 leading-relaxed text-base">
-                      {item.desc}
-                    </p>
-                  </div>
+                  {/* --- THE CARD --- */}
+              
+                  <div className={`
+                     relative flex-1 bg-white border p-6 sm:p-8 rounded-lg transition-all duration-500 ease-in-out pl-14 md:pl-8
+                     ${isActive 
+                        ? 'border-[#053b2f] shadow-xl shadow-[#053b2f]/10 scale-[1.02] z-10' 
+                        : 'border-gray-200 hover:border-[#053b2f]/40 hover:shadow-md'}
+                  `}>
+                      
+                      {/* Card Header */}
+                      <div className="flex justify-between items-start mb-6">
+                          {/* Step Badge */}
+                          <span className={`
+                              font-mono text-xs font-bold uppercase tracking-widest px-2 py-1 border rounded-sm transition-colors duration-300
+                              ${isActive 
+                                  ? 'bg-[#053b2f]/5 border-[#053b2f] text-[#053b2f]' 
+                                  : 'bg-gray-50 border-gray-200 text-gray-400'}
+                          `}>
+                              {item.stepNumber}
+                          </span>
 
+                          {/* --- DESKTOP ONLY: The Node inside the card --- */}
+                          {/* This replaces the rail node on large screens */}
+                          <div className={`
+                              hidden md:flex w-4 h-4 border-2 items-center justify-center transition-all duration-300
+                              ${isActive ? 'border-[#053b2f] animate-pulse' : 'border-gray-200'}
+                          `}>
+                              <div className={`w-1.5 h-1.5 ${isActive ? 'bg-[#053b2f]' : 'bg-gray-300'} transition-colors duration-300`} />
+                          </div>
+                      </div>
+
+                      {/* Icon & Title */}
+                      <div className="flex items-start gap-4 mb-4">
+                          <div className={`
+                            w-12 h-12 flex-shrink-0 shadow-md flex items-center justify-center rounded-sm text-white transition-all duration-500
+                            ${isActive ? 'bg-[#053b2f] scale-110' : 'bg-gray-800 scale-100'}
+                          `}>
+                              {item.icon}
+                          </div>
+                          
+                          <div>
+                              <h3 className={`text-xl font-bold transition-colors duration-300 ${isActive ? 'text-[#053b2f]' : 'text-gray-700'}`}>
+                                  {item.title}
+                              </h3>
+                              <div className="flex items-center gap-2 mt-1">
+                                  <span className="text-gray-900 font-medium text-sm">{item.phase}</span>
+                                  <span className="text-gray-300">/</span>
+                                  <span className="text-gray-400 text-xs font-mono uppercase tracking-wide">{item.tech}</span>
+                              </div>
+                          </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-gray-500 text-sm leading-relaxed border-l-2 border-gray-100 pl-4 mb-4 transition-colors">
+                          {item.description}
+                      </p>
+                    
+                      {/* Action ID Footer */}
+                      <div className="pt-4 border-t border-gray-50 flex items-center justify-between">
+                
+                         
+                         {/* "Running" Indicator */}
+                         {isActive && (
+                           <span className="flex items-center gap-1 text-[10px] font-bold text-[#053b2f] uppercase tracking-wider">
+                              <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#053b2f] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#053b2f]"></span>
+                              </span>
+                              Running...
+                           </span>
+                         )}
+                      </div>
+
+                  </div>
                 </div>
               );
             })}
+
           </div>
         </div>
-
       </div>
     </section>
   );
 };
 
-export default HowItWorks;
+export default EscrowProcess;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Info, Calculator } from 'lucide-react';
+import { Calculator, Money, InfoCircle, ArrowRight } from 'iconsax-react';
 
 const FeeCalculator: React.FC = () => {
   const [amount, setAmount] = useState<number | string>(50000);
@@ -28,126 +28,141 @@ const FeeCalculator: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-[#053b2f] text-white relative overflow-hidden font-sans">
+    <section className="py-24 bg-[#053b2f] relative overflow-hidden text-white">
       
       {/* --- Background Decorations --- */}
-      {/* Lime glow top right */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#bef264] rounded-full blur-[120px] opacity-10 pointer-events-none translate-x-1/2 -translate-y-1/2" />
+      {/* Lime glow effect in top right corner */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#bef264] rounded-full blur-[150px] opacity-10 pointer-events-none translate-x-1/3 -translate-y-1/3" />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
-          
-          {/* --- Left Text Content --- */}
-          <div className="lg:w-1/2">
-            
-            {/* Pill Tag */}
-            <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-sm">
-              <Calculator className="w-4 h-4 text-[#bef264]" />
-              <span className="text-xs font-bold tracking-widest text-[#bef264] uppercase">
-                Fee Calculator
-              </span>
-            </div>
-
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6 leading-[1.1] text-white">
-              Know exactly what you get. <br />
-              <span className="text-[#bef264]">No hidden math.</span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* --- SHARP HEADER (Lime Accent) --- */}
+        <div className="mb-16 border-l-4 border-[#bef264] pl-6 py-2">
+          <div className="flex items-center gap-3 mb-2">
+            <Calculator size={28} color='currentColor' variant="Bold" className="text-[#bef264]" />
+            <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
+              Pricing_Engine
             </h2>
-            
-            <p className="text-gray-300 text-lg mb-8 leading-relaxed max-w-lg">
-              We charge a flat <strong>1.5%</strong> service fee. Whether you are selling a gadget or a freelance service, calculate your exact settlement instantly.
-            </p>
+          </div>
+          <p className="text-gray-400 font-mono text-xs uppercase tracking-widest">
+             Fee Computation & Settlement
+          </p>
+        </div>
 
-            <ul className="space-y-5 text-gray-200">
-              <li className="flex items-center gap-4">
-                <div className="w-6 h-6 rounded-full bg-[#bef264]/20 flex items-center justify-center">
-                  <div className="w-2 h-2 bg-[#bef264] rounded-full" />
-                </div>
-                Capped at ₦25,000 per transaction
-              </li>
-              <li className="flex items-center gap-4">
-                <div className="w-6 h-6 rounded-full bg-[#bef264]/20 flex items-center justify-center">
-                   <div className="w-2 h-2 bg-[#bef264] rounded-full" />
-                </div>
-                Instant withdrawals to any Nigerian Bank
-              </li>
-              <li className="flex items-center gap-4">
-                 <div className="w-6 h-6 rounded-full bg-[#bef264]/20 flex items-center justify-center">
-                   <div className="w-2 h-2 bg-[#bef264] rounded-full" />
-                 </div>
-                Fee is refundable if transaction is cancelled
-              </li>
-            </ul>
+        <div className="flex flex-col lg:flex-row gap-16 items-start">
+          
+          {/* --- Left: Value Proposition --- */}
+          <div className="lg:w-1/2 pt-4">
+             <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+                Transparent math. <br/>
+                <span className="text-[#bef264]">No hidden logic.</span>
+             </h3>
+             
+             <p className="text-gray-300 text-lg mb-10 leading-relaxed max-w-md">
+               We charge a flat <span className="text-white font-bold">1.5%</span> service fee. Whether you are selling a gadget or a freelance service, the math stays simple.
+             </p>
+
+             {/* Tech-Style List */}
+             <div className="space-y-6">
+                {[
+                    { label: "Cap Limit", text: "Max fee capped at ₦25,000" },
+                    { label: "Settlement", text: "Instant bank withdrawal" },
+                    { label: "Security", text: "Funds held in regulated vault" }
+                ].map((item, idx) => (
+                    <div key={idx} className="flex items-start gap-4 group">
+                        <div className="w-5 h-5 mt-1 border border-gray-600 group-hover:border-[#bef264] flex items-center justify-center transition-colors">
+                             <div className="w-2 h-2 bg-[#bef264]" />
+                        </div>
+                        <div>
+                            <span className="block text-[10px] font-mono uppercase tracking-widest text-gray-500 mb-1">
+                                {item.label}
+                            </span>
+                            <span className="text-gray-200 font-medium group-hover:text-white transition-colors">
+                                {item.text}
+                            </span>
+                        </div>
+                    </div>
+                ))}
+             </div>
           </div>
 
-          {/* --- Right: The Calculator Card --- */}
-          <div className="lg:w-1/2 w-full max-w-md">
-            <div className="bg-white rounded-[2rem] p-8 shadow-2xl shadow-black/20 text-[#053b2f] border border-white/10 relative">
-              
-              {/* Role Toggle */}
-              <div className="bg-[#f2f8f3] p-1.5 rounded-xl flex mb-8 relative">
-                <button 
-                  onClick={() => setRole('seller')}
-                  className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all duration-300 z-10 ${
-                    role === 'seller' ? 'text-white bg-[#053b2f] shadow-md' : 'text-gray-500 hover:text-[#053b2f]'
-                  }`}
-                >
-                  I am Selling
-                </button>
-                <button 
-                  onClick={() => setRole('buyer')}
-                  className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all duration-300 z-10 ${
-                    role === 'buyer' ? 'text-white bg-[#053b2f] shadow-md' : 'text-gray-500 hover:text-[#053b2f]'
-                  }`}
-                >
-                  I am Buying
-                </button>
-              </div>
+          {/* --- Right: The Calculator Widget --- */}
+          <div className="lg:w-1/2 w-full">
+        
+            <div className="relative bg-white text-[#053b2f] border border-white/10 shadow-2xl shadow-black/30 rounded-lg p-1">
+        
 
-              {/* Input Field */}
-              <div className="mb-8">
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                  Transaction Amount
-                </label>
-                <div className="relative group">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl font-medium group-focus-within:text-[#053b2f] transition-colors">₦</span>
-                  <input 
-                    type="number" 
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="w-full pl-10 pr-4 py-4 bg-[#f2f8f3] border border-transparent rounded-2xl text-2xl font-bold text-[#053b2f] placeholder-gray-300 focus:outline-none focus:bg-white focus:border-[#bef264] focus:ring-4 focus:ring-[#bef264]/20 transition-all"
-                    placeholder="0"
-                  />
-                </div>
-              </div>
+                <div className="p-6 md:p-8">
+                    
+                    {/* Role Toggle */}
+                    <div className="flex p-1 bg-gray-100 rounded mb-8">
+                        {['seller', 'buyer'].map((r) => (
+                            <button
+                                key={r}
+                                onClick={() => setRole(r as 'seller' | 'buyer')}
+                                className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-sm ${
+                                    role === r 
+                                    ? 'bg-[#053b2f] text-white shadow-sm' 
+                                    : 'text-gray-400 hover:text-gray-600'
+                                }`}
+                            >
+                                {r} Mode
+                            </button>
+                        ))}
+                    </div>
 
-              {/* Breakdown */}
-              <div className="space-y-4 mb-8 border-t border-dashed border-gray-200 pt-6">
-                <div className="flex justify-between items-center text-gray-500">
-                  <div className="flex items-center text-sm font-medium">
-                    SafeEscrow Fee (1.5%)
-                    <Info className="h-3 w-3 ml-1 text-gray-400 cursor-help" />
-                  </div>
-                  <span className="font-medium text-red-500">- {formatNaira(fee)}</span>
-                </div>
-                
-                <div className="flex justify-between items-center bg-[#f2f8f3] p-4 rounded-xl">
-                  <span className="text-[#053b2f] font-bold text-sm uppercase tracking-wide">
-                    {role === 'seller' ? 'You Receive' : 'Total You Pay'}
-                  </span>
-                  <span className="text-2xl font-bold text-[#053b2f]">
-                    {formatNaira(total)}
-                  </span>
-                </div>
-              </div>
+                    {/* Input Area */}
+                    <div className="mb-8">
+                        <label className="flex items-center gap-2 text-xs font-bold text-[#053b2f] uppercase tracking-wider mb-3">
+                            <Money size={16} /> Transaction Value
+                        </label>
+                        <div className="relative group">
+                            <input 
+                                type="number" 
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                className="w-full bg-transparent border-b-2 border-gray-200 py-2 pl-8 pr-4 text-3xl font-bold text-[#053b2f] focus:outline-none focus:border-[#bef264] transition-colors placeholder-gray-200"
+                                placeholder="0"
+                            />
+                            <span className="absolute left-0 top-1/2 -translate-y-1/2 text-2xl text-gray-300 font-serif">₦</span>
+                        </div>
+                    </div>
 
-              {/* CTA Button */}
-              <button className="group w-full bg-[#053b2f] hover:bg-[#094537] text-white font-bold py-4 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg shadow-[#053b2f]/20">
-                Start Transaction
-                <div className="bg-white/10 p-1 rounded-full ml-3 group-hover:bg-white/20 transition-colors">
-                  <ArrowRight className="h-4 w-4" />
-                </div>
-              </button>
+                    {/* Computation Block */}
+                    <div className="bg-[#f2f8f3] border border-[#053b2f]/10 rounded p-6 space-y-4">
+                        
+                        {/* Row 1: Fee */}
+                        <div className="flex justify-between items-center text-sm">
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <InfoCircle size={14} className="text-gray-400" />
+                                <span className="font-medium">Escrow Fee (1.5%)</span>
+                            </div>
+                            <span className="font-mono text-red-500 font-medium">
+                                - {formatNaira(fee)}
+                            </span>
+                        </div>
 
+                        {/* Divider */}
+                        <div className="h-px bg-[#053b2f]/10 border-t border-dashed border-[#053b2f]/20" />
+
+                        {/* Row 2: Total */}
+                        <div className="flex justify-between items-end">
+                            <div className="text-xs font-mono text-[#053b2f] uppercase tracking-wider mb-1">
+                                {role === 'seller' ? 'Net Settlement' : 'Total Payable'}
+                            </div>
+                            <div className="text-3xl font-bold text-[#053b2f] tracking-tight">
+                                {formatNaira(total)}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <button className="w-full mt-6 bg-[#053b2f] hover:bg-[#084e3e] text-white py-4 rounded flex items-center justify-center gap-3 transition-all duration-300 group shadow-lg shadow-[#053b2f]/20">
+                        <span className="font-bold tracking-wide text-white">INITIALIZE TRANSACTION</span>
+                        <ArrowRight size={18} className="text-[#bef264] group-hover:translate-x-1 transition-transform" />
+                    </button>
+
+                </div>
             </div>
           </div>
 

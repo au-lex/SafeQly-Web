@@ -1,47 +1,60 @@
 import React from 'react';
-import { ShieldCheck, Zap, Globe2, Wallet } from 'lucide-react';
+import { ShieldTick, WalletCheck, Global, Flash, Lock1,  } from 'iconsax-react';
+
+interface FeatureItem {
+  id: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  sysRef: string;
+}
+
+const features: FeatureItem[] = [
+  {
+    id: "01",
+    icon: <ShieldTick size={32} color='currentColor' variant="Bold" className="text-white" />,
+    title: "Fraud-Proof Logic",
+    description: "We act as the trusted impartial node. Funds are strictly locked until the buyer validates the boolean state of 'Satisfied'. Scams are architecturally impossible.",
+    sysRef: "MOD_SECURE"
+  },
+  {
+    id: "02",
+    icon: <WalletCheck size={32} color='currentColor' variant="Bold" className="text-white" />,
+    title: "Vault Custody",
+    description: "Your money sits in a regulated, insured escrow vault. It is decoupled from the seller's wallet until the 'Release' trigger is fired manually.",
+    sysRef: "SYS_VAULT"
+  },
+  {
+    id: "03",
+    icon: <Global size={32}  color='currentColor' variant="Bold" className="text-white" />,
+    title: "Borderless Protocol",
+    description: "Execute agreements globally. SafeQly bridges the trust gap between disparate geographic nodes, allowing seamless cross-border commerce.",
+    sysRef: "NET_GLOBAL"
+  },
+  {
+    id: "04",
+    icon: <Flash size={32} color='currentColor' variant="Bold" className="text-white" />,
+    title: "Instant Settlement",
+    description: "Latency-free payouts. Once the approval bit is set, funds are routed instantly via our API rails. We eliminate legacy banking delays.",
+    sysRef: "API_SPEED"
+  },
+];
 
 const WhyChooseUs: React.FC = () => {
-  const features = [
-    {
-      icon: <ShieldCheck className="w-8 h-8 text-[#053b2f]" />,
-      title: "Fraud-Proof Transactions",
-      description: "We act as the trusted middleman. Funds are only released when the buyer is satisfied and the seller has delivered. Scams are impossible here.",
-    },
-    {
-      icon: <Wallet className="w-8 h-8 text-[#053b2f]" />, // Swapped order for better flow
-      title: "Secure Vault Holding",
-      description: "Your money sits in a protected, insured escrow vault during the transaction. It's not in the seller's pocket until you say 'Go'.",
-    },
-    {
-      icon: <Globe2 className="w-8 h-8 text-[#053b2f]" />,
-      title: "Trade Without Borders",
-      description: "Hire a freelancer abroad or buy goods from another continent. SafeQly builds the bridge of trust between strangers, globally.",
-    },
-    {
-      icon: <Zap className="w-8 h-8 text-[#053b2f]" />,
-      title: "Instant Releases",
-      description: "Once terms are met and approved, funds move instantly. We don't hold your money hostage with unnecessary banking delays.",
-    },
-  ];
-
   return (
-    <section className="py-24 px-4 bg-[#f8fafc]">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-24 bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* --- Section Header --- */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-white border border-gray-200 ">
-            <span className="w-2 h-2 rounded-full bg-[#bef264]" />
-            <span className="text-xs font-bold tracking-widest text-gray-500 uppercase">
-              Why Choose SafeQly
-            </span>
+        {/* --- SHARP HEADER --- */}
+        <div className="mb-20 border-l-4 border-[#053b2f] pl-6 py-2">
+          <div className="flex items-center gap-3 mb-2">
+            <Lock1 size={28} color='currentColor' variant="Bold" className="text-[#053b2f]" />
+            <h2 className="text-3xl font-black uppercase tracking-tighter text-[#053b2f]">
+      Why Choose Us
+            </h2>
           </div>
-          <h2 className="text-3xl md:text-5xl  font-bold text-[#053b2f] mb-6">
-            Commerce Built on <br className="hidden " /> Total Trust
-          </h2>
-          <p className="text-gray-500 text-lg leading-relaxed">
-            Stop worrying about "what if." SafeQly protects both buyers and sellers with automated milestones and dispute protection.
+          <p className="text-gray-500 font-mono text-xs uppercase tracking-widest">
+             Trust Infrastructure & Capabilities
           </p>
         </div>
 
@@ -50,24 +63,31 @@ const WhyChooseUs: React.FC = () => {
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className="group bg-white p-8 rounded-[2rem] hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col items-center j"
+              className="group relative bg-white border border-gray-200 hover:border-[#053b2f] hover:shadow-xl hover:shadow-[#053b2f]/10 transition-all duration-300 flex flex-col p-6 rounded-sm"
             >
-              {/* Icon Container */}
-              <section className="flex items-center w-full">
+              
+        
 
-              <div className="w-16 h-16 rounded-full bg-[#f2f8f3] group-hover:bg-[#bef264] flex-shrink-0 flex items-center justify-center mr-4 transition-colors duration-300">
-                {feature.icon}
+              {/* Icon Box */}
+              <div className="mb-6 relative">
+                 <div className="w-16 h-16 bg-[#053b2f] rounded-sm flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300 relative z-10">
+                    {feature.icon}
+                 </div>
+                 {/* Decorative offset box */}
+                 <div className="absolute top-2 left-2 w-16 h-16 border-2 border-[#bef264] rounded-sm -z-0 opacity-100 transition-opacity duration-300" />
               </div>
-              <h3 className="text-xl font-bold text-pri break-words">
+
+              {/* Title */}
+              <h3 className="text-xl font-bold text-[#053b2f] mb-3 group-hover:translate-x-1 transition-transform duration-300">
                 {feature.title}
               </h3>
-              
-              </section>
-              {/* Content */}
-     
-              <p className="text-gray-500 text-sm leading-relaxed mb-8 flex-grow mt-4">
+
+              {/* Description */}
+              <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow border-l-2   border-[#bef264] pl-3 transition-all duration-300">
                 {feature.description}
               </p>
+
+       
 
             </div>
           ))}
