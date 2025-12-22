@@ -1,20 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Upload, AlertTriangle, CheckCircle, FileText, Loader2 } from 'lucide-react';
+import { useRaiseDispute, type DisputeReason } from '../../Hooks/useDispute';
 
 interface RaiseDisputeModalProps {
   isOpen: boolean;
   onClose: () => void;
-  escrowId: number | string; // accept either depending on how you store it in frontend state
+  escrowId: number | string; 
 }
 
-// Standard dispute reasons
-const DISPUTE_REASONS = [
+// Standard dispute reasons mapped to backend enum values
+const DISPUTE_REASONS: Array<{ value: DisputeReason | "", label: string }> = [
   { value: "", label: "Select a reason..." },
-  { value: "Item not received", label: "Item not received" },
-  { value: "Does not match description", label: "Item significantly not as described" },
-  { value: "Damaged item", label: "Item arrived damaged" },
-  { value: "Service incomplete", label: "Service not rendered completely" },
-  { value: "Other", label: "Other issue" },
+  { value: "item_not_received", label: "Item not received" },
+  { value: "item_significantly_not_as_described", label: "Item significantly not as described" },
+  { value: "item_arrived_damaged", label: "Item arrived damaged" },
+  { value: "incorrect_item_received", label: "Incorrect item received" },
+  { value: "other", label: "Other issue" },
 ];
 
 const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
@@ -23,16 +24,18 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
   escrowId,
 }) => {
   // --- State Management ---
-  const [reason, setReason] = useState("");
+  const [reason, setReason] = useState<DisputeReason | "">("");
   const [description, setDescription] = useState("");
   const [evidenceFile, setEvidenceFile] = useState<File | null>(null);
   
   // UI States
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Use the dispute hook
+  const { mutate: raiseDispute, isPending: isSubmitting } = useRaiseDispute();
 
   // Reset state whenever the modal opens
   useEffect(() => {
@@ -42,19 +45,17 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
       setEvidenceFile(null);
       setError(null);
       setIsSuccess(false);
-      setIsSubmitting(false);
     }
   }, [isOpen]);
 
   // Handle Escape key to close
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape' && !isSubmitting) onClose();
     };
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
-  }, [onClose]);
-
+  }, [onClose, isSubmitting]);
 
   // --- Handlers ---
 
@@ -67,7 +68,6 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
     if (file.size > maxSize) {
       setError("File is too large. Maximum size is 10MB.");
       setEvidenceFile(null);
-      // Reset the input value so the same file can be selected again if needed after error
       e.target.value = ""; 
       return;
     }
@@ -85,31 +85,36 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
       return;
     }
 
-    setIsSubmitting(true);
     setError(null);
 
-    // --- Preparing Data for Backend ---
-    // This construct matches exactly what your Fiber `c.FormValue` 
-    // and `c.FormFile` expect.
-    const formData = new FormData();
-    formData.append('escrow_id', escrowId.toString());
-    formData.append('reason', reason);
-    formData.append('description', description);
-    if (evidenceFile) {
-      // 'evidence' matches c.FormFile("evidence")
-      formData.append('evidence', evidenceFile); 
+    // Prepare data for the hook
+    const disputeData = {
+      escrow_id: typeof escrowId === 'string' ? parseInt(escrowId) : escrowId,
+      reason: reason as DisputeReason,
+      description,
+      evidence: evidenceFile || undefined,
+    };
+
+    // Submit using the hook
+    raiseDispute(disputeData, {
+      onSuccess: () => {
+        setIsSuccess(true);
+        // Auto-close after 3 seconds
+        setTimeout(() => {
+          onClose();
+        }, 3000);
+      },
+      onError: (error: any) => {
+        const errorMessage = error.response?.data?.error || error.message || 'Failed to raise dispute';
+        setError(errorMessage);
+      },
+    });
+  };
+
+  const handleClose = () => {
+    if (!isSubmitting) {
+      onClose();
     }
-
-    console.log("Submitting FormData payload ready for axios/fetch:", formData);
-
-    // --- MOCK API CALL ---
-    // Simulate network request delay showing loading state
-    setTimeout(() => {
-      // In real app: await api.post('/disputes', formData, { headers: {'Content-Type': 'multipart/form-data'}})
-      console.log("API Submission Successful");
-      setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 2000);
   };
 
   // If not open, render nothing
@@ -119,12 +124,12 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
     // Backdrop Overlay
     <div 
       className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
-      onClick={onClose} // Close when clicking outside
+      onClick={handleClose}
     >
       {/* Modal Container */}
       <div 
         className="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-auto overflow-hidden animate-in zoom-in-95 duration-200"
-        onClick={(e) => e.stopPropagation()} // Prevent clicks inside closing the modal
+        onClick={(e) => e.stopPropagation()}
       >
         
         {/* ----- Success View ----- */}
@@ -148,16 +153,20 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
           /* ----- Form View ----- */
           <>
             {/* Header */}
-            <div className="bg-red-50 px-6 py-4 border-b border-red-100 flex items-center justify-between">
+            <div className="bg-red-800 px-6 py-4 border-b border-red-100 flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
+                <AlertTriangle className="h-6 w-6 text-red-100" />
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">Raise a Dispute</h2>
-                  <p className="text-sm text-red-600 font-medium">Escrow ID: #{escrowId}</p>
+                  <h2 className="text-lg font-bold text-gray-100">Raise a Dispute</h2>
+                  <p className="text-sm text-red-100 font-medium">Escrow ID: #{escrowId}</p>
                 </div>
               </div>
-              <button onClick={onClose} className="text-gray-400 hover:text-gray-600 hover:bg-red-100 rounded-full p-1 transition-colors">
-                <X className="h-6 w-6" />
+              <button 
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="text-gray-100 hover:text-gray-600 hover:bg-red-100 rounded-full p-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <X className="h-6 w-6 " />
               </button>
             </div>
 
@@ -179,9 +188,10 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
                 <select
                   id="reason"
                   value={reason}
-                  onChange={(e) => setReason(e.target.value)}
+                  onChange={(e) => setReason(e.target.value as DisputeReason | "")}
                   className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors bg-white"
                   required
+                  disabled={isSubmitting}
                 >
                   {DISPUTE_REASONS.map((option) => (
                     <option key={option.value} value={option.value} disabled={option.value === ""}>
@@ -204,6 +214,7 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
                   placeholder="Please provide specific details about why you are raising this dispute..."
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors resize-none"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -220,19 +231,22 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
                   onChange={handleFileChange}
                   accept="image/png,image/jpeg,image/jpg,application/pdf"
                   className="hidden"
+                  disabled={isSubmitting}
                 />
 
                 {!evidenceFile ? (
                   // Empty State - Click to upload area
                   <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-red-400 hover:bg-red-50/30 transition-all group"
+                    onClick={() => !isSubmitting && fileInputRef.current?.click()}
+                    className={`border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-red-400 hover:bg-red-50/30 transition-all group ${
+                      isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   >
                     <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-white transition-colors">
                       <Upload className="h-6 w-6 text-gray-500 group-hover:text-red-500" />
                     </div>
                     <p className="text-sm font-medium text-gray-700">Click to upload evidence</p>
-                    <p className="text-xs text-gray-500 mt-1">SVG, PNG, JPG or PDF</p>
+                    <p className="text-xs text-gray-500 mt-1">PNG, JPG or PDF</p>
                   </div>
                 ) : (
                   // File Selected State
@@ -246,8 +260,12 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
                     </div>
                     <button
                       type="button"
-                      onClick={() => { setEvidenceFile(null); if(fileInputRef.current) fileInputRef.current.value = '' }}
-                      className="text-gray-400 hover:text-red-500 p-2 hover:bg-gray-200 rounded-full transition-colors"
+                      onClick={() => { 
+                        setEvidenceFile(null); 
+                        if(fileInputRef.current) fileInputRef.current.value = '';
+                      }}
+                      disabled={isSubmitting}
+                      className="text-gray-400 hover:text-red-500 p-2 hover:bg-gray-200 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -259,16 +277,16 @@ const RaiseDisputeModal: React.FC<RaiseDisputeModalProps> = ({
               <div className="flex items-center justify-end space-x-4 pt-4 border-t border-gray-100">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   disabled={isSubmitting}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || !reason || !description}
-                  className="px-6 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                  className="px-6 py-2 text-sm font-medium text-white bg-red-800 border border-transparent rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
                   {isSubmitting ? (
                     <>

@@ -4,14 +4,14 @@ import { ArrowUpRight } from 'lucide-react';
 const HeroSection: React.FC = () => {
   return (
     <>
-      <div className="relative lg:min-h-cscreen w-full overflow-hidden flex pt-[4rem]  lg:pt-[12rem] justify-center bg-white">
+      <div className="relative h-[80vh] lg:min-h-screen w-full overflow-hidden flex pt-[4rem]  lg:pt-[12rem] justify-center bg-white">
         
         {/* --- Main Content Container --- */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
           
           {/* Headline */}
           <h1 className="text-4xl md:text-7xl font-bold text-pri leading-[1.1] mb-6">
-            Buy And Sell With <br className="hidden md:block" />
+          Fund & Fulfill With <br className="hidden md:block" />
             Total Confidence
           </h1>
 
@@ -31,7 +31,7 @@ const HeroSection: React.FC = () => {
           </div>
 
           {/* --- MOBILE ONLY: Organized Icon Row --- */}
-          {/* Instead of floating randomly, they sit in a neat row below the button on mobile */}
+      
           <div className="grid grid-cols-4 gap-4 md:hidden max-w-xs mx-auto mt-8">
             
             {/* Mobile Icon 1 */}
@@ -69,7 +69,7 @@ const HeroSection: React.FC = () => {
         </div>
 
         {/* --- DESKTOP ONLY: Floating Icons Elements --- */}
-        {/* These only appear on md screens and larger */}
+
 
         {/* Top Right: Bell */}
         <div className="absolute top-[15%] right-[10%] animate-float-slow hidden md:block">

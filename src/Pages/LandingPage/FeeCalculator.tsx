@@ -41,7 +41,7 @@ const FeeCalculator: React.FC = () => {
           <div className="flex items-center gap-3 mb-2">
             <Calculator size={28} color='currentColor' variant="Bold" className="text-[#bef264]" />
             <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
-              Pricing_Engine
+              Pricing Calculator
             </h2>
           </div>
           <p className="text-gray-400 font-mono text-xs uppercase tracking-widest">

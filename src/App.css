@@ -8,8 +8,7 @@
   /* --color-pri:#053014;    */
   --color-sec: rgb(102, 102, 102);  
 
-        /* Darkest - Hero cards */
-        /* Subtle backgrounds */
+  /* 🃏 Card Colors */
   --color-card: rgba(5, 48, 20, 0.1);  /* Glassmorphism overlay */
   --color-card-overlay-dark: rgba(5, 48, 20, 0.8);  /* Dark overlay */
 
@@ -75,18 +74,18 @@
 
 .animate-scroll-right {
   animation: scroll-right 15s linear infinite;
-  /* Ensures the container is wide enough to hold both sets */
+
   width: max-content; 
   display: flex;
 }
 
 @keyframes scroll-right {
   0% {
-    /* Start shifted left by half the width (showing the 2nd set) */
+
     transform: translateX(-50%);
   }
   100% {
-    /* Move right to the start position (showing the 1st set) */
+
     transform: translateX(0);
   }
 }

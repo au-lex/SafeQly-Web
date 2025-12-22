@@ -128,18 +128,46 @@ export interface TransactionsResponse {
   };
 }
 
+// Updated Dispute interface with correct property names and types
 export interface Dispute {
   id: number;
   escrow_id: number;
   raised_by: number;
   reason: string;
   status: string;
+  description?: string;
+  evidence?: string;
+  evidence_file_name?: string;
   resolution?: string;
   winner?: string;
   resolved_at?: string;
   resolved_by?: number;
   created_at: string;
-  Escrow?: any;
+  updated_at: string;
+  // Changed from Escrow? to escrow (lowercase) to match API response
+  escrow: {
+    id: number;
+    buyer_id: number;
+    seller_id: number;
+    items: string;
+    amount: number;
+    delivery_date: string;
+    status: string;
+    buyer: {
+      id: number;
+      full_name: string;
+      email: string;
+      phone: string;
+      user_tag: string;
+    };
+    seller: {
+      id: number;
+      full_name: string;
+      email: string;
+      phone: string;
+      user_tag: string;
+    };
+  };
 }
 
 export interface DisputesResponse {
