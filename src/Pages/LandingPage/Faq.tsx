@@ -4,23 +4,23 @@ import { Plus, Minus, HelpCircle, MessageCircle } from 'lucide-react';
 const faqs = [
   {
     question: "Is my money really safe?",
-    answer: "Absolutely. Funds are held in a regulated, non-interest-bearing trust account (The Vault). Neither the buyer nor the seller can touch the money until the agreed terms of the transaction are met."
+    answer: "Absolutely. Funds are held in a regulated, non-interest-bearing trust account (The SafeQly Vault). Neither the buyer nor the seller can touch the money until the agreed terms of the transaction are met."
   },
   {
     question: "What happens if the seller doesn't deliver?",
-    answer: "If the seller fails to deliver or the work doesn't match the agreement, you can raise a dispute. Our 'Judge's Seat' team reviews the evidence and can return the funds to the Buyer if the claim is valid."
+    answer: "If the seller fails to deliver or the work doesn't match the agreement, you can raise a dispute. Our Dispute Resolution Team reviews the evidence and can return the funds to the Buyer if the claim is valid."
   },
   {
-    question: "How much does SafeEscrow cost?",
-    answer: "We charge a flat fee of 1.5% per transaction, capped at $20. There are no hidden fees or monthly subscriptions. You only pay when you use the service."
+    question: "How much does SafeQly cost?",
+    answer: "We charge a flat fee of 1.5% per transaction, capped at $20. There are no hidden fees or monthly subscriptions. You only pay when you successfully use the service."
   },
   {
     question: "How long does the release take?",
-    answer: "Once the Buyer clicks 'Approve', the funds are released instantly to the Seller's wallet. Withdrawals to local bank accounts typically take 1-2 business days depending on your bank."
+    answer: "Once the Buyer clicks 'Approve', the funds are released instantly to the Seller's SafeQly wallet. Withdrawals to local bank accounts typically take 1-2 business days depending on your bank."
   },
   {
     question: "Can I use this for non-digital items?",
-    answer: "Yes! SafeEscrow works for physical goods (sneakers, electronics), freelance services, and even domain flipping. If it has a price and a deliverable, we can secure it."
+    answer: "Yes! SafeQly works for physical goods (sneakers, electronics), freelance services, and even domain flipping. If it has a price and a deliverable, we can secure it."
   }
 ];
 
@@ -50,7 +50,7 @@ const FAQ: React.FC = () => {
             Frequently Asked Questions
           </h2>
           <p className="text-gray-500 text-lg">
-            Everything you need to know about the platform.
+            Everything you need to know about the SafeQly platform.
           </p>
         </div>
 

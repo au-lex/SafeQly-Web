@@ -5,23 +5,23 @@ const WhyChooseUs: React.FC = () => {
   const features = [
     {
       icon: <ShieldCheck className="w-8 h-8 text-[#053b2f]" />,
-      title: "Bank-Grade Security",
-      description: "Your assets are protected by industry-leading encryption and cold storage protocols. We prioritize your safety above all else.",
+      title: "Fraud-Proof Transactions",
+      description: "We act as the trusted middleman. Funds are only released when the buyer is satisfied and the seller has delivered. Scams are impossible here.",
     },
     {
-      icon: <Zap className="w-8 h-8 text-[#053b2f]" />,
-      title: "Instant Transactions",
-      description: "Experience lightning-fast transfers. Send and receive funds globally in seconds, not days, with our optimized network.",
+      icon: <Wallet className="w-8 h-8 text-[#053b2f]" />, // Swapped order for better flow
+      title: "Secure Vault Holding",
+      description: "Your money sits in a protected, insured escrow vault during the transaction. It's not in the seller's pocket until you say 'Go'.",
     },
     {
       icon: <Globe2 className="w-8 h-8 text-[#053b2f]" />,
-      title: "Global Access",
-      description: "Manage your finances from anywhere in the world. Our platform supports 50+ currencies and operates in over 100 countries.",
+      title: "Trade Without Borders",
+      description: "Hire a freelancer abroad or buy goods from another continent. SafeQly builds the bridge of trust between strangers, globally.",
     },
     {
-      icon: <Wallet className="w-8 h-8 text-[#053b2f]" />,
-      title: "Low Transaction Fees",
-      description: "Keep more of your money. We offer some of the most competitive rates in the market with zero hidden charges.",
+      icon: <Zap className="w-8 h-8 text-[#053b2f]" />,
+      title: "Instant Releases",
+      description: "Once terms are met and approved, funds move instantly. We don't hold your money hostage with unnecessary banking delays.",
     },
   ];
 
@@ -31,17 +31,17 @@ const WhyChooseUs: React.FC = () => {
         
         {/* --- Section Header --- */}
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-white border border-gray-200 shadow-sm">
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-white border border-gray-200 ">
             <span className="w-2 h-2 rounded-full bg-[#bef264]" />
             <span className="text-xs font-bold tracking-widest text-gray-500 uppercase">
-              Why Choose Banki
+              Why Choose SafeQly
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#053b2f] mb-6">
-            Smart Banking for the <br /> Modern Generation
+          <h2 className="text-3xl md:text-5xl  font-bold text-[#053b2f] mb-6">
+            Commerce Built on <br className="hidden " /> Total Trust
           </h2>
           <p className="text-gray-500 text-lg leading-relaxed">
-            We simplify your financial life with robust tools, intuitive design, and transparent pricing. See why thousands trust us daily.
+            Stop worrying about "what if." SafeQly protects both buyers and sellers with automated milestones and dispute protection.
           </p>
         </div>
 
@@ -50,22 +50,25 @@ const WhyChooseUs: React.FC = () => {
           {features.map((feature, index) => (
             <div 
               key={index} 
-              className="group bg-white p-8 rounded-[2rem] hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col items-start"
+              className="group bg-white p-8 rounded-[2rem] hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 flex flex-col items-center j"
             >
               {/* Icon Container */}
-              <div className="w-16 h-16 rounded-2xl bg-[#f2f8f3] group-hover:bg-[#bef264] flex items-center justify-center mb-6 transition-colors duration-300">
+              <section className="flex items-center w-full">
+
+              <div className="w-16 h-16 rounded-full bg-[#f2f8f3] group-hover:bg-[#bef264] flex-shrink-0 flex items-center justify-center mr-4 transition-colors duration-300">
                 {feature.icon}
               </div>
-              
-              {/* Content */}
-              <h3 className="text-xl font-bold text-[#053b2f] mb-3">
+              <h3 className="text-xl font-bold text-pri break-words">
                 {feature.title}
               </h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">
+              
+              </section>
+              {/* Content */}
+     
+              <p className="text-gray-500 text-sm leading-relaxed mb-8 flex-grow mt-4">
                 {feature.description}
               </p>
 
-      
             </div>
           ))}
         </div>
