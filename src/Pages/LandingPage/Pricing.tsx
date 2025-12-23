@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stickynote, TickCircle, ArrowRight, Bank, CodeCircle } from 'iconsax-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const Pricing: React.FC = () => {
+  
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
+
   return (
-    <section className="bg-white py-24 border-t border-gray-100">
+    <section className="bg-white py-24 border-t border-gray-100 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* --- SHARP HEADER --- */}
-        <div className="mb-20 border-l-4 border-[#053b2f] pl-6 py-2">
+        <div 
+            className="mb-20 border-l-4 border-[#053b2f] pl-6 py-2"
+            data-aos="fade-right" // Animation: Slides in from left
+        >
           <div className="flex items-center gap-3 mb-2">
             <Stickynote color='currentColor' size={28} variant="Bold" className="text-[#053b2f]" />
             <h2 className="text-3xl font-black uppercase tracking-tighter text-[#053b2f]">
@@ -22,7 +37,11 @@ const Pricing: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
 
           {/* --- PLAN 01: STANDARD --- */}
-          <div className="group relative bg-white border border-gray-200 p-8 rounded-sm hover:border-[#053b2f] hover:shadow-2xl hover:shadow-[#053b2f]/10 transition-all duration-300">
+          <div 
+            className="group relative bg-white border border-gray-200 p-8 rounded-sm hover:border-[#053b2f] hover:shadow-2xl hover:shadow-[#053b2f]/10 transition-all duration-300"
+            data-aos="fade-up"      // Animation: Rise up
+            data-aos-delay="100"    // Animation: Starts first
+          >
             
             {/* Top Badge */}
             <div className="absolute top-0 right-0 p-4">
@@ -75,7 +94,11 @@ const Pricing: React.FC = () => {
 
 
           {/* --- PLAN 02: ENTERPRISE / API --- */}
-          <div className="group relative bg-[#053b2f] border border-[#053b2f] p-8 rounded-sm shadow-xl">
+          <div 
+            className="group relative bg-[#053b2f] border border-[#053b2f] p-8 rounded-sm shadow-xl"
+            data-aos="fade-up"      // Animation: Rise up
+            data-aos-delay="300"    // Animation: Starts after standard card
+          >
             
             {/* Top Badge (Lime) */}
             <div className="absolute top-0 right-0 p-4">
@@ -126,9 +149,6 @@ const Pricing: React.FC = () => {
           </div>
 
         </div>
-
-    
-     
 
       </div>
     </section>

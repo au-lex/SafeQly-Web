@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldTick,  Wallet, DocumentText, Box, Coin } from 'iconsax-react';
+import { ShieldTick, Wallet, DocumentText, Box, Coin } from 'iconsax-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 interface StepItem {
   id: number;
@@ -63,8 +65,15 @@ const escrowData: StepItem[] = [
 export const EscrowProcess: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  // Auto-rotate logic (Cycles every 3 seconds)
   useEffect(() => {
+    // Initialize AOS
+    AOS.init({
+      duration: 1000,
+      once: true, // Animation happens only once
+      easing: 'ease-out-cubic',
+    });
+
+    // Your existing active step interval
     const interval = setInterval(() => {
       setActiveStep((prev) => (prev + 1) % escrowData.length);
     }, 3000);
@@ -72,11 +81,14 @@ export const EscrowProcess: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-white py-12 md:py-24">
+    <section className="bg-white py-12 md:py-24 overflow-hidden">
       <div className="mx-auto max-w-5xl px-4">
         
         {/* --- SHARP HEADER --- */}
-        <div className="mb-16 border-l-4 border-[#053b2f] pl-6 py-2">
+        <div 
+          className="mb-16 border-l-4 border-[#053b2f] pl-6 py-2"
+          data-aos="fade-right" // Animation: Slide in from left
+        >
           <div className="flex items-center gap-3 mb-2">
             <ShieldTick size={28} color='currentColor' variant="Bold" className="text-[#053b2f]" />
             <h2 className="text-3xl font-black uppercase tracking-tighter text-[#053b2f]">
@@ -91,26 +103,27 @@ export const EscrowProcess: React.FC = () => {
         {/* --- HYBRID LAYOUT CONTAINER --- */}
         <div className="relative">
 
-          {/* MOBILE RAIL LINE 
-              Visible only on mobile (md:hidden). 
-              Positioned absolute to the left.
-          */}
+          {/* MOBILE RAIL LINE */}
           <div className="absolute left-[19px] top-4 bottom-10 w-[1px] bg-gray-200 md:hidden" />
 
-          {/* GRID WRAPPER: 1 Col (Mobile) -> 2 Cols (Desktop) */}
+          {/* GRID WRAPPER */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6">
             
             {escrowData.map((item, index) => {
               const isActive = index === activeStep;
 
               return (
-                <div key={item.id} className="relative group flex flex-col h-full">
+                <div 
+                  key={item.id} 
+                  className="relative group flex flex-col h-full"
+                  data-aos="fade-up"           // Animation: Slide up
+                  data-aos-delay={index * 150} // Stagger: Each card waits 150ms longer
+                >
                   
                   {/* --- MOBILE ONLY: The Node on the Rail --- */}
                   <div className={`
                       absolute left-0 top-0 w-10 h-10 flex items-center justify-center md:hidden z-10 bg-white
                   `}>
-                       {/* The Square Node */}
                        <div className={`
                           w-4 h-4 border-2 transition-all duration-300 flex items-center justify-center
                           ${isActive 
@@ -122,7 +135,6 @@ export const EscrowProcess: React.FC = () => {
                   </div>
 
                   {/* --- THE CARD --- */}
-              
                   <div className={`
                      relative flex-1 bg-white border p-6 sm:p-8 rounded-lg transition-all duration-500 ease-in-out pl-14 md:pl-8
                      ${isActive 
@@ -132,7 +144,6 @@ export const EscrowProcess: React.FC = () => {
                       
                       {/* Card Header */}
                       <div className="flex justify-between items-start mb-6">
-                          {/* Step Badge */}
                           <span className={`
                               font-mono text-xs font-bold uppercase tracking-widest px-2 py-1 border rounded-sm transition-colors duration-300
                               ${isActive 
@@ -142,8 +153,7 @@ export const EscrowProcess: React.FC = () => {
                               {item.stepNumber}
                           </span>
 
-                          {/* --- DESKTOP ONLY: The Node inside the card --- */}
-                          {/* This replaces the rail node on large screens */}
+                          {/* --- DESKTOP ONLY: Node --- */}
                           <div className={`
                               hidden md:flex w-4 h-4 border-2 items-center justify-center transition-all duration-300
                               ${isActive ? 'border-[#053b2f] animate-pulse' : 'border-gray-200'}
@@ -180,9 +190,6 @@ export const EscrowProcess: React.FC = () => {
                     
                       {/* Action ID Footer */}
                       <div className="pt-4 border-t border-gray-50 flex items-center justify-between">
-                
-                         
-                         {/* "Running" Indicator */}
                          {isActive && (
                            <span className="flex items-center gap-1 text-[10px] font-bold text-[#053b2f] uppercase tracking-wider">
                               <span className="relative flex h-2 w-2">

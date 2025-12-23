@@ -24,6 +24,10 @@ import VerifyOTP from "./Pages/Auth/VerifyOtp/VerifyOtp";
 import PaymentCallback from "./Pages/Wallet/VerifyPayment";
 import EscrowDetails from "./Pages/Escrow/escrowTransactions/EscrowDetails";
 
+
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -148,6 +152,14 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
+
+  React.useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      easing: 'ease-out-cubic'
+    });
+  }, []);
   return (
     <React.StrictMode>
 

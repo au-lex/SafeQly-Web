@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Star } from 'lucide-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const CustomerReviewsSection: React.FC = () => {
+  
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
+
   // Helper function to render a row of stars
   const renderStars = (count: number) => {
     return (
@@ -14,9 +26,12 @@ const CustomerReviewsSection: React.FC = () => {
   };
 
   return (
-    <section className="py-16 px-4 md:px-8 lg:px-16 bg-white">
+    <section className="py-16 px-4 md:px-8 lg:px-16 bg-white overflow-hidden">
       {/* --- Header Section --- */}
-      <div className="text-center max-w-2xl mx-auto">
+      <div 
+        className="text-center max-w-2xl mx-auto"
+        data-aos="fade-up" // Animation: Rise up
+      >
         <div className="flex items-center justify-center gap-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
           <Star className="w-3 h-3 fill-current" />
           <span>Testimonials</span>
@@ -27,7 +42,11 @@ const CustomerReviewsSection: React.FC = () => {
       </div>
 
       {/* --- Social Proof Section --- */}
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+      <div 
+        className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8"
+        data-aos="fade-up"      // Animation: Rise up
+        data-aos-delay="150"    // Animation: Slight delay after header
+      >
         {/* Avatars */}
         <div className="flex -space-x-3">
           {[
@@ -55,7 +74,11 @@ const CustomerReviewsSection: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mt-16 max-w-6xl mx-auto">
         
         {/* --- Left Card: Stats --- */}
-        <div className="lg:col-span-2 bg-[#bef264] p-8 md:p-12 rounded-[2rem] flex flex-col justify-between">
+        <div 
+          className="lg:col-span-2 bg-[#bef264] p-8 md:p-12 rounded-[2rem] flex flex-col justify-between"
+          data-aos="fade-up"      // Animation: Rise up
+          data-aos-delay="300"    // Animation: Waits for social proof
+        >
           <div>
             <h3 className="text-6xl md:text-7xl font-bold text-[#053b2f]">99.9%</h3>
             <p className="text-xl md:text-2xl font-medium text-[#053b2f] mt-4 leading-snug">
@@ -68,7 +91,11 @@ const CustomerReviewsSection: React.FC = () => {
         </div>
 
         {/* --- Right Card: Testimonial --- */}
-        <div className="lg:col-span-3 bg-[#f3f4f6] p-8 md:p-12 rounded-[2rem]">
+        <div 
+          className="lg:col-span-3 bg-[#f3f4f6] p-8 md:p-12 rounded-[2rem]"
+          data-aos="fade-up"      // Animation: Rise up
+          data-aos-delay="450"    // Animation: Waits for stats card (cascading effect)
+        >
           {renderStars(5)}
           <h3 className="text-2xl md:text-3xl font-bold text-[#053b2f] mt-4 leading-tight">
             SafeQly eliminated my fear of online scams completely.
