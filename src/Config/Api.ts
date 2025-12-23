@@ -8,6 +8,8 @@ export const API_ENDPOINTS = {
     LOGIN: '/auth/login',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
+    GOOGLE_AUTH_URL: '/auth/google',
+    GOOGLE_CALLBACK: '/auth/google/callback',
   },
 
   USER: {
@@ -51,22 +53,15 @@ export const API_ENDPOINTS = {
   },
 
   ADMIN: {
-    // Auth endpoints
     AUTH: {
       LOGIN: '/admin/auth/login',
       INITIALIZE: '/admin/auth/initialize',
     },
     
-    // Profile
     PROFILE: '/admin/profile',
-    
-    // Admin creation
     CREATE: '/admin/create',
-    
-    // Dashboard
     DASHBOARD: '/admin/dashboard',
     
-    // User Management
     USERS: '/admin/users',
     USER_BY_ID: (id: string) => `/admin/users/${id}`,
     UPDATE_USER: (id: string) => `/admin/users/${id}`,
@@ -74,10 +69,8 @@ export const API_ENDPOINTS = {
     UNSUSPEND_USER: (id: string) => `/admin/users/${id}/unsuspend`,
     DELETE_USER: (id: string) => `/admin/users/${id}`,
     
-    // Transaction Management
     TRANSACTIONS: '/admin/transactions',
     
-    // Dispute Management
     DISPUTES: '/admin/disputes',
     DISPUTE_BY_ID: (id: string) => `/admin/disputes/${id}`,
     RESOLVE_DISPUTE: (id: string) => `/admin/disputes/${id}/resolve`,

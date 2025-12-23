@@ -26,12 +26,18 @@ import EscrowDetails from "./Pages/Escrow/escrowTransactions/EscrowDetails";
 
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import GoogleCallback from "./Pages/Auth/Login/Google";
 
 const router = createBrowserRouter([
   // Public routes
   {
     path: "/",
     element: <Landing />,
+  },
+
+  {
+    path: "/auth/google/callback",
+    element: <GoogleCallback />,
   },
 
   // Auth routes (redirects to dashboard if already logged in)
@@ -50,6 +56,7 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
+
       {
         path: "/forgot-psw",
         element: <ForgotPassword />,

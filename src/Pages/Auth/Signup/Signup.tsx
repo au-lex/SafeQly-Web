@@ -7,6 +7,7 @@ import PrimaryButton from '../../../Components/ui/Button';
 import PhoneInput from '../../../Components/ui/PhoneInput';
 import { useSignup } from '../../../Hooks/useAuth';
 import type { SignupData } from '../../../types';
+import GoogleAuthButton from '../../../Components/auth/GoogleBtn';
 
 export default function Signup() {
   const [formData, setFormData] = useState<SignupData>({
@@ -93,6 +94,10 @@ export default function Signup() {
             {isPending ? 'Creating Account...' : 'Create Account'}
           </PrimaryButton>
         </div>
+
+            <div className="mt-6">
+                  <GoogleAuthButton mode="login" />
+                </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{' '}
