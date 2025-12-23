@@ -144,7 +144,7 @@ export interface Dispute {
   resolved_by?: number;
   created_at: string;
   updated_at: string;
-  // Changed from Escrow? to escrow (lowercase) to match API response
+
   escrow: {
     id: number;
     buyer_id: number;
@@ -254,7 +254,7 @@ export function useAdminLogin() {
     onSuccess: (data) => {
       toast.success(data.message || 'Login successful!');
       // Store token in localStorage with correct key
-      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('adminToken', data.token);
       localStorage.setItem('userData', JSON.stringify(data.user));
     },
     onError: (error) => {

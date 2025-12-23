@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Mail, Phone, Save, Camera, Loader2 } from 'lucide-react';
-import { useUpdateProfile, useUploadAvatar } from '../../Hooks/useProfile'; // Adjust path if needed
+import { User, Mail, Phone, Save, Camera, Loader2, LogOut } from 'lucide-react';
+import { useUpdateProfile, useUploadAvatar } from '../../Hooks/useProfile';
+import { useLogout } from '../../Hooks/useAuth';
 import type { UserProfileData } from '../../types';
 
 interface ProfileDetailProps {
@@ -11,6 +12,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
   // Hooks
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: uploadAvatar, isPending: isUploadingAvatar } = useUploadAvatar();
+  const { mutate: logout } = useLogout(); // 2. Initialize logout hook
   
   // Local state for form fields
   const [formData, setFormData] = useState({
@@ -20,7 +22,6 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Sync local state when profile data loads
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -53,6 +54,14 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
     }
   };
 
+  // 3. Logout Handler
+  const handleLogout = () => {
+    const confirmed = window.confirm('Are you sure you want to log out?');
+    if (confirmed) {
+      logout();
+    }
+  };
+
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-900 mb-8">My Profile</h2>
@@ -66,13 +75,12 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
             </div>
           ) : (
             <img
-              src={profile?.avatar || 'https://i.pravatar.cc/150?img=68'} // Fallback image
+              src={profile?.avatar || 'https://i.pravatar.cc/150?img=68'}
               alt="Profile"
               className="w-24 h-24 rounded-full border-4 border-gray-200 object-cover"
             />
           )}
           
-          {/* Hover Overlay */}
           <div className="absolute inset-0 bg-black/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <Camera className="text-white" size={24} />
           </div>
@@ -86,7 +94,6 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
           {isUploadingAvatar ? 'Uploading...' : 'Change Photo'}
         </button>
 
-        {/* Hidden File Input */}
         <input 
           type="file" 
           ref={fileInputRef} 
@@ -99,7 +106,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
       {/* Form Section */}
       <div className="space-y-5">
         
-        {/* Full Name (Editable) */}
+        {/* Full Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             <User size={16} className="inline mr-2 text-gray-400" />
@@ -115,7 +122,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
           />
         </div>
 
-        {/* Email (Read Only) */}
+        {/* Email */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             <Mail size={16} className="inline mr-2 text-gray-400" />
@@ -130,7 +137,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
           <p className="text-[10px] text-gray-400 mt-1 ml-1">Email cannot be changed</p>
         </div>
 
-        {/* Phone (Editable) */}
+        {/* Phone */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             <Phone size={16} className="inline mr-2 text-gray-400" />
@@ -146,6 +153,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
           />
         </div>
 
+        {/* Save Button */}
         <button
           onClick={handleSave}
           disabled={isUpdating}
@@ -163,6 +171,18 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
             </>
           )}
         </button>
+
+        {/* 4. Mobile Only Logout Button */}
+        <div className="md:hidden pt-6 mt-6 border-t border-gray-100">
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-50 text-red-600 py-3.5 rounded-xl hover:bg-red-100 transition-colors font-semibold flex items-center justify-center gap-2"
+          >
+            <LogOut size={18} />
+            Log Out
+          </button>
+        </div>
+
       </div>
     </div>
   );
