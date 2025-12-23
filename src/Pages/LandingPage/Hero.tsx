@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const HeroSection: React.FC = () => {
   return (
     <>
-      <div className="relative h-[70vh]  lg:min-h-screen w-full overflow-hidden flex pt-[4rem] lg:pt-[12rem] justify-center bg-white">
+      <div className="relative h-[80vh]  lg:min-h-screen w-full overflow-hidden flex pt-[4rem] lg:pt-[12rem] justify-center bg-white">
         
         {/* --- Main Content Container --- */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">

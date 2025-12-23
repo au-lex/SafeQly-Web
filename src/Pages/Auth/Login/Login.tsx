@@ -4,6 +4,7 @@ import AuthLayout from '../../../Layout/AuthLayout';
 import TextInput from '../../../Components/ui/TextInput';
 import PasswordInput from '../../../Components/ui/PasswordInput';
 import PrimaryButton from '../../../Components/ui/Button';
+import GoogleAuthButton from '../../../Components/auth/GoogleBtn';
 import { useLogin } from '../../../Hooks/useAuth';
 import type { LoginCredentials } from '../../../types';
 
@@ -22,7 +23,6 @@ export default function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Basic validation
     if (!formData.email || !formData.password) {
       alert('Please fill in all fields');
       return;
@@ -85,6 +85,21 @@ export default function Login() {
           <PrimaryButton type="submit" disabled={isPending}>
             {isPending ? 'Logging in...' : 'Log in'}
           </PrimaryButton>
+        </div>
+
+        {/* Divider */}
+        <div className="relative mt-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-gray-300"></div>
+          </div>
+          <div className="relative flex justify-center text-sm">
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
+          </div>
+        </div>
+
+        {/* Google Login Button */}
+        <div className="mt-6">
+          <GoogleAuthButton mode="login" />
         </div>
 
         <div className="mt-6 text-center text-sm text-gray-600">

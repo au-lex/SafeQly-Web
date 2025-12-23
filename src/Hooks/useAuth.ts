@@ -20,7 +20,6 @@ const removeStorageItems = (keys: string[]): void => {
   keys.forEach((key) => localStorage.removeItem(key));
 };
 
-
 const handleApiError = (error: any) => {
   const message = error.response?.data?.message || error.message || 'Something went wrong';
   toast.error(message);
@@ -101,7 +100,6 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-     
       const promise = axiosInstance.post<AuthResponse>(
         API_ENDPOINTS.AUTH.LOGIN,
         credentials
@@ -123,7 +121,6 @@ export function useLogin() {
       }
       navigate('/dashboard');
     },
-
   });
 }
 
@@ -167,6 +164,55 @@ export function useResetPassword() {
     },
     onError: (error) => {
       handleApiError(error);
+    },
+  });
+}
+
+// Google Auth URL Hook
+export function useGoogleAuthURL() {
+  return useMutation({
+    mutationFn: async (): Promise<{ auth_url: string; state: string }> => {
+      const response = await axiosInstance.get<{ auth_url: string; state: string }>(
+        API_ENDPOINTS.AUTH.GOOGLE_AUTH_URL
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // Store state for verification
+      setStorageItem('google_oauth_state', data.state);
+      // Redirect to Google OAuth
+      window.location.href = data.auth_url;
+    },
+    onError: (error) => {
+      handleApiError(error);
+    },
+  });
+}
+
+// Google Callback Hook
+export function useGoogleCallback() {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async ({ code, state }: { code: string; state: string }): Promise<AuthResponse> => {
+      const response = await axiosInstance.get<AuthResponse>(
+        `${API_ENDPOINTS.AUTH.GOOGLE_CALLBACK}?code=${code}&state=${state}`
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.token && data.user) {
+        setStorageItem('authToken', data.token);
+        setStorageItem('userData', JSON.stringify(data.user));
+      }
+      // Clean up state
+      removeStorageItems(['google_oauth_state']);
+      toast.success(data.message || 'Welcome! You\'re now logged in.');
+      navigate('/dashboard');
+    },
+    onError: (error) => {
+      handleApiError(error);
+      navigate('/login');
     },
   });
 }
