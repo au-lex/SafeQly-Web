@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageQuestion, Add, Minus, SmsTracking, QuoteDown } from 'iconsax-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const faqs = [
   {
@@ -32,16 +34,28 @@ const faqs = [
 const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
+
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section className="py-24 bg-white border-t border-gray-100 font-sans">
+    <section className="py-24 bg-white border-t border-gray-100 font-sans overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* --- SHARP HEADER --- */}
-        <div className="mb-16 border-l-4 border-[#053b2f] pl-6 py-2">
+        <div 
+          className="mb-16 border-l-4 border-[#053b2f] pl-6 py-2"
+          data-aos="fade-right" // Animation: Slide in from left
+        >
           <div className="flex items-center gap-3 mb-2">
             <MessageQuestion size={28}  color='currentColor' variant="Bold" className="text-[#053b2f]" />
             <h2 className="text-3xl font-black uppercase tracking-tighter text-[#053b2f]">
@@ -60,7 +74,9 @@ const FAQ: React.FC = () => {
 
             return (
               <div 
-                key={index} 
+                key={index}
+                data-aos="fade-up"           // Animation: Slide up
+                data-aos-delay={index * 100} // Animation: Cascading delay
                 className={`group border rounded-sm transition-all duration-300 overflow-hidden ${
                   isOpen 
                     ? 'border-[#053b2f] bg-white shadow-[0_4px_20px_-10px_rgba(5,59,47,0.15)]' 
@@ -123,7 +139,11 @@ const FAQ: React.FC = () => {
         </div>
 
         {/* --- Footer / Ticket Action --- */}
-        <div className="mt-16 flex justify-center">
+        <div 
+          className="mt-16 flex justify-center"
+          data-aos="fade-up"        // Animation: Slide up
+          data-aos-delay="400"      // Animation: Waits for list to finish
+        >
           <a href="#" className="group flex items-center gap-4 px-6 py-3 bg-[#f2f8f3] border border-[#053b2f]/10 rounded-sm hover:border-[#053b2f] hover:bg-white transition-all duration-300">
             <div className="bg-[#053b2f] text-white p-2 rounded-sm group-hover:bg-[#bef264] group-hover:text-[#053b2f] transition-colors">
               <SmsTracking size={20} color='currentColor' />

@@ -1,5 +1,7 @@
-import React from 'react';
-import { ShieldTick, WalletCheck, Global, Flash, Lock1,  } from 'iconsax-react';
+import React, { useEffect } from 'react';
+import { ShieldTick, WalletCheck, Global, Flash, Lock1 } from 'iconsax-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 interface FeatureItem {
   id: string;
@@ -41,16 +43,29 @@ const features: FeatureItem[] = [
 ];
 
 const WhyChooseUs: React.FC = () => {
+  
+  // Initialize AOS (Optional if done globally in App.tsx)
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
+
   return (
-    <section className="py-24 bg-white border-b border-gray-100">
+    <section className="py-24 bg-white border-b border-gray-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* --- SHARP HEADER --- */}
-        <div className="mb-20 border-l-4 border-[#053b2f] pl-6 py-2">
+        <div 
+            className="mb-20 border-l-4 border-[#053b2f] pl-6 py-2"
+            data-aos="fade-right" // Animation: Slides in from left
+        >
           <div className="flex items-center gap-3 mb-2">
             <Lock1 size={28} color='currentColor' variant="Bold" className="text-[#053b2f]" />
             <h2 className="text-3xl font-black uppercase tracking-tighter text-[#053b2f]">
-      Why Choose Us
+              Why Choose Us
             </h2>
           </div>
           <p className="text-gray-500 font-mono text-xs uppercase tracking-widest">
@@ -62,12 +77,12 @@ const WhyChooseUs: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <div 
-              key={index} 
+              key={index}
+              data-aos="fade-up"            // Animation: Slides up
+              data-aos-delay={index * 150}  // Animation: Cascading effect (150ms delay per card)
               className="group relative bg-white border border-gray-200 hover:border-[#053b2f] hover:shadow-xl hover:shadow-[#053b2f]/10 transition-all duration-300 flex flex-col p-6 rounded-sm"
             >
               
-        
-
               {/* Icon Box */}
               <div className="mb-6 relative">
                  <div className="w-16 h-16 bg-[#053b2f] rounded-sm flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300 relative z-10">
@@ -83,11 +98,9 @@ const WhyChooseUs: React.FC = () => {
               </h3>
 
               {/* Description */}
-              <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow border-l-2   border-[#bef264] pl-3 transition-all duration-300">
+              <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-grow border-l-2 border-[#bef264] pl-3 transition-all duration-300">
                 {feature.description}
               </p>
-
-       
 
             </div>
           ))}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink,  } from 'react-router-dom';
-import { Menu, X, ChevronDown, ArrowRight, Home } from 'lucide-react';
+import { Menu, X, ArrowRight, Home } from 'lucide-react';
 import Logo from './Logo';
 
 const Header: React.FC = () => {
@@ -9,15 +9,15 @@ const Header: React.FC = () => {
 
   const navLinks = [
     { name: 'Home', path: '/', isHome: true }, 
+    { name: 'How It Works', path: '/blog' },
     { name: 'Features', path: '/features' },
-    { name: 'About', path: '/about' },
     { name: 'Pricing', path: '/pricing' },
-    { name: 'Blog', path: '/blog' },
-
-    { name: 'Pages', path: '/pages', hasDropdown: true }, 
+    
+    { name: 'Faq', path: '/pages' }, 
+    { name: 'Contact', path: '/about' },
   ];
 
-  // Prevent scrolling on the body when menu is open
+
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -61,9 +61,7 @@ const Header: React.FC = () => {
                         </div>
                       )}
                       <span>{link.name}</span>
-                      {link.hasDropdown && (
-                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isActive ? 'text-[#053b2f] rotate-180' : 'text-gray-400 group-hover:text-[#053b2f]'}`} />
-                      )}
+              
                     </>
                   )}
                 </NavLink>
@@ -148,7 +146,7 @@ const Header: React.FC = () => {
                      {isActive && link.isHome && <Home className="w-5 h-5 text-[#84cc16]" />}
                      {link.name}
                   </span>
-                  {link.hasDropdown && <ChevronDown className={`w-4 h-4 transition-transform ${isActive ? 'rotate-180' : ''} text-gray-400`} />}
+                
                 </div>
               )}
             </NavLink>

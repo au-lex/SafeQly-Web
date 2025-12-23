@@ -1,9 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calculator, Money, InfoCircle, ArrowRight } from 'iconsax-react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const FeeCalculator: React.FC = () => {
   const [amount, setAmount] = useState<number | string>(50000);
   const [role, setRole] = useState<'seller' | 'buyer'>('seller');
+
+  // Initialize AOS (Optional if you already did this in App.tsx)
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
 
   // Configuration
   const FEE_PERCENTAGE = 0.015; // 1.5%
@@ -37,7 +48,10 @@ const FeeCalculator: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* --- SHARP HEADER (Lime Accent) --- */}
-        <div className="mb-16 border-l-4 border-[#bef264] pl-6 py-2">
+        <div 
+            className="mb-16 border-l-4 border-[#bef264] pl-6 py-2"
+            data-aos="fade-right" // Animation: Slides in from left
+        >
           <div className="flex items-center gap-3 mb-2">
             <Calculator size={28} color='currentColor' variant="Bold" className="text-[#bef264]" />
             <h2 className="text-3xl font-black uppercase tracking-tighter text-white">
@@ -52,7 +66,11 @@ const FeeCalculator: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-16 items-start">
           
           {/* --- Left: Value Proposition --- */}
-          <div className="lg:w-1/2 pt-4">
+          <div 
+            className="lg:w-1/2 pt-4"
+            data-aos="fade-up"      // Animation: Slides up
+            data-aos-delay="200"    // Animation: Slight delay
+          >
              <h3 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
                 Transparent math. <br/>
                 <span className="text-[#bef264]">No hidden logic.</span>
@@ -87,11 +105,14 @@ const FeeCalculator: React.FC = () => {
           </div>
 
           {/* --- Right: The Calculator Widget --- */}
-          <div className="lg:w-1/2 w-full">
+          <div 
+            className="lg:w-1/2 w-full"
+            data-aos="fade-left"     // Animation: Slides in from right (meeting the text)
+            data-aos-delay="400"     // Animation: Waits for text to start first
+          >
         
             <div className="relative bg-white text-[#053b2f] border border-white/10 shadow-2xl shadow-black/30 rounded-lg p-1">
         
-
                 <div className="p-6 md:p-8">
                     
                     {/* Role Toggle */}
