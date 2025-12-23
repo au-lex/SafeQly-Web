@@ -1,13 +1,13 @@
 import * as React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router"; 
 import "./App.css";
+import { ProtectedRoute, AuthRoute, AdminAuthRoute } from "./utils/ProtectedRoutes";
 import Landing from "./Pages/LandingPage/Landing";
 import Signup from "./Pages/Auth/Signup/Signup";
 import Login from "./Pages/Auth/Login/Login";
 import ForgotPassword from "./Pages/Auth/ForgotPsw/ForgotPsw";
 import ResetPassword from "./Pages/Auth/ResetPsw/ResetPsw";
 import Dashboard from "./Pages/Dashboard/Dashboard";
-
 import EscrowFlow from "./Pages/Escrow/newEscrow/EscrowFlow";
 import EscrowHome from "./Pages/Escrow/escrowMgt/EscrowHome";
 import EscrowTrans from "./Pages/Escrow/escrowTransactions/EscrowTrans";
@@ -24,135 +24,126 @@ import VerifyOTP from "./Pages/Auth/VerifyOtp/VerifyOtp";
 import PaymentCallback from "./Pages/Wallet/VerifyPayment";
 import EscrowDetails from "./Pages/Escrow/escrowTransactions/EscrowDetails";
 
-
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const router = createBrowserRouter([
+  // Public routes
   {
     path: "/",
     element: <Landing />,
   },
 
+  // Auth routes (redirects to dashboard if already logged in)
   {
-    path: "/signup",
-    element: <Signup />,
+    element: <AuthRoute />,
+    children: [
+      {
+        path: "/signup",
+        element: <Signup />,
+      },
+      {
+        path: "/verify-otp",
+        element: <VerifyOTP />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/forgot-psw",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/reset-psw",
+        element: <ResetPassword />,
+      },
+    ],
   },
 
+  // Protected user routes
   {
-    path: "/verify-otp",
-    element: <VerifyOTP />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "/escrows",
+        element: <EscrowHome />,
+      },
+      {
+        path: "/new-escrow",
+        element: <EscrowFlow />,
+      },
+      {
+        path: "/escrow-transactions",
+        element: <EscrowTrans />,
+      },
+      {
+        path: "/escrow/:id",
+        element: <EscrowDetails />,
+      },
+      {
+        path: "/transactions",
+        element: <TransactionsScreen />,
+      },
+      {
+        path: "/settings/:section",
+        element: <SettingsScreen />,
+      },
+      {
+        path: "/notifications",
+        element: <NotificationPage />,
+      },
+      {
+        path: "/disputes",
+        element: <DisputePage />,
+      },
+      {
+        path: "/payment-callback",
+        element: <PaymentCallback />,
+      },
+    ],
   },
 
+  // Admin auth route (redirects to admin-dash if already logged in)
   {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-
-  {
-    path: "/forgot-psw",
-    element: <ForgotPassword />,
+    element: <AdminAuthRoute />,
+    children: [
+      {
+        path: "/admin",
+        element: <AdminLogin />,
+      },
+    ],
   },
 
+  // Protected admin routes
   {
-    path: "/reset-psw",
-    element: <ResetPassword />,
+    element: <ProtectedRoute isAdminRoute={true} redirectPath="/admin" />,
+    children: [
+      {
+        path: "/admin-dash",
+        element: <AdminDashboard />,
+      },
+      {
+        path: "/admin-users",
+        element: <UsersPage />,
+      },
+      {
+        path: "/resolve-disputes",
+        element: <ResolveDispute />,
+      },
+      {
+        path: "/finance",
+        element: <Finance />,
+      },
+    ],
   },
-
-
-  {
-    path: "/dashboard",
-    element: <Dashboard />,
-  },
-
-
-
-  {
-    path: "/escrows",
-    element: <EscrowHome/>,
-  },
-
-  {
-    path: "/new-escrow",
-    element: <EscrowFlow/>,
-  },
-
-  {
-    path: "/escrow-transactions",
-    element: <EscrowTrans/>,
-  },
-
-  {
-    path: "/escrow/:id",
-    element: <EscrowDetails/>,
-  },
-
-
-  {
-    path: "/transactions",
-    element: <TransactionsScreen/>,
-  },
-
-
-
-  {
-    path: "/settings/:section",
-    element: <SettingsScreen/>,
-  },
-
-  {
-    path: "/notifications",
-    element: <NotificationPage/>,
-  },
-
-
-  {
-    path: "/disputes",
-    element: <DisputePage/>,
-  },
-
-
-  // admin
-
-  {
-    path: "/admin",
-    element: <AdminLogin/>,
-  },
-
-  {
-    path: "/admin-users",
-    element: <UsersPage/>,
-  },
-
-  {
-    path: "/resolve-disputes",
-    element: <ResolveDispute/>,
-  },
-
-
-  {
-    path: "/finance",
-    element: <Finance/>,
-  },
-
-  {
-    path: "/payment-callback",
-    element: <PaymentCallback/>,
-  },
-
-  {
-    path: "/admin-dash",
-    element: <AdminDashboard/>,
-  },
-
 ]);
 
 export default function App() {
-
   React.useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -160,9 +151,9 @@ export default function App() {
       easing: 'ease-out-cubic'
     });
   }, []);
+
   return (
     <React.StrictMode>
-
       <RouterProvider router={router} />
     </React.StrictMode>
   );

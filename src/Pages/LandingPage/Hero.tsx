@@ -1,10 +1,11 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   return (
     <>
-      <div className="relative h-[80vh] lg:min-h-screen w-full overflow-hidden flex pt-[4rem] lg:pt-[12rem] justify-center bg-white">
+      <div className="relative h-[70vh]  lg:min-h-screen w-full overflow-hidden flex pt-[4rem] lg:pt-[12rem] justify-center bg-white">
         
         {/* --- Main Content Container --- */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 text-center">
@@ -28,12 +29,12 @@ const HeroSection: React.FC = () => {
             className="animate-fade-up flex justify-center mb-12"
             style={{ animationDelay: '0.4s' }}
           >
-            <button className="group bg-pri hover:bg-[#093528] text-white text-lg font-medium pl-8 pr-2 py-2 rounded-full flex items-center transition-all duration-300 shadow-xl shadow-green-900/10">
+            <Link to="/dashboard"  className="group bg-pri hover:bg-[#093528] text-white text-lg font-medium pl-8 pr-2 py-2 rounded-full flex items-center transition-all duration-300 shadow-xl shadow-green-900/10">
               <span className='text-white'>Start A Transaction</span>
               <div className="ml-4 bg-white text-[#0f4c3a] p-2 rounded-full group-hover:scale-110 transition-transform duration-300">
                 <ArrowUpRight className="w-5 h-5" />
               </div>
-            </button>
+            </Link>
           </div>
 
           {/* --- MOBILE ONLY: Organized Icon Row --- */}
@@ -72,13 +73,7 @@ const HeroSection: React.FC = () => {
             </div>
             
           </div>
-          
-          <p 
-            className="animate-fade-up md:hidden text-xs text-gray-400 mt-4 font-medium uppercase tracking-wider"
-            style={{ animationDelay: '0.7s' }}
-          >
-            Trusted Security
-          </p>
+
 
         </div>
 

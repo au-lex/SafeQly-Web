@@ -12,6 +12,9 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
   userProfile,
   settingsOptions
 }) => {
+  // Find the logout option to reuse its action and title
+  const logoutOption = settingsOptions.find(opt => opt.id === 'logout');
+
   const allSections = [
     { id: 'profile', title: 'My Profile', path: '/settings/profile' },
     { id: 'account-settings', title: 'Account Settings', path: '/settings/account' },
@@ -30,7 +33,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
               key={section.id}
               to={section.path}
               className={({ isActive }) =>
-                `flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                `flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                   isActive
                     ? 'bg-pri text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -40,6 +43,17 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
               {section.title}
             </NavLink>
           ))}
+          
+          {/* Mobile Logout Button */}
+          {logoutOption && (
+            <button
+              type="button"
+              onClick={logoutOption.action}
+              className="flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap bg-red-50 text-red-600 hover:bg-red-100"
+            >
+              {logoutOption.title}
+            </button>
+          )}
         </div>
       </div>
 

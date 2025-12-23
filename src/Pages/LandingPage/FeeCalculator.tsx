@@ -107,7 +107,7 @@ const FeeCalculator: React.FC = () => {
           {/* --- Right: The Calculator Widget --- */}
           <div 
             className="lg:w-1/2 w-full"
-            data-aos="fade-left"     // Animation: Slides in from right (meeting the text)
+            data-aos="fade-up"     // Animation: Slides in from right (meeting the text)
             data-aos-delay="400"     // Animation: Waits for text to start first
           >
         
