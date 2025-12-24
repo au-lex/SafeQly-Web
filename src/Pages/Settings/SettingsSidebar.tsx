@@ -19,7 +19,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
     { id: 'profile', title: 'My Profile', path: '/settings/profile' },
     { id: 'account-settings', title: 'Account Settings', path: '/settings/account' },
     { id: 'change-password', title: 'Change Password', path: '/settings/password' },
-    { id: 'change-pin', title: 'Change PIN', path: '/settings/pin' },
+    // { id: 'change-pin', title: 'Change PIN', path: '/settings/pin' },
     { id: 'help-support', title: 'Help & Support', path: '/settings/help' },
   ];
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { Building2, Lock, Key, HelpCircle, LogOut, Loader2 } from 'lucide-react';
+import { Building2, Lock,  HelpCircle, LogOut, Loader2 } from 'lucide-react';
 import Layout from '../../Layout/Layout';
 import SettingsSidebar from './SettingsSidebar';
 import ProfileDetail from './ProfileDetail';
 import ChangePasswordDetail from './ChangePasswordDetail';
-import ChangePinDetail from './ChangePinDetail';
+// import ChangePinDetail from './ChangePinDetail';
 import AccountSettingsDetail from './AccountSettingsDetail';
 import HelpSupportDetail from './HelpSupportDetail';
 import type { SettingsOption } from '../../types';
@@ -42,14 +42,14 @@ const SettingsScreen: React.FC = () => {
       iconBgColor: 'bg-blue-100',
       action: () => {}
     },
-    {
-      id: 'change-pin',
-      title: 'Change Pin',
-      description: 'Change your pin',
-      icon: <Key size={20} className="text-pri" />,
-      iconBgColor: 'bg-blue-100',
-      action: () => {}
-    },
+    // {
+    //   id: 'change-pin',
+    //   title: 'Change Pin',
+    //   description: 'Change your pin',
+    //   icon: <Key size={20} className="text-pri" />,
+    //   iconBgColor: 'bg-blue-100',
+    //   action: () => {}
+    // },
     {
       id: 'help-support',
       title: 'Help & Support',
@@ -76,8 +76,8 @@ const SettingsScreen: React.FC = () => {
         return <ProfileDetail profile={userProfile} />;
       case 'password':
         return <ChangePasswordDetail />;
-      case 'pin':
-        return <ChangePinDetail />;
+      // case 'pin':
+      //   return <ChangePinDetail />;
       case 'account':
         return <AccountSettingsDetail />;
       case 'help':
