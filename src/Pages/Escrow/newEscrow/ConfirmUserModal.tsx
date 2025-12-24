@@ -27,11 +27,14 @@ const ConfirmUserModal: React.FC<ConfirmUserModalProps> = ({
         </section>
 
         <section className="flex items-center mb-6">
-          <img
-            src={userInfo.avatar}
-            alt={userInfo.name}
-            className="w-14 h-14 rounded-full mr-3 border-2 border-amber-500"
-          />
+        <img
+  src={
+    userInfo?.avatar ||
+    "https://res.cloudinary.com/dmhvsyzch/image/upload/v1760256119/Profile_avatar_placeholder_large_smgjld.png"
+  }
+  alt={userInfo?.name || "User Profile"}
+  className="w-14 h-14 rounded-full mr-3 border-2 border-amber-500 object-cover"
+/>
           <section>
             <p className="text-base font-semibold text-gray-900">
               {userInfo.name}

@@ -33,17 +33,16 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
               key={section.id}
               to={section.path}
               className={({ isActive }) =>
-                `flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                  isActive
-                    ? 'bg-pri text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                `flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${isActive
+                  ? 'bg-pri text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`
               }
             >
               {section.title}
             </NavLink>
           ))}
-          
+
           {/* Mobile Logout Button */}
           {logoutOption && (
             <button
@@ -70,14 +69,13 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
           <NavLink
             to="/settings/profile"
             className={({ isActive }) =>
-              `w-full flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition-colors border-b border-gray-100 ${
-                isActive ? 'bg-blue-50' : ''
+              `w-full flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition-colors border-b border-gray-100 ${isActive ? 'bg-blue-50' : ''
               }`
             }
           >
             <div className="flex items-center flex-1">
               <img
-                src={userProfile.avatar || "https://i.pravatar.cc/150?img=68"}
+                src={userProfile.avatar || "https://res.cloudinary.com/dmhvsyzch/image/upload/v1760256119/Profile_avatar_placeholder_large_smgjld.png"}
                 alt="Profile"
                 className="w-11 h-11 rounded-full mr-3 border-2 border-gray-200 object-cover"
               />
@@ -100,8 +98,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                 key={option.id}
                 to={`/settings/${option.id === 'account-settings' ? 'account' : option.id === 'change-password' ? 'password' : option.id === 'change-pin' ? 'pin' : option.id === 'help-support' ? 'help' : option.id}`}
                 className={({ isActive }) =>
-                  `w-full flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition-colors ${
-                    isActive ? 'bg-blue-50' : ''
+                  `w-full flex items-center justify-between py-4 px-4 hover:bg-gray-50 transition-colors ${isActive ? 'bg-blue-50' : ''
                   }`
                 }
                 onClick={(e) => {
@@ -124,7 +121,7 @@ const SettingsSidebar: React.FC<SettingsSidebarProps> = ({
                     </p>
                   </div>
                 </div>
-                
+
                 {option.showArrow !== false && (
                   <ChevronRight size={20} className="text-gray-400 ml-3" />
                 )}
