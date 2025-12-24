@@ -2,6 +2,7 @@ import Layout from "../../Layout/Layout";
 import React, { useState } from "react";
 import { Eye, EyeSlash, Copy, Add, ArrowRight, Import } from "iconsax-react";
 import { Link, useNavigate } from "react-router-dom";
+
 import {
   useGetWalletBalance,
   useFundAccount,
@@ -13,6 +14,7 @@ import type { Transaction as ApiTransaction } from "../../types";
 import toast from "react-hot-toast";
 import FundWalletModal from "../Wallet/FundWalletModal";
 import WithdrawModal from "../Wallet/WithDrawModal"; 
+import { ArrowDownLeft, ArrowUpRight } from "lucide-react";
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [showBalance, setShowBalance] = useState(true);
@@ -63,8 +65,7 @@ const Dashboard: React.FC = () => {
     }, {
       onSuccess: () => {
         setShowWithdrawModal(false);
-        // Balance will auto-update if query keys are invalidated in the hook, 
-        // or you can manually refetch walletData here.
+ 
       }
     });
   };
@@ -111,15 +112,15 @@ const Dashboard: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
-        return "bg-green-100 text-green-700";
+        return " text-green-700";
       case "pending":
-        return "bg-yellow-100 text-yellow-700";
+        return " text-yellow-700";
       case "failed":
-        return "bg-red-100 text-red-700";
+        return " text-red-700";
       case "active":
-        return "bg-blue-100 text-blue-700";
+        return " text-blue-700";
       default:
-        return "bg-gray-100 text-gray-700";
+        return " text-gray-700";
     }
   };
 
@@ -239,7 +240,7 @@ const Dashboard: React.FC = () => {
             {/* 3. Quick Transfer */}
             <section className="px-6 md:px-2 bg-white md:p-6 md:rounded-xl md:border md:border-gray-100">
               <h3 className="font-bold text-lg text-gray-900 mb-4">
-                Quick Transfer
+                Quick Escrow
               </h3>
               
               {recentUsersLoading ? (
@@ -288,9 +289,9 @@ const Dashboard: React.FC = () => {
                 <h3 className="font-bold text-xl text-gray-900">
                   Transaction History
                 </h3>
-                <button className="text-pri font-semibold text-sm hover:text-blue-700">
+                <Link to="/transactions" className="text-pri font-semibold text-sm hover:text-blue-700">
                   View All
-                </button>
+                </Link>
               </section>
             </section>
 
@@ -326,23 +327,14 @@ const Dashboard: React.FC = () => {
                               isDeposit ? "bg-green-100" : "bg-red-100"
                             }`}
                           >
-                            <svg
-                              className={`w-5 h-5 md:w-6 md:h-6 ${
-                                isDeposit
-                                  ? "text-pri rotate-[145deg]"
-                                  : "text-red-600 rotate-[-45deg]"
-                              }`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2.5}
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            {isDeposit ? (
+                              <ArrowDownLeft
+                                size="20"
+                               
                               />
-                            </svg>
+                            ) : (
+                              <ArrowUpRight size="20" color="#EF4444" />
+                            )}
                           </section>
                           <section className="overflow-hidden">
                             <h4 className="font-bold text-gray-900 text-sm truncate">
@@ -369,7 +361,7 @@ const Dashboard: React.FC = () => {
                         {/* 3. Status */}
                         <section className="col-span-6 md:col-span-2 mt-2 md:mt-0 flex md:justify-center">
                           <span
-                            className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide ${getStatusColor(
+                            className={`px-2.5 py-1  text-[10px] font-bold uppercase tracking-wide ${getStatusColor(
                               tx.status
                             )}`}
                           >

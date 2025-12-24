@@ -13,7 +13,9 @@ import {
   Logout,
 } from "iconsax-react";
 import { useLogout } from "../Hooks/useAuth";
-import { useGetUserProfile } from "../Hooks/useProfile"; 
+import { useGetUserProfile } from "../Hooks/useProfile";
+import { useGetUnreadCount } from "../Hooks/useNotification";
+
 interface LayoutProps {
   children?: React.ReactNode;
 }
@@ -79,7 +81,8 @@ const LogoutModal: React.FC<LogoutModalProps> = ({
 // --- Main Layout Component ---
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
-  const { data: userProfile, isLoading: isProfileLoading } = useGetUserProfile(); // Fetch user profile
+  const { data: userProfile, isLoading: isProfileLoading } = useGetUserProfile();
+  const { data: unreadCount = 0 } = useGetUnreadCount(); // Get unread notification count
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Helper to get initials or safe name
@@ -330,7 +333,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   color="currentColor"
                   variant="Outline"
                 />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                {/* Show badge only if there are unread notifications */}
+                {unreadCount > 0 && (
+                  <>
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    {/* Optional: Show count badge for larger numbers */}
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 border-2 border-white">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </>
+                )}
               </Link>
 
               {/* Move Money - Desktop Only */}
@@ -369,7 +383,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
       </div>
 
-      {/* RENDER MODAL HERE */}
+
       <LogoutModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
