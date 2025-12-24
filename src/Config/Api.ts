@@ -25,7 +25,7 @@ export const API_ENDPOINTS = {
     PAYSTACK_CALLBACK: '/wallet/paystack/callback',
     BANKS: '/wallet/banks',
     RESOLVE_ACCOUNT: '/wallet/resolve-account',
-    BANK_ACCOUNTS: '/wallet/bank-accounts',
+    BANK_ACCOUNTS: '/wallet/bank-account',
     BANK_ACCOUNT_DEFAULT: (id: number) => `/wallet/bank-accounts/${id}/default`,
     BANK_ACCOUNT_DELETE: (id: number) => `/wallet/bank-account/${id}`,
     TRANSACTIONS: '/wallet/transactions',
@@ -74,5 +74,12 @@ export const API_ENDPOINTS = {
     DISPUTES: '/admin/disputes',
     DISPUTE_BY_ID: (id: string) => `/admin/disputes/${id}`,
     RESOLVE_DISPUTE: (id: string) => `/admin/disputes/${id}/resolve`,
+
+    PENDING_WITHDRAWALS: '/admin/withdrawals/pending',
+    WITHDRAWAL_BY_ID: (id: string) => `/admin/withdrawals/${id}`,
+    COMPLETE_WITHDRAWAL: (id: string) => `/admin/withdrawals/${id}/complete`,
+    FAIL_WITHDRAWAL: (id: string) => `/admin/withdrawals/${id}/fail`,
+    WITHDRAWAL_STATS: '/admin/withdrawals/stats',
+
   },
 };

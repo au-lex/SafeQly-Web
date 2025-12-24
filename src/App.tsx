@@ -27,6 +27,7 @@ import EscrowDetails from "./Pages/Escrow/escrowTransactions/EscrowDetails";
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import GoogleCallback from "./Pages/Auth/Login/Google";
+import AdminWithdrawals from "./Pages/Admin/admin-withdrawal/AdminWithdrawal";
 
 const router = createBrowserRouter([
   // Public routes
@@ -145,6 +146,11 @@ const router = createBrowserRouter([
       {
         path: "/finance",
         element: <Finance />,
+      },
+
+      {
+        path: "/admin-withdrawals",
+        element: <AdminWithdrawals />,
       },
     ],
   },

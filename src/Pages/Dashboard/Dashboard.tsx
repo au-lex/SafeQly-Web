@@ -6,16 +6,20 @@ import {
   useGetWalletBalance,
   useFundAccount,
   useGetTransactionHistory,
+  useWithdrawFunds, 
 } from "../../Hooks/useWallet";
 import { useGetRecentEscrowUsers } from "../../Hooks/useEscrow";
 import type { Transaction as ApiTransaction } from "../../types";
 import toast from "react-hot-toast";
 import FundWalletModal from "../Wallet/FundWalletModal";
-
+import WithdrawModal from "../Wallet/WithDrawModal"; 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [showBalance, setShowBalance] = useState(true);
+  
+  // Modal States
   const [showFundModal, setShowFundModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   // API Hooks
   const { data: walletData, isLoading: balanceLoading } = useGetWalletBalance();
@@ -23,16 +27,16 @@ const Dashboard: React.FC = () => {
     useGetTransactionHistory();
   const { data: recentUsersData, isLoading: recentUsersLoading } = 
     useGetRecentEscrowUsers();
+    
+  // Mutations
   const fundAccountMutation = useFundAccount();
+  const withdrawMutation = useWithdrawFunds();
 
   // Extract data from responses
   const transactions = transactionsData?.transactions || [];
   const recentUsers = recentUsersData?.recent_users || [];
 
-  console.log("Transactions Data:", transactionsData);
-  console.log("Transactions Array:", transactions);
-  console.log("Recent Users:", recentUsers);
-
+  // --- Funding Handlers ---
   const handleFundWallet = () => {
     setShowFundModal(true);
   };
@@ -42,9 +46,30 @@ const Dashboard: React.FC = () => {
       amount,
       payment_method: "card",
       payment_provider: "paystack",
+    }, {
+      onSuccess: () => setShowFundModal(false) 
     });
   };
 
+  // --- Withdrawal Handlers ---
+  const handleWithdrawClick = () => {
+    setShowWithdrawModal(true);
+  };
+
+  const handleWithdrawSubmit = (amount: number, bankAccountId: number) => {
+    withdrawMutation.mutate({
+      amount: amount,
+      bank_account_id: bankAccountId
+    }, {
+      onSuccess: () => {
+        setShowWithdrawModal(false);
+        // Balance will auto-update if query keys are invalidated in the hook, 
+        // or you can manually refetch walletData here.
+      }
+    });
+  };
+
+  // --- Utility Handlers ---
   const handleCopyTag = () => {
     if (walletData?.user?.user_tag) {
       navigator.clipboard.writeText(walletData.user.user_tag);
@@ -53,7 +78,6 @@ const Dashboard: React.FC = () => {
   };
 
   const handleQuickTransfer = (userTag: string) => {
-
     navigate('/new-escrow', { state: { sellerTag: userTag } });
   };
 
@@ -104,7 +128,6 @@ const Dashboard: React.FC = () => {
     return incomingTypes.includes(type.toLowerCase()) ? "in" : "out";
   };
 
-  // Get first name from full name
   const getFirstName = (fullName: string) => {
     return fullName.split(' ')[0];
   };
@@ -112,12 +135,20 @@ const Dashboard: React.FC = () => {
   return (
     <Layout>
       <section className="min-h-screen md:bg-gray-50">
-        {/* Fund Wallet Modal */}
+        
+        {/* --- Modals --- */}
         <FundWalletModal
           isOpen={showFundModal}
           onClose={() => setShowFundModal(false)}
           onSubmit={handleFundSubmit}
           isLoading={fundAccountMutation.isPending}
+        />
+
+        <WithdrawModal
+          isOpen={showWithdrawModal}
+          onClose={() => setShowWithdrawModal(false)}
+          onSubmit={handleWithdrawSubmit}
+          isLoading={withdrawMutation.isPending}
         />
 
         <section className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -161,7 +192,12 @@ const Dashboard: React.FC = () => {
                     <Add size="20" color="#fff" />
                     Fund Wallet
                   </button>
-                  <button className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                  
+                  {/* Updated Withdraw Button */}
+                  <button 
+                    onClick={handleWithdrawClick}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3.5 px-4 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
+                  >
                     <Import
                       size="20"
                       color="currentColor"
