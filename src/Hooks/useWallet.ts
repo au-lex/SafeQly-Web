@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '../Config/axios';
 import { API_ENDPOINTS } from '../Config/Api';
 import type {
@@ -15,12 +15,22 @@ import type {
 } from '../types';
 
 // ============================================================================
+// QUERY KEYS
+// ============================================================================
+export const WALLET_QUERY_KEYS = {
+  balance: ['walletBalance'] as const,
+  banks: ['banks'] as const,
+  bankAccounts: ['bankAccounts'] as const,
+  transactions: (type?: string) => ['transactions', type] as const,
+};
+
+// ============================================================================
 // WALLET BALANCE
 // ============================================================================
 
 export function useGetWalletBalance() {
   return useQuery({
-    queryKey: ['walletBalance'],
+    queryKey: WALLET_QUERY_KEYS.balance,
     queryFn: async (): Promise<WalletBalance> => {
       const response = await axiosInstance.get<WalletBalance>(
         API_ENDPOINTS.WALLET.BALANCE
@@ -37,6 +47,8 @@ export function useGetWalletBalance() {
 // ============================================================================
 
 export function useFundAccount() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (fundData: FundAccountData): Promise<FundAccountResponse> => {
       const response = await axiosInstance.post<FundAccountResponse>(
@@ -48,18 +60,25 @@ export function useFundAccount() {
     onSuccess: (data) => {
       toast.success(data.message || 'Funding initiated successfully');
       
+      // Invalidate wallet balance and transactions
+      queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.balance });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      
       // Redirect to Paystack payment page
       if (data.payment_info?.authorization_url) {
         window.location.href = data.payment_info.authorization_url;
       }
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Funding failed');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Funding failed';
+      toast.error(message);
     },
   });
 }
 
 export function useVerifyPayment() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (reference: string) => {
       const response = await axiosInstance.get(
@@ -69,9 +88,14 @@ export function useVerifyPayment() {
     },
     onSuccess: (data) => {
       toast.success(data.message || 'Payment verified successfully');
+      
+      // Invalidate wallet balance and transactions after successful payment
+      queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.balance });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Verification failed');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Verification failed';
+      toast.error(message);
     },
   });
 }
@@ -80,17 +104,13 @@ export function useVerifyPayment() {
 // BANKS
 // ============================================================================
 
-
 export function useGetBanks() {
   return useQuery({
-    queryKey: ['banks'],
+    queryKey: WALLET_QUERY_KEYS.banks,
     queryFn: async (): Promise<Bank[]> => {
-      // 1. We tell axios the response data has a 'banks' property containing the array
       const response = await axiosInstance.get<{ banks: Bank[] }>(
         API_ENDPOINTS.WALLET.BANKS
       );
-      
-  
       return response.data.banks;
     },
     staleTime: 3600000, 
@@ -105,8 +125,9 @@ export function useResolveAccountNumber() {
       );
       return response.data;
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Account resolution failed');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Account resolution failed';
+      toast.error(message);
     },
   });
 }
@@ -116,6 +137,8 @@ export function useResolveAccountNumber() {
 // ============================================================================
 
 export function useAddBankAccount() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (bankData: AddBankAccountData) => {
       const response = await axiosInstance.post(
@@ -126,16 +149,20 @@ export function useAddBankAccount() {
     },
     onSuccess: (data) => {
       toast.success(data.message || 'Bank account added successfully');
+      
+      // Invalidate bank accounts list
+      queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.bankAccounts });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to add bank account');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Failed to add bank account';
+      toast.error(message);
     },
   });
 }
 
 export function useGetBankAccounts() {
   return useQuery({
-    queryKey: ['bankAccounts'],
+    queryKey: WALLET_QUERY_KEYS.bankAccounts,
     queryFn: async (): Promise<BankAccount[]> => {
       const response = await axiosInstance.get(
         API_ENDPOINTS.WALLET.BANK_ACCOUNTS
@@ -150,6 +177,8 @@ export function useGetBankAccounts() {
 }
 
 export function useSetDefaultBankAccount() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (accountId: number) => {
       const response = await axiosInstance.put(
@@ -159,14 +188,20 @@ export function useSetDefaultBankAccount() {
     },
     onSuccess: (data) => {
       toast.success(data.message || 'Default bank updated successfully');
+      
+      // Invalidate bank accounts list
+      queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.bankAccounts });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to update default bank');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Failed to update default bank';
+      toast.error(message);
     },
   });
 }
 
 export function useDeleteBankAccount() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (accountId: number) => {
       const response = await axiosInstance.delete(
@@ -176,9 +211,13 @@ export function useDeleteBankAccount() {
     },
     onSuccess: (data) => {
       toast.success(data.message || 'Bank account deleted successfully');
+      
+      // Invalidate bank accounts list
+      queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.bankAccounts });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Failed to delete bank account');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Failed to delete bank account';
+      toast.error(message);
     },
   });
 }
@@ -188,6 +227,8 @@ export function useDeleteBankAccount() {
 // ============================================================================
 
 export function useWithdrawFunds() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (withdrawData: WithdrawData) => {
       const response = await axiosInstance.post(
@@ -198,9 +239,15 @@ export function useWithdrawFunds() {
     },
     onSuccess: (data) => {
       toast.success(data.message || 'Withdrawal successful');
+      
+      // CRITICAL: Invalidate wallet balance and transactions immediately
+      queryClient.invalidateQueries({ queryKey: WALLET_QUERY_KEYS.balance });
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Withdrawal failed');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Withdrawal failed';
+      toast.error(message);
     },
   });
 }
@@ -210,12 +257,10 @@ export function useWithdrawFunds() {
 // ============================================================================
 export function useGetTransactionHistory(type?: string) {
   return useQuery({
-    queryKey: ['transactions', type],
+    queryKey: WALLET_QUERY_KEYS.transactions(type),
     queryFn: async (): Promise<{ count: number; transactions: Transaction[] }> => {
- 
       let url = API_ENDPOINTS.WALLET.TRANSACTIONS;
       
-
       if (type) {
         url += `?type=${type}`;
       }
@@ -228,6 +273,7 @@ export function useGetTransactionHistory(type?: string) {
     staleTime: 30000,
   });
 }
+
 export function useGetTransactionByID() {
   return useMutation({
     mutationFn: async (transactionId: number): Promise<Transaction> => {
@@ -236,8 +282,9 @@ export function useGetTransactionByID() {
       );
       return response.data;
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Error fetching transaction');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Error fetching transaction';
+      toast.error(message);
     },
   });
 }
@@ -250,8 +297,9 @@ export function useGetTransactionByReference() {
       );
       return response.data;
     },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Error fetching transaction');
+    onError: (error: any) => {
+      const message = error.response?.data?.error || error.message || 'Error fetching transaction';
+      toast.error(message);
     },
   });
 }

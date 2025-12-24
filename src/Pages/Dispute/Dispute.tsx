@@ -61,7 +61,7 @@ const DisputeDetailsModal = ({ isOpen, onClose, dispute }: DisputeDetailsModalPr
       />
 
       {/* Modal Panel */}
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-2xl bg-white rounded-2xl s -2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -131,7 +131,7 @@ const DisputeDetailsModal = ({ isOpen, onClose, dispute }: DisputeDetailsModalPr
                       className="w-full h-full object-cover transition-transform group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                      <ExternalLink className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 drop-shadow-md transition-opacity" />
+                      <ExternalLink className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 drop-s -md transition-opacity" />
                     </div>
                   </a>
                   <p className="text-xs text-gray-400 mt-1 truncate">{dispute.evidence_file_name}</p>
@@ -414,7 +414,7 @@ const DisputeListPage = () => {
                   onClick={() => setFilter(tab)}
                   className={`
                     flex-1 sm:flex-none px-4 py-1.5 rounded-md text-sm font-medium transition-all capitalize
-                    ${filter === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}
+                    ${filter === tab ? 'bg-white text-gray-900 s -sm' : 'text-gray-500 hover:text-gray-700'}
                   `}
                 >
                   {tab}
@@ -436,7 +436,7 @@ const DisputeListPage = () => {
           </div>
 
           {/* Dispute List Table */}
-          <div className="bg-white border border-gray-200 rounded-b-xl overflow-hidden shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-b-xl overflow-hidden s -sm">
             {isLoading ? (
               <div className="flex items-center justify-center py-16">
                 <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
