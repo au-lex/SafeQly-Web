@@ -440,7 +440,7 @@ const EscrowDetails: React.FC = () => {
               <button
                 onClick={handleReleaseFunds}
                 disabled={isReleasing}
-                className="w-full bg-green-500 text-white py-4 rounded-xl font-bold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-pri text-white py-4 rounded-xl font-bold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {isReleasing ? (
                   <>

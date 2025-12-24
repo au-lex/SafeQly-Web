@@ -45,6 +45,16 @@ export const API_ENDPOINTS = {
     RECENT_USERS: '/escrow/recent-users',
   },
 
+
+  NOTIFICATIONS: {
+    LIST: '/notifications',
+    UNREAD_COUNT: '/notifications/unread-count',
+    MARK_AS_READ: (id: string) => `/notifications/${id}/read`,
+    MARK_ALL_AS_READ: '/notifications/read-all',
+    DELETE: (id: string) => `/notifications/${id}`,
+    DELETE_ALL_READ: '/notifications/read-all',
+  },
+
   DISPUTES: {
     RAISE: '/dispute/raise',
     UPLOAD_EVIDENCE: '/dispute/upload-evidence',
@@ -80,6 +90,8 @@ export const API_ENDPOINTS = {
     COMPLETE_WITHDRAWAL: (id: string) => `/admin/withdrawals/${id}/complete`,
     FAIL_WITHDRAWAL: (id: string) => `/admin/withdrawals/${id}/fail`,
     WITHDRAWAL_STATS: '/admin/withdrawals/stats',
+
+    
 
   },
 };
