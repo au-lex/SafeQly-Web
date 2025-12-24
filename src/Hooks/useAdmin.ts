@@ -116,7 +116,6 @@ export interface Transaction {
   updated_at: string;
   user?: User;
   Escrow?: any;
-
 }
 
 export interface TransactionsResponse {
@@ -128,7 +127,6 @@ export interface TransactionsResponse {
   };
 }
 
-// Updated Dispute interface with correct property names and types
 export interface Dispute {
   id: number;
   escrow_id: number;
@@ -203,6 +201,82 @@ export interface DashboardStats {
   };
 }
 
+// Withdrawal Types
+export interface WithdrawalTransaction extends Transaction {
+  account_number?: string;
+  bank_name?: string;
+  account_name?: string;
+}
+
+export interface PendingWithdrawalsResponse {
+  pending_withdrawals: WithdrawalTransaction[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+  summary: {
+    total_count: number;
+    total_amount: number;
+  };
+  note: string;
+}
+
+export interface WithdrawalResponse {
+  withdrawal: WithdrawalTransaction;
+  user: {
+    id: number;
+    full_name: string;
+    email: string;
+    phone: string;
+  };
+}
+
+export interface CompleteWithdrawalRequest {
+  notes?: string;
+}
+
+export interface CompleteWithdrawalResponse {
+  message: string;
+  withdrawal: {
+    id: number;
+    reference: string;
+    amount: number;
+    status: string;
+    user_id: number;
+    account_number: string;
+    bank_name: string;
+    account_name: string;
+    completed_at: string;
+  };
+}
+
+export interface FailWithdrawalRequest {
+  reason: string;
+}
+
+export interface FailWithdrawalResponse {
+  message: string;
+  withdrawal: {
+    id: number;
+    reference: string;
+    amount: number;
+    status: string;
+    user_id: number;
+  };
+}
+
+export interface WithdrawalStats {
+  stats: {
+    total_withdrawals: number;
+    pending_withdrawals: number;
+    completed_withdrawals: number;
+    failed_withdrawals: number;
+    pending_amount: number;
+    completed_amount: number;
+  };
+}
+
 // ============= UTILITY FUNCTIONS =============
 
 interface ApiError {
@@ -237,6 +311,13 @@ export const ADMIN_QUERY_KEYS = {
   disputesList: (page?: number, limit?: number, status?: string) => 
     [...ADMIN_QUERY_KEYS.disputes(), 'list', { page, limit, status }] as const,
   disputeDetail: (id: string) => [...ADMIN_QUERY_KEYS.disputes(), 'detail', id] as const,
+  withdrawals: () => [...ADMIN_QUERY_KEYS.all, 'withdrawals'] as const,
+  withdrawalsList: (page?: number, limit?: number) => 
+    [...ADMIN_QUERY_KEYS.withdrawals(), 'list', { page, limit }] as const,
+  withdrawalDetail: (id: string) => 
+    [...ADMIN_QUERY_KEYS.withdrawals(), 'detail', id] as const,
+  withdrawalStats: () => 
+    [...ADMIN_QUERY_KEYS.withdrawals(), 'stats'] as const,
 };
 
 // ============= AUTH HOOKS =============
@@ -571,5 +652,116 @@ export function useResolveDispute() {
     onError: (error) => {
       handleApiError(error);
     },
+  });
+}
+
+// ============= WITHDRAWAL MANAGEMENT HOOKS =============
+
+// Get Pending Withdrawals
+export function useGetPendingWithdrawals(page = 1, limit = 50) {
+  return useQuery({
+    queryKey: ADMIN_QUERY_KEYS.withdrawalsList(page, limit),
+    queryFn: async (): Promise<PendingWithdrawalsResponse> => {
+      const response = await axiosInstance.get<PendingWithdrawalsResponse>(
+        API_ENDPOINTS.ADMIN.PENDING_WITHDRAWALS,
+        { params: { page, limit } }
+      );
+      return response.data;
+    },
+    staleTime: 30 * 1000, // 30 seconds
+    retry: 1,
+  });
+}
+
+// Get Withdrawal by ID
+export function useGetWithdrawalById(withdrawalId: string) {
+  return useQuery({
+    queryKey: ADMIN_QUERY_KEYS.withdrawalDetail(withdrawalId),
+    queryFn: async (): Promise<WithdrawalResponse> => {
+      const response = await axiosInstance.get<WithdrawalResponse>(
+        API_ENDPOINTS.ADMIN.WITHDRAWAL_BY_ID(withdrawalId)
+      );
+      return response.data;
+    },
+    enabled: !!withdrawalId,
+    staleTime: 30 * 1000,
+    retry: 1,
+  });
+}
+
+// Complete Manual Withdrawal
+export function useCompleteWithdrawal() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ 
+      withdrawalId, 
+      data 
+    }: { 
+      withdrawalId: string; 
+      data?: CompleteWithdrawalRequest 
+    }): Promise<CompleteWithdrawalResponse> => {
+      const response = await axiosInstance.post<CompleteWithdrawalResponse>(
+        API_ENDPOINTS.ADMIN.COMPLETE_WITHDRAWAL(withdrawalId),
+        data || {}
+      );
+      return response.data;
+    },
+    onSuccess: (data, { withdrawalId }) => {
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.withdrawals() });
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.withdrawalDetail(withdrawalId) });
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.transactions() });
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.dashboard() });
+      toast.success(data.message || 'Withdrawal marked as completed successfully!');
+    },
+    onError: (error) => {
+      handleApiError(error);
+    },
+  });
+}
+
+// Fail Manual Withdrawal
+export function useFailWithdrawal() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ 
+      withdrawalId, 
+      reason 
+    }: { 
+      withdrawalId: string; 
+      reason: string 
+    }): Promise<FailWithdrawalResponse> => {
+      const response = await axiosInstance.post<FailWithdrawalResponse>(
+        API_ENDPOINTS.ADMIN.FAIL_WITHDRAWAL(withdrawalId),
+        { reason }
+      );
+      return response.data;
+    },
+    onSuccess: (data, { withdrawalId }) => {
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.withdrawals() });
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.withdrawalDetail(withdrawalId) });
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.transactions() });
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.dashboard() });
+      toast.success(data.message || 'Withdrawal marked as failed and user refunded!');
+    },
+    onError: (error) => {
+      handleApiError(error);
+    },
+  });
+}
+
+// Get Withdrawal Stats
+export function useGetWithdrawalStats() {
+  return useQuery({
+    queryKey: ADMIN_QUERY_KEYS.withdrawalStats(),
+    queryFn: async (): Promise<WithdrawalStats> => {
+      const response = await axiosInstance.get<WithdrawalStats>(
+        API_ENDPOINTS.ADMIN.WITHDRAWAL_STATS
+      );
+      return response.data;
+    },
+    staleTime: 30 * 1000, // 30 seconds
+    retry: 1,
   });
 }

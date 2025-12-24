@@ -18,7 +18,7 @@ interface LayoutProps {
 }
 
 interface NavItem {
-  icon: any;
+  icon: React.ElementType;
   label: string;
   href: string;
 }
@@ -36,7 +36,11 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
       label: "Users",
       href: "/admin-users",
     },
-
+    {
+      icon: Receipt2,
+      label: "Withdrawals",
+      href: "/admin-withdrawals",
+    },
     {
       icon: Send2,
       label: "Resolve Disputes",
