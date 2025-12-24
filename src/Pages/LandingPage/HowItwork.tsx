@@ -81,7 +81,7 @@ export const EscrowProcess: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-white py-12 md:py-24 overflow-hidden">
+    <section id='how-it-works'  className="bg-white py-12 md:py-24 overflow-hidden">
       <div className="mx-auto max-w-5xl px-4">
         
         {/* --- SHARP HEADER --- */}
