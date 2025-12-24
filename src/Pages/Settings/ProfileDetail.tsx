@@ -13,7 +13,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: uploadAvatar, isPending: isUploadingAvatar } = useUploadAvatar();
   const { mutate: logout } = useLogout(); // 2. Initialize logout hook
-  
+
   // Local state for form fields
   const [formData, setFormData] = useState({
     full_name: '',
@@ -65,7 +65,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-900 mb-8">My Profile</h2>
-      
+
       {/* Avatar Section */}
       <div className="flex flex-col items-center mb-8">
         <div className="relative group cursor-pointer" onClick={handleImageClick}>
@@ -75,18 +75,18 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
             </div>
           ) : (
             <img
-              src={profile?.avatar || 'https://i.pravatar.cc/150?img=68'}
+              src={profile?.avatar || 'https://res.cloudinary.com/dmhvsyzch/image/upload/v1760256119/Profile_avatar_placeholder_large_smgjld.png'}
               alt="Profile"
               className="w-24 h-24 rounded-full border-4 border-gray-200 object-cover"
             />
           )}
-          
+
           <div className="absolute inset-0 bg-black/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <Camera className="text-white" size={24} />
           </div>
         </div>
-        
-        <button 
+
+        <button
           onClick={handleImageClick}
           disabled={isUploadingAvatar}
           className="mt-4 text-sm text-pri hover:text-blue-700 font-medium disabled:opacity-50"
@@ -94,10 +94,10 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
           {isUploadingAvatar ? 'Uploading...' : 'Change Photo'}
         </button>
 
-        <input 
-          type="file" 
-          ref={fileInputRef} 
-          className="hidden" 
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
           accept="image/jpeg,image/png,image/jpg"
           onChange={handleFileChange}
         />
@@ -105,7 +105,7 @@ const ProfileDetail: React.FC<ProfileDetailProps> = ({ profile }) => {
 
       {/* Form Section */}
       <div className="space-y-5">
-        
+
         {/* Full Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

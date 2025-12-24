@@ -87,7 +87,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   // Helper to get initials or safe name
   const getFirstName = () => userProfile?.full_name?.split(' ')[0] || 'User';
-  const getAvatar = () => userProfile?.avatar || "https://i.pravatar.cc/150?img=3"; // Fallback image
+  const getAvatar = () => userProfile?.avatar || "https://res.cloudinary.com/dmhvsyzch/image/upload/v1760256120/Profile_avatar_placeholder_large_gz9esb.png"; 
 
   const navItems: NavItem[] = [
     {
@@ -348,14 +348,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </Link>
 
               {/* Move Money - Desktop Only */}
-              <button className="hidden lg:flex bg-emerald-900 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors items-center">
+              <Link to="/new-escrow" className="hidden lg:flex bg-emerald-900 hover:bg-emerald-800 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors items-center">
                 New Escrow
                 <ArrowDown2
                   size="16"
                   color="currentColor"
                   className="ml-2 rotate-[-90deg] text-white"
                 />
-              </button>
+              </Link>
             </div>
           </header>
 

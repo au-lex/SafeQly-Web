@@ -13,13 +13,13 @@ interface TransactionSummaryModalProps {
   isLoading?: boolean;
 }
 
-const TransactionSummaryModal: React.FC<TransactionSummaryModalProps> = ({ 
-  visible, 
-  userInfo, 
-  amount, 
-  items, 
-  deliveryDate, 
-  onConfirm, 
+const TransactionSummaryModal: React.FC<TransactionSummaryModalProps> = ({
+  visible,
+  userInfo,
+  amount,
+  items,
+  deliveryDate,
+  onConfirm,
   onCancel,
   isLoading = false
 }) => {
@@ -54,7 +54,7 @@ const TransactionSummaryModal: React.FC<TransactionSummaryModalProps> = ({
               className="w-10 h-10 rounded-full border-2 border-white"
             />
             <img
-              src="https://i.pravatar.cc/150?img=68"
+              src="https://res.cloudinary.com/dmhvsyzch/image/upload/v1760256119/Profile_avatar_placeholder_large_smgjld.png"
               alt="Current user"
               className="w-10 h-10 rounded-full border-2 border-white -ml-3"
             />
