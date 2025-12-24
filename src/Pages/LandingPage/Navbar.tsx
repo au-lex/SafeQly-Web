@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, NavLink,  } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom'; // Keep for external pages like Login
+import { Link as ScrollLink } from 'react-scroll'; // Use for scrolling to sections
 import { Menu, X, ArrowRight, Home } from 'lucide-react';
 import Logo from './Logo';
 
@@ -8,15 +9,13 @@ const Header: React.FC = () => {
 
 
   const navLinks = [
-    { name: 'Home', path: '/', isHome: true }, 
-    { name: 'How It Works', path: '/blog' },
-    { name: 'Features', path: '/features' },
-    { name: 'Pricing', path: '/pricing' },
-    
-    { name: 'Faq', path: '/pages' }, 
-    { name: 'Contact', path: '/about' },
+    { name: 'Home', to: 'home', isHome: true }, 
+    { name: 'How It Works', to: 'how-it-works' },
+    { name: 'Features', to: 'features' },
+    { name: 'Pricing', to: 'pricing' },
+    { name: 'Faq', to: 'faq' }, 
+    { name: 'Contact', to: 'contact' },
   ];
-
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -26,51 +25,59 @@ const Header: React.FC = () => {
     }
   }, [isMobileMenuOpen]);
 
+  // Common styles to reduce duplication
+  const baseLinkStyles = "cursor-pointer group flex items-center gap-1 font-medium px-4 py-2 rounded-full transition-all duration-300";
+  const inactiveStyles = "text-gray-600 hover:text-[#053b2f] hover:bg-gray-50";
+  const activeStyles = "!bg-[#f2f4f3] !text-[#053b2f]"; 
+
   return (
     <>
       <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             
-            {/* --- Logo Section (Linked to Home) --- */}
+            {/* --- Logo Section (Scrolls to top/home) --- */}
             <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-               <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+               {/* Using ScrollLink for Logo to smooth scroll to top */}
+               <ScrollLink 
+                 to="home" 
+                 smooth={true} 
+                 duration={500} 
+                 onClick={() => setIsMobileMenuOpen(false)}
+               >
                  <Logo />
-               </Link>
+               </ScrollLink>
             </div>
 
             {/* --- Desktop Navigation --- */}
             <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
               {navLinks.map((link) => (
-                <NavLink
+                <ScrollLink
                   key={link.name}
-                  to={link.path}
-               
-                  className={({ isActive }) =>
-                    isActive
-                      ? "flex items-center gap-2 bg-[#f2f4f3] text-[#053b2f] px-4 py-2 rounded-full font-medium transition-colors" // Active styles
-                      : "group flex items-center gap-1 text-gray-600 hover:text-[#053b2f] hover:bg-gray-50 font-medium px-4 py-2 rounded-full transition-all" // Inactive styles
-                  }
+                  to={link.to}
+                  spy={true}           // Watches for scroll position to set active state
+                  smooth={true}        // Enables smooth scrolling
+                  offset={-70}         // Offsets scroll to account for sticky header height
+                  duration={500}       // Speed of scroll
+                  activeClass={activeStyles} // Class applied when section is in view
+                  className={`${baseLinkStyles} ${inactiveStyles}`}
                 >
-            
-                  {({ isActive }) => (
-                    <>
-                      {isActive && link.isHome && (
-                        <div className="w-6 h-6 bg-[#84cc16] rounded-full flex items-center justify-center text-white">
+                  {/* Note: React-Scroll doesn't pass 'isActive' as a render prop like NavLink does. 
+                      Instead, we control the icon visibility with CSS/Group logic or just show it always.
+                      For simplicity here, I'm keeping the text simple. */}
+                   {link.isHome && (
+                        <div className="hidden group-[.active]:flex w-6 h-6 bg-[#84cc16] rounded-full items-center justify-center text-white mr-1">
                           <Home className="w-3 h-3 fill-current" />
                         </div>
-                      )}
-                      <span>{link.name}</span>
-              
-                    </>
-                  )}
-                </NavLink>
+                   )}
+                  <span>{link.name}</span>
+                </ScrollLink>
               ))}
             </div>
 
-            {/* --- CTA Button (Desktop Link) --- */}
+            {/* --- CTA Button (Keep as Router Link for separate Login page) --- */}
             <div className="hidden md:flex items-center">
-               <Link 
+               <RouterLink 
                   to="/login"
                   className="group bg-[#0f4c3a] hover:bg-[#093528] text-white text-sm font-medium pl-6 pr-1 py-1.5 rounded-full flex items-center transition-all duration-300"
                >
@@ -78,7 +85,7 @@ const Header: React.FC = () => {
                   <div className="bg-white text-[#0f4c3a] p-1.5 rounded-full group-hover:rotate-45 transition-transform duration-300">
                     <ArrowRight className="w-4 h-4" />
                   </div>
-               </Link>
+               </RouterLink>
             </div>
 
             {/* --- Mobile Menu Button --- */}
@@ -101,7 +108,6 @@ const Header: React.FC = () => {
 
       {/* ================= MOBILE MENU OVERLAY & DRAWER ================= */}
       
-      {/* 1. Backdrop Overlay */}
       <div 
           className={`md:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity duration-300 ${
             isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
@@ -110,59 +116,49 @@ const Header: React.FC = () => {
           aria-hidden="true"
       />
 
-      {/* 2. Sliding Drawer Menu */}
       <div 
         className={`md:hidden fixed top-0 left-0 h-screen w-[280px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* Header inside drawer */}
         <div className="flex items-center justify-between px-4 h-16 border-b border-gray-100">
-           <Link to="/" onClick={() => setIsMobileMenuOpen(false)}>
+           <ScrollLink to="home" smooth={true} duration={500} onClick={() => setIsMobileMenuOpen(false)}>
               <Logo />
-           </Link>
-    
+           </ScrollLink>
         </div>
 
-        {/* Menu Links Container */}
         <div className="px-4 py-6 space-y-2 flex flex-col h-[calc(100vh-64px)] overflow-y-auto bg-white pb-20">
           {navLinks.map((link) => (
-            <NavLink
+            <ScrollLink
               key={link.name}
-              to={link.path}
+              to={link.to}
+              spy={true}
+              smooth={true}
+              offset={-70}
+              duration={500}
+              activeClass="bg-[#f2f4f3] text-[#053b2f]" // Active class for mobile
+              onSetActive={() => {}} // Optional callback
               onClick={() => setIsMobileMenuOpen(false)} 
-              className={({ isActive }) =>
-                `block px-3 py-2.5 rounded-lg text-base font-medium transition-colors ${
-                  isActive 
-                    ? "bg-[#f2f4f3] text-[#053b2f]" 
-                    : "text-gray-600 hover:bg-gray-50 hover:text-[#053b2f]"
-                }`
-              }
+              className="block cursor-pointer px-3 py-2.5 rounded-lg text-base font-medium transition-colors text-gray-600 hover:bg-gray-50 hover:text-[#053b2f]"
             >
-              {({ isActive }) => (
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-3">
-                    {/* Only show Home icon if active AND it's the home link */}
-                     {isActive && link.isHome && <Home className="w-5 h-5 text-[#84cc16]" />}
+                     {/* For mobile, we can use the 'active' class logic via CSS if we want the icon to appear only when active, 
+                         but simplified here to just text for cleaner mobile view */}
                      {link.name}
                   </span>
-                
                 </div>
-              )}
-            </NavLink>
+            </ScrollLink>
           ))}
           
-          {/* Mobile CTA Links */}
           <div className="pt-6 mt-auto mb-8">
-             <Link 
+             <RouterLink 
                to="/login" 
                onClick={() => setIsMobileMenuOpen(false)}
                className="w-full block text-center mb-3 border-2 border-[#0f4c3a] text-[#0f4c3a] font-medium py-3 rounded-full transition-colors hover:bg-[#f2f4f3]"
              >
               Log In
-            </Link>
-
-         
+            </RouterLink>
           </div>
         </div>
       </div>

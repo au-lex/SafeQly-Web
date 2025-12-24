@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Stickynote, TickCircle, ArrowRight, Bank, CodeCircle } from 'iconsax-react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { Link } from 'react-router-dom';
 
 const Pricing: React.FC = () => {
   
@@ -15,7 +16,7 @@ const Pricing: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-white py-24 border-t border-gray-100 overflow-hidden">
+    <section id="pricing"  className="bg-white py-24 border-t border-gray-100 overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* --- SHARP HEADER --- */}
@@ -86,10 +87,10 @@ const Pricing: React.FC = () => {
             </ul>
 
             {/* Action Button */}
-            <button className="w-full py-4 border-2 border-[#053b2f] text-[#053b2f] font-bold uppercase tracking-widest text-xs hover:bg-[#053b2f] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group/btn">
+            <Link to="/signup"  className="w-full py-4 border-2 border-[#053b2f] text-[#053b2f] font-bold uppercase tracking-widest text-xs hover:bg-[#053b2f] hover:text-white transition-all duration-300 flex items-center justify-center gap-2 group/btn">
                Start Transaction
                <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
 
 

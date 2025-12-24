@@ -3,7 +3,7 @@ import { ShieldTick, ArrowRight, SmsTracking, Copyright } from 'iconsax-react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#053b2f] text-white pt-20 pb-10 border-t-4 border-[#bef264]">
+    <footer id='contact'  className="bg-[#053b2f] text-white pt-20 pb-10 border-t-4 border-[#bef264]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* --- Top Section: Main Grid --- */}
